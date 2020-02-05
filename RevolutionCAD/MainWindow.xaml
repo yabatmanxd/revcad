@@ -5,55 +5,136 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RevolutionCAD"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" WindowState="Maximized">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Menu Grid.Row="0" Grid.Column="0">
             <MenuItem Header="Файл">
-                <MenuItem Header="Создать"></MenuItem>
-                <MenuItem Header="Открыть"></MenuItem>
+                <MenuItem Name="MenuItem_Create" Header="Создать" Click="MenuItem_Create_Click"></MenuItem>
+                <MenuItem Name="MenuItem_Open" Header="Открыть" Click="MenuItem_Open_Click"></MenuItem>
                 <Separator/>
-                <MenuItem Header="Выход"></MenuItem>
-            </MenuItem>
-            <MenuItem Header="Формирование матриц">
-                <MenuItem Header="Матрица Q"></MenuItem>
-                <MenuItem Header="Матрица R"></MenuItem>
-            </MenuItem>
-            <MenuItem Header="Компоновка">
-                <MenuItem Header="Последовательная">
-                    <MenuItem Header="По гиперграфу"></MenuItem>
-                    <MenuItem Header="По мультиграфу"></MenuItem>
-                </MenuItem>
-                <MenuItem Header="Итерационная">
-                    <MenuItem Header="По гиперграфу"></MenuItem>
-                    <MenuItem Header="По мультиграфу"></MenuItem>
-                </MenuItem>
-            </MenuItem>
-            <MenuItem Header="Размещение">
-                <MenuItem Header="Последовательное"></MenuItem>
-                <MenuItem Header="Итерационное"></MenuItem>
-            </MenuItem>
-            <MenuItem Header="Трассировка">
-                <MenuItem Header="Метод Ли"></MenuItem>
-                <MenuItem Header="Метод Акерса"></MenuItem>
-                <MenuItem Header="Метод Ли по модулю 3"></MenuItem>
-                <MenuItem Header="Метод встречной волны"></MenuItem>
-                <MenuItem Header="Метод соединения комплекса"></MenuItem>
-                <MenuItem Header="Метод путевых координат"></MenuItem>
-                <MenuItem Header="Метод путевых с минимальным числом пересечений"></MenuItem>
-                <MenuItem Header="Метод равномерного распределения проводников"></MenuItem>
-                <MenuItem Header="Двухлучевой метод"></MenuItem>
-                <MenuItem Header="Четырёхлучевой метод"></MenuItem>
-                <MenuItem Header="Метод оптимизации длины и числа пересечений"></MenuItem>
-                <MenuItem Header="Метод Хейса"></MenuItem>
-            </MenuItem>
-            <MenuItem Header="Расслоение">
-                <MenuItem Header="Последовательное"></MenuItem>
+                <MenuItem Name="MenuItem_Exit" Header="Выход" Click="MenuItem_Exit_Click"></MenuItem>
             </MenuItem>
             <MenuItem Header="О приложении"></MenuItem>
             
         </Menu>
+        <TextBlock Name="TextBlock_NameOpenedFile"
+                   Grid.Row="1"
+                   Margin="5">Создайте или откройте файл...</TextBlock>
+        
+        <TabControl Name="TabControl_Main"
+                    Grid.Row="2">
+            <!--Вкладка кода схемы-->
+            <TabItem Header="Схема">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBox Name="TextBox_Code"
+                             Grid.Row="0"
+                             AcceptsReturn="True" 
+                             VerticalScrollBarVisibility="Auto"
+                             HorizontalScrollBarVisibility="Auto"
+                             Margin="5"></TextBox>
+                    <StackPanel Grid.Row="1"
+                                Orientation="Horizontal">
+                        <Button Name="Button_CheckScheme"
+                                Grid.Row="1"
+                                Margin="5"
+                                Click="Button_CheckScheme_Click">Скомпилировать</Button>
+                    </StackPanel>
+                    
+                </Grid>
+            </TabItem>
+
+            <!--Вкладка матриц-->
+            <TabItem Header="Матрицы R и Q">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto">
+                    <Grid>
+
+                    </Grid>
+                </ScrollViewer>
+                
+            </TabItem>
+
+            <!--Вкладка компоновки-->
+            <TabItem Header="Компоновка">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox SelectedIndex="0">
+                            <ComboBoxItem Content="Последовательная по гиперграфу"></ComboBoxItem>
+                            <ComboBoxItem Content="Последовательная по мультиграфу"></ComboBoxItem>
+                            <ComboBoxItem Content="Итерационная по гиперграфу"></ComboBoxItem>
+                            <ComboBoxItem Content="Итерационная по мультиграфу"></ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+                    
+                </Grid>
+            </TabItem>
+
+            <!--Вкладка рамзещения-->
+            <TabItem Header="Размещение">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox SelectedIndex="0">
+                            <ComboBoxItem Content="Последовательное по максимуму с размещённым"></ComboBoxItem>
+                            <ComboBoxItem Content="Последовательное по максимуму с размещёнными"></ComboBoxItem>
+                            <ComboBoxItem Content="Последовательное по максимуму с размещёнными и минимуму с неразмещёнными"></ComboBoxItem>
+                            <ComboBoxItem Content="Итерационное общее"></ComboBoxItem>
+                            <ComboBoxItem Content="Итерационное по парам"></ComboBoxItem>
+                            <ComboBoxItem Content="Итерационное методом Шафера"></ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+                    
+                    
+                </Grid>
+            </TabItem>
+
+            <!--Вкладка трассировки-->
+            <TabItem Header="Трассировка">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox SelectedIndex="0">
+                            <ComboBoxItem Content="Метод Ли"></ComboBoxItem>
+                            <ComboBoxItem Content="Метод Акерса"></ComboBoxItem>
+                            <ComboBoxItem Content="Метод Ли по модулю 3"></ComboBoxItem>
+                            <ComboBoxItem Content="Метод встречной волны"></ComboBoxItem>
+                            <ComboBoxItem Content="Метод соединения комплекса"></ComboBoxItem>
+                            <ComboBoxItem Content="Метод путевых координат"></ComboBoxItem>
+                            <ComboBoxItem Content="Метод путевых с минимальным числом пересечений"></ComboBoxItem>
+                            <ComboBoxItem Content="Метод равномерного распределения проводников"></ComboBoxItem>
+                            <ComboBoxItem Content="Двухлучевой метод"></ComboBoxItem>
+                            <ComboBoxItem Content="Четырёхлучевой метод"></ComboBoxItem>
+                            <ComboBoxItem Content="Метод оптимизации длины и числа пересечений"></ComboBoxItem>
+                            <ComboBoxItem Content="Метод Хейса"></ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+                    
+                </Grid>
+            </TabItem>
+
+            <!--Вкладка расслоения-->
+            <TabItem Header="Расслоение">
+                <Grid>
+
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

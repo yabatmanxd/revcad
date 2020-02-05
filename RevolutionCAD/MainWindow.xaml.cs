@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Microsoft.Win32;
 
 namespace RevolutionCAD
 {
@@ -23,6 +13,59 @@ namespace RevolutionCAD
         public MainWindow()
         {
             InitializeComponent();
+            TabControl_Main.IsEnabled = false;
+        }
+
+        private void MenuItem_Exit_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void MenuItem_Create_Click(object sender, RoutedEventArgs e)
+        {
+            var wnd = new TextInputWindow("Введите название файла:");
+            wnd.Owner = this;
+            if (wnd.ShowDialog() == true)
+            {
+                ApplicationData.FileName = wnd.Text;
+                TextBlock_NameOpenedFile.Text = wnd.Text;
+                TabControl_Main.IsEnabled = true;
+                TextBox_Code.Text = "// пишите код здесь";
+                TextBox_Code.SelectionStart = TextBox_Code.Text.Length;
+            }
+            
+        }
+
+        private void MenuItem_Open_Click(object sender, RoutedEventArgs e)
+        {
+            var wnd = new OpenFileDialog();
+            wnd.InitialDirectory = Environment.CurrentDirectory;
+            wnd.Multiselect = false;
+            wnd.Filter = "Revolution CAD files (*.sch)|*.sch";
+
+            if (wnd.ShowDialog() == true)
+            {
+                string fullPath = wnd.FileName;
+                string fileName = Path.GetFileNameWithoutExtension(fullPath);
+
+                ApplicationData.FileName = fileName;
+                TextBlock_NameOpenedFile.Text = fileName;
+                TabControl_Main.IsEnabled = true;
+                TextBox_Code.Text = File.ReadAllText(fullPath);
+                TextBox_Code.SelectionStart = TextBox_Code.Text.Length;
+            }
+        }
+
+        private void Button_CheckScheme_Click(object sender, RoutedEventArgs e)
+        {
+            // Димид пиши тут
+            bool allRight = false;
+            if (allRight)
+            {
+                TabControl_Main.SelectedIndex = 1;
+                // заполнение матриц в вкладке
+            }
+            
         }
     }
 }
