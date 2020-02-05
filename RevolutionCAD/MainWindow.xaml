@@ -7,6 +7,53 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0" Grid.Column="0">
+            <MenuItem Header="Файл">
+                <MenuItem Header="Создать"></MenuItem>
+                <MenuItem Header="Открыть"></MenuItem>
+                <Separator/>
+                <MenuItem Header="Выход"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Формирование матриц">
+                <MenuItem Header="Матрица Q"></MenuItem>
+                <MenuItem Header="Матрица R"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Компоновка">
+                <MenuItem Header="Последовательная">
+                    <MenuItem Header="По гиперграфу"></MenuItem>
+                    <MenuItem Header="По мультиграфу"></MenuItem>
+                </MenuItem>
+                <MenuItem Header="Итерационная">
+                    <MenuItem Header="По гиперграфу"></MenuItem>
+                    <MenuItem Header="По мультиграфу"></MenuItem>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Размещение">
+                <MenuItem Header="Последовательное"></MenuItem>
+                <MenuItem Header="Итерационное"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Трассировка">
+                <MenuItem Header="Метод Ли"></MenuItem>
+                <MenuItem Header="Метод Акерса"></MenuItem>
+                <MenuItem Header="Метод Ли по модулю 3"></MenuItem>
+                <MenuItem Header="Метод встречной волны"></MenuItem>
+                <MenuItem Header="Метод соединения комплекса"></MenuItem>
+                <MenuItem Header="Метод путевых координат"></MenuItem>
+                <MenuItem Header="Метод путевых с минимальным числом пересечений"></MenuItem>
+                <MenuItem Header="Метод равномерного распределения проводников"></MenuItem>
+                <MenuItem Header="Двухлучевой метод"></MenuItem>
+                <MenuItem Header="Четырёхлучевой метод"></MenuItem>
+                <MenuItem Header="Метод оптимизации длины и числа пересечений"></MenuItem>
+                <MenuItem Header="Метод Хейса"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Расслоение">
+                <MenuItem Header="Последовательное"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="О приложении"></MenuItem>
+            
+        </Menu>
     </Grid>
 </Window>
