@@ -9,5 +9,6 @@ namespace RevolutionCAD
     public static class ApplicationData
     {
         public static string FileName { get; set; }
+        public static string test;
     }
 }
