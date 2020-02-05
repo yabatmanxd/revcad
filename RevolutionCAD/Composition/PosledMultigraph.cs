@@ -16,6 +16,8 @@ namespace RevolutionCAD.Composition
             // создаём список элементов в узлах
             var boards = new List<List<int>>();
 
+            // написали бяку
+
             int i = 0; // будет служить итератором по платам
             boards.Add(new List<int>()); // начинаем алгоритм с создания и добавления нового списка элементов узла
 
