@@ -55,6 +55,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Matrix.cs" />
+    <Compile Include="Tracing\Cell.cs" />
+    <Compile Include="Tracing\StepTracingLog.cs" />
     <Page Include="TextInputWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -116,7 +119,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Layering\" />
-    <Folder Include="Tracing\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

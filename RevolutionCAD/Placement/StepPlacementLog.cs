@@ -12,7 +12,7 @@ namespace RevolutionCAD.Placement
         /// Список матриц состояний размещения на каждом шаге. В матрице хранится информация о размещённом элементе, где 
         /// "-1" - ячейка закрыта (типо не рассматривается), "0" - ячейка открыта, но не занята
         /// </summary>
-        public List<List<List<int>>> BoardsList { get; set; }
+        public List<Matrix<int>> BoardsList { get; set; }
         /// <summary>
         /// Сообщение которое будет выведено в консоль при выполнении шага.
         /// </summary>

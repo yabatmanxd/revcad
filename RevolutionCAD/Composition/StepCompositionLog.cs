@@ -12,7 +12,7 @@ namespace RevolutionCAD.Composition
         /// Список плат в который на каждом шаге будут заносится список откомпонованных элементов.
         /// Грубо говоря это слепок состояния всех плат в определённый момент.
         /// </summary>
-        public List<List<int>> BoardsList { get; set; }
+        public List<List<int>> BoardsList { get; set; } = new List<List<int>>();
         /// <summary>
         /// Сообщение которое будет выведено в консоль при выполнении шага.
         /// </summary>
