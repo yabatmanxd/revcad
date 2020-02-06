@@ -1,0 +1,24 @@
+﻿<Page x:Class="RevolutionCAD.Pages.CompositionPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:RevolutionCAD.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <ComboBox SelectedIndex="0">
+                <ComboBoxItem Content="Последовательная по гиперграфу"></ComboBoxItem>
+                <ComboBoxItem Content="Последовательная по мультиграфу"></ComboBoxItem>
+                <ComboBoxItem Content="Итерационная по гиперграфу"></ComboBoxItem>
+                <ComboBoxItem Content="Итерационная по мультиграфу"></ComboBoxItem>
+            </ComboBox>
+        </StackPanel>
+
+    </Grid>
+</Page>

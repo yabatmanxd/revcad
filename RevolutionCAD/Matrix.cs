@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace RevolutionCAD
 {
+    /// <summary>
+    /// Класс для представления матрицы любого типа (int, string).
+    /// Имеет свойства размерности Width и Height
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class Matrix<T>
     {
         private T[,] _matrix { get; set; }

@@ -55,85 +55,27 @@
 
             <!--Вкладка матриц-->
             <TabItem Header="Матрицы R и Q">
-                <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                              VerticalScrollBarVisibility="Auto">
-                    <Grid>
-
-                    </Grid>
-                </ScrollViewer>
-                
+                <Frame Source="Pages/MatricesPage.xaml"/>
             </TabItem>
 
             <!--Вкладка компоновки-->
             <TabItem Header="Компоновка">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <StackPanel Orientation="Horizontal">
-                        <ComboBox SelectedIndex="0">
-                            <ComboBoxItem Content="Последовательная по гиперграфу"></ComboBoxItem>
-                            <ComboBoxItem Content="Последовательная по мультиграфу"></ComboBoxItem>
-                            <ComboBoxItem Content="Итерационная по гиперграфу"></ComboBoxItem>
-                            <ComboBoxItem Content="Итерационная по мультиграфу"></ComboBoxItem>
-                        </ComboBox>
-                    </StackPanel>
-                    
-                </Grid>
+                <Frame Source="Pages/CompositionPage.xaml"/>
             </TabItem>
 
             <!--Вкладка рамзещения-->
             <TabItem Header="Размещение">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <StackPanel Orientation="Horizontal">
-                        <ComboBox SelectedIndex="0">
-                            <ComboBoxItem Content="Последовательное по максимуму с размещённым"></ComboBoxItem>
-                            <ComboBoxItem Content="Последовательное по максимуму с размещёнными"></ComboBoxItem>
-                            <ComboBoxItem Content="Последовательное по максимуму с размещёнными и минимуму с неразмещёнными"></ComboBoxItem>
-                            <ComboBoxItem Content="Итерационное общее"></ComboBoxItem>
-                            <ComboBoxItem Content="Итерационное по парам"></ComboBoxItem>
-                            <ComboBoxItem Content="Итерационное методом Шафера"></ComboBoxItem>
-                        </ComboBox>
-                    </StackPanel>
-                    
-                    
-                </Grid>
+                <Frame Source="Pages/PlacementPage.xaml"/>
             </TabItem>
 
             <!--Вкладка трассировки-->
             <TabItem Header="Трассировка">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <StackPanel Orientation="Horizontal">
-                        <ComboBox SelectedIndex="0">
-                            <ComboBoxItem Content="Метод Ли"></ComboBoxItem>
-                            <ComboBoxItem Content="Метод Акерса"></ComboBoxItem>
-                            <ComboBoxItem Content="Метод Ли по модулю 3"></ComboBoxItem>
-                            <ComboBoxItem Content="Метод встречной волны"></ComboBoxItem>
-                            <ComboBoxItem Content="Метод соединения комплекса"></ComboBoxItem>
-                            <ComboBoxItem Content="Метод путевых координат"></ComboBoxItem>
-                            <ComboBoxItem Content="Метод путевых с минимальным числом пересечений"></ComboBoxItem>
-                            <ComboBoxItem Content="Метод равномерного распределения проводников"></ComboBoxItem>
-                            <ComboBoxItem Content="Двухлучевой метод"></ComboBoxItem>
-                            <ComboBoxItem Content="Четырёхлучевой метод"></ComboBoxItem>
-                            <ComboBoxItem Content="Метод оптимизации длины и числа пересечений"></ComboBoxItem>
-                            <ComboBoxItem Content="Метод Хейса"></ComboBoxItem>
-                        </ComboBox>
-                    </StackPanel>
-                    
-                </Grid>
+                <Frame Source="Pages/TracingPage.xaml"/>
             </TabItem>
 
             <!--Вкладка расслоения-->
             <TabItem Header="Расслоение">
-                <Grid>
-
-                </Grid>
+                <Frame Source="Pages/LayeringPage.xaml"/>
             </TabItem>
         </TabControl>
     </Grid>

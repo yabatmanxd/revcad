@@ -1,0 +1,32 @@
+﻿<Page x:Class="RevolutionCAD.Pages.TracingPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:RevolutionCAD.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <ComboBox SelectedIndex="0">
+                <ComboBoxItem Content="Метод Ли"></ComboBoxItem>
+                <ComboBoxItem Content="Метод Акерса"></ComboBoxItem>
+                <ComboBoxItem Content="Метод Ли по модулю 3"></ComboBoxItem>
+                <ComboBoxItem Content="Метод встречной волны"></ComboBoxItem>
+                <ComboBoxItem Content="Метод соединения комплекса"></ComboBoxItem>
+                <ComboBoxItem Content="Метод путевых координат"></ComboBoxItem>
+                <ComboBoxItem Content="Метод путевых с минимальным числом пересечений"></ComboBoxItem>
+                <ComboBoxItem Content="Метод равномерного распределения проводников"></ComboBoxItem>
+                <ComboBoxItem Content="Двухлучевой метод"></ComboBoxItem>
+                <ComboBoxItem Content="Четырёхлучевой метод"></ComboBoxItem>
+                <ComboBoxItem Content="Метод оптимизации длины и числа пересечений"></ComboBoxItem>
+                <ComboBoxItem Content="Метод Хейса"></ComboBoxItem>
+            </ComboBox>
+        </StackPanel>
+
+    </Grid>
+</Page>
