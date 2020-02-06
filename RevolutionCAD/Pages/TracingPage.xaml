@@ -11,7 +11,9 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal"
+                    Margin="10">
+            <TextBlock VerticalAlignment="Center">Метод:</TextBlock>
             <ComboBox SelectedIndex="0">
                 <ComboBoxItem Content="Метод Ли"></ComboBoxItem>
                 <ComboBoxItem Content="Метод Акерса"></ComboBoxItem>

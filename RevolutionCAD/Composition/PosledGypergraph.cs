@@ -9,7 +9,7 @@ namespace RevolutionCAD.Composition
     class PosledGypergraph
     {
         // метод должен возвратить целый лог действий
-        public List<StepCompositionLog> Compose()
+        public static List<StepCompositionLog> Compose()
         {
             // пример логирования действий
             var log = new List<StepCompositionLog>();

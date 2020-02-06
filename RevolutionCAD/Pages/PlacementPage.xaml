@@ -11,7 +11,9 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal"
+                    Margin="10">
+            <TextBlock VerticalAlignment="Center">Метод:</TextBlock>
             <ComboBox SelectedIndex="0">
                 <ComboBoxItem Content="Последовательное по максимуму с размещённым"></ComboBoxItem>
                 <ComboBoxItem Content="Последовательное по максимуму с размещёнными"></ComboBoxItem>

@@ -10,15 +10,20 @@
     <ScrollViewer HorizontalScrollBarVisibility="Auto"
                   VerticalScrollBarVisibility="Auto">
         <StackPanel Orientation="Vertical" Margin="10">
+
+            <StackPanel Orientation="Horizontal"
+                        Margin="5">
+                <Button Name="Button_LoadMatrices" Click="Button_LoadMatrices_Click">Загрузить</Button>
+            </StackPanel>
             
             <TextBlock Text="Матрица R"
                        Margin="5"/>
             
-            <StackPanel Name="StackPanel_MatrixR" Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal">
                 <DataGrid Name="Matrix_R"
                           AutoGenerateColumns="True"
                           ItemsSource="{Binding}"
-                          HeadersVisibility="All"
+                          HeadersVisibility="Column"
                           CanUserAddRows="False"
                           CanUserDeleteRows="False"
                           IsReadOnly="True">
@@ -33,7 +38,7 @@
                 <DataGrid Name="Matrix_Q"
                           AutoGenerateColumns="True"
                           ItemsSource="{Binding}"
-                          HeadersVisibility="None" 
+                          HeadersVisibility="Column" 
                           RowHeaderWidth="0"
                           CanUserAddRows="False"
                           CanUserDeleteRows="False"

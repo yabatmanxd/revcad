@@ -10,14 +10,35 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
-            <ComboBox SelectedIndex="0">
+        <StackPanel Orientation="Horizontal"
+                    Margin="10">
+            <TextBlock VerticalAlignment="Center">Компоновка:</TextBlock>
+            <ComboBox Name="ComboBox_Method" SelectedIndex="0">
                 <ComboBoxItem Content="Последовательная по гиперграфу"></ComboBoxItem>
                 <ComboBoxItem Content="Последовательная по мультиграфу"></ComboBoxItem>
                 <ComboBoxItem Content="Итерационная по гиперграфу"></ComboBoxItem>
                 <ComboBoxItem Content="Итерационная по мультиграфу"></ComboBoxItem>
             </ComboBox>
+        </StackPanel>
+
+        <TextBox Name="TextBox_Log"
+                 Grid.Row="2"
+                 AcceptsReturn="True" 
+                 VerticalScrollBarVisibility="Auto"
+                 HorizontalScrollBarVisibility="Auto"
+                 Margin="5"
+                 IsReadOnly="True"></TextBox>
+
+        <StackPanel Grid.Row="3"
+                    Margin="10"
+                    Orientation="Horizontal">
+            <Button Name="Button_FullComposition" Margin="5" Click="Button_FullComposition_Click">Скомпоновать</Button>
+            <Button Name="Button_StartStepComposition" Margin="5" Click="Button_StartStepComposition_Click">Начать пошаговую компоновку</Button>
+            <Button Name="Button_NextStep" Margin="5" Click="Button_NextStep_Click">Следующий шаг</Button>
         </StackPanel>
 
     </Grid>

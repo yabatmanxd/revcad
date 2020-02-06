@@ -21,7 +21,7 @@ namespace RevolutionCAD
         public Matrix(int width, int height) {
             Width = width;
             Height = height;
-            _matrix = new T[width,height];
+            _matrix = new T[height,width];
         }
 
         public T this[int x, int y]
