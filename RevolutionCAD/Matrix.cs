@@ -7,32 +7,31 @@ using System.Threading.Tasks;
 namespace RevolutionCAD
 {
     /// <summary>
-    /// Класс для представления матрицы любого типа (int, string).
-    /// Имеет свойства размерности Width и Height
+    /// Класс для представления матрицы любого типа (int, string и т.д.).
+    /// Имеет свойства размерности ColsCount и RowsCount
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     public class Matrix<T>
     {
         private T[,] _matrix { get; set; }
 
-        public int Width { private set; get; }
-        public int Height { private set; get; }
+        public int ColsCount { private set; get; }
+        public int RowsCount { private set; get; }
         
-        public Matrix(int width, int height) {
-            Width = width;
-            Height = height;
-            _matrix = new T[height,width];
+        public Matrix(int rowsCount, int colsCount) {
+            ColsCount = colsCount;
+            RowsCount = rowsCount;
+            _matrix = new T[rowsCount, colsCount];
         }
 
-        public T this[int x, int y]
+        public T this[int row, int col]
         {
             get
             {
-                return _matrix[x, y];
+                return _matrix[row, col];
             }
             set
             {
-                _matrix[x, y] = value;
+                _matrix[row, col] = value;
             }
         }
     }

@@ -25,6 +25,12 @@
             </ComboBox>
         </StackPanel>
 
+        <StackPanel Name="StackPanel_Boards"
+                    Grid.Row="1"
+                    Orientation="Horizontal">
+
+        </StackPanel>
+
         <TextBox Name="TextBox_Log"
                  Grid.Row="2"
                  AcceptsReturn="True" 
@@ -33,13 +39,28 @@
                  Margin="5"
                  IsReadOnly="True"></TextBox>
 
+        
+        
         <StackPanel Grid.Row="3"
                     Margin="10"
                     Orientation="Horizontal">
-            <Button Name="Button_FullComposition" Margin="5" Click="Button_FullComposition_Click">Скомпоновать</Button>
-            <Button Name="Button_StartStepComposition" Margin="5" Click="Button_StartStepComposition_Click">Начать пошаговую компоновку</Button>
-            <Button Name="Button_NextStep" Margin="5" Click="Button_NextStep_Click">Следующий шаг</Button>
+            <Button Name="Button_FullComposition" 
+                    Margin="5" 
+                    Click="Button_FullComposition_Click">Скомпоновать</Button>
+            <Button Name="Button_StartStepComposition" 
+                    Margin="5" 
+                    Click="Button_StartStepComposition_Click">Начать пошаговую компоновку</Button>
+            <Button Name="Button_NextStep" 
+                    Margin="5" 
+                    Click="Button_NextStep_Click" 
+                    IsEnabled="False">Следующий шаг</Button>
+            <Button Name="Button_DropStepMode" 
+                    Margin="5" 
+                    Click="Button_DropStepMode_Click" 
+                    IsEnabled="False">Прервать компоновку</Button>
         </StackPanel>
+        
+        
 
     </Grid>
 </Page>

@@ -40,19 +40,19 @@ namespace RevolutionCAD.Pages
                 }
             }
 
-            var Q = new Matrix<int>(20, 5);
+            var Q = new Matrix<int>(5, 20);
             for (int i = 0; i < 5; i++)
             {
                 for (int j = 0; j < 20; j++)
                 {
-                    Q[i, j] = (i + j)%2;
+                    Q[i, j] = (i + j);
                 }
             }
 
             // запись матрицы R
             var dt1 = new DataTable();
             
-            for (var i = 0; i < R.Width; i++)
+            for (var i = 0; i < R.ColsCount; i++)
             {
                 if (i == 0)
                     dt1.Columns.Add(new DataColumn("X"));
@@ -60,12 +60,12 @@ namespace RevolutionCAD.Pages
                     dt1.Columns.Add(new DataColumn("D" + i, typeof(string)));
             }
                 
-            for (var i = 0; i < R.Height; i++)
+            for (var i = 0; i < R.RowsCount; i++)
             {
                 var r = dt1.NewRow();
                 
 
-                for (var j = 0; j < R.Width; j++)
+                for (var j = 0; j < R.ColsCount; j++)
                     r[j] = R[i,j];
                 dt1.Rows.Add(r);
             }
@@ -74,17 +74,17 @@ namespace RevolutionCAD.Pages
             // запись матрицы Q
             var dt2 = new DataTable();
 
-            for (var i = 0; i < Q.Width; i++)
+            for (var i = 0; i < Q.ColsCount; i++)
             {
                 dt2.Columns.Add(new DataColumn($"V{i+1}", typeof(string)));
             }
 
-            for (var i = 0; i < Q.Height; i++)
+            for (var i = 0; i < Q.RowsCount; i++)
             {
                 var r = dt2.NewRow();
 
 
-                for (var j = 0; j < Q.Width; j++)
+                for (var j = 0; j < Q.ColsCount; j++)
                     r[j] = Q[i, j];
                 dt2.Rows.Add(r);
             }

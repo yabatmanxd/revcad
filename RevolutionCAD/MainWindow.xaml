@@ -16,10 +16,11 @@
             <MenuItem Header="Файл">
                 <MenuItem Name="MenuItem_Create" Header="Создать" Click="MenuItem_Create_Click"></MenuItem>
                 <MenuItem Name="MenuItem_Open" Header="Открыть" Click="MenuItem_Open_Click"></MenuItem>
+                <MenuItem Name="MenuItem_Save" Header="Сохранить" Click="MenuItem_Save_Click"></MenuItem>
                 <Separator/>
                 <MenuItem Name="MenuItem_Exit" Header="Выход" Click="MenuItem_Exit_Click"></MenuItem>
             </MenuItem>
-            <MenuItem Header="О приложении"></MenuItem>
+            <MenuItem Header="Справка"></MenuItem>
             
         </Menu>
         <TextBlock Name="TextBlock_NameOpenedFile"
