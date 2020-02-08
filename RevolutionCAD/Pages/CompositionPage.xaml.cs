@@ -1,6 +1,7 @@
 ﻿using RevolutionCAD.Composition;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,19 +26,48 @@ namespace RevolutionCAD.Pages
 
         private List<StepCompositionLog> DoComposition()
         {
-            switch(ComboBox_Method.SelectedIndex)
+            if (ComboBox_Method.SelectedIndex == 0 || ComboBox_Method.SelectedIndex == 1)
             {
-                case 0:
-                    return PosledGypergraph.Compose();
-                case 1:
-                    return PosledMultigraph.Compose();
-                case 2:
-                    return IterGypergraph.Compose();
-                case 3:
-                    return IterMultigraph.Compose();
-                default:
-                    return null;
+                string fileMatrQName = ApplicationData.FileName + ".q";
+                if (File.Exists(Environment.CurrentDirectory + fileMatrQName))
+                {
+                    switch (ComboBox_Method.SelectedIndex)
+                    {
+                        case 0:
+                            return PosledGypergraph.Compose();
+                        case 1:
+                            return PosledMultigraph.Compose();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show($"Файл {fileMatrQName} не существует", "Revolution CAD");
+                }
+            } else
+            {
+                if (File.Exists(Environment.CurrentDirectory + ApplicationData.FileName + ".cmp"))
+                {
+                    if (File.Exists(Environment.CurrentDirectory + ApplicationData.FileName + ".r"))
+                    {
+                        switch (ComboBox_Method.SelectedIndex)
+                        {
+                            case 2:
+                                return IterGypergraph.Compose();
+                            case 3:
+                                return IterMultigraph.Compose();
+                        }
+                    } else
+                    {
+                        MessageBox.Show($"Файл {ApplicationData.FileName + ".r"} не существует", "Revolution CAD");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show($"Файл {ApplicationData.FileName + ".cmp"} не существует", "Revolution CAD");
+                }
             }
+            return new List<StepCompositionLog>();
+
         }
 
         private void Button_FullComposition_Click(object sender, RoutedEventArgs e)
@@ -45,8 +75,14 @@ namespace RevolutionCAD.Pages
             TextBox_Log.Text = "";
             StackPanel_Boards.Children.Clear();
             StepsLog = DoComposition();
+            if (StepsLog.Count == 0)
+            {
+                MessageBox.Show("Метод компоновки не сработал", "Revolution CAD");
+                return;
+            }
             for (int step = 0; step < StepsLog.Count; step++)
             {
+                TextBox_Log.Text += $"Шаг №{step + 1}:" + "\n";
                 TextBox_Log.Text += StepsLog[step].Message + "\n";
             }
             ShowStep(StepsLog.Count - 1); // отображаем только последний шаг графически, т.к. он будет результатом компоновки
@@ -66,25 +102,27 @@ namespace RevolutionCAD.Pages
 
             CurrentStep = 0;
 
-            ShowStep(CurrentStep);
-            TextBox_Log.Text += StepsLog[CurrentStep].Message + "\n";
+            Button_NextStep_Click(null, null);
         }
 
         private void Button_NextStep_Click(object sender, RoutedEventArgs e)
         {
+            TextBox_Log.Text += $"Шаг №{CurrentStep + 1}:" + "\n";
+            TextBox_Log.Text += StepsLog[CurrentStep].Message + "\n";
+            ShowStep(CurrentStep);
             if (CurrentStep+1 >= StepsLog.Count)
             {
                 DropStepMode();
             } else
             {
                 CurrentStep++;
-                ShowStep(CurrentStep);
-                TextBox_Log.Text += StepsLog[CurrentStep].Message + "\n";
             }
         }
 
         private void ShowStep(int StepNumber)
         {
+            TextBox_Log.ScrollToEnd();
+
             StackPanel_Boards.Children.Clear();
             var OneStep = StepsLog[StepNumber];
             for (int i = 0; i < OneStep.BoardsList.Count; i++)
