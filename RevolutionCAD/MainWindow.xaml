@@ -45,10 +45,10 @@
                              Margin="5"></TextBox>
                     <StackPanel Grid.Row="1"
                                 Orientation="Horizontal">
-                        <Button Name="Button_CheckScheme"
+                        <Button Name="Button_CreateMatrices"
                                 Grid.Row="1"
                                 Margin="5"
-                                Click="Button_CheckScheme_Click">Скомпилировать</Button>
+                                Click="Button_CreateMatrices_Click">Сформировать матрицы R и Q</Button>
                     </StackPanel>
                     
                 </Grid>

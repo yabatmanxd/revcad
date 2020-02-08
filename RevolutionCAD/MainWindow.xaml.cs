@@ -56,21 +56,30 @@ namespace RevolutionCAD
             }
         }
 
-        private void Button_CheckScheme_Click(object sender, RoutedEventArgs e)
+        private void MenuItem_Save_Click(object sender, RoutedEventArgs e)
         {
-            // Димид пиши тут
-            bool allRight = false;
-            if (allRight)
+            if (ApplicationData.FileName != "")
             {
-                TabControl_Main.SelectedIndex = 1;
-                // заполнение матриц в вкладке
+                string writePath = $"{Environment.CurrentDirectory}\\{ApplicationData.FileName}.sch";
+                try
+                {
+                    using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding.Unicode))
+                    {
+                        sw.WriteLine(TextBox_Code.Text);
+                    }
+                }
+                catch (Exception exc)
+                {
+                    MessageBox.Show($"При записи в файл произошла ошибка: {exc.Message}", "Revolution CAD");
+                }
             }
             
         }
 
-        private void MenuItem_Save_Click(object sender, RoutedEventArgs e)
+        private void Button_CreateMatrices_Click(object sender, RoutedEventArgs e)
         {
-
+            // Дмитрий Николаев, в этом месте мог бы быть ваш парсер
+            // формирование матриц здесь же
         }
     }
 }

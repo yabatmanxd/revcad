@@ -26,46 +26,28 @@ namespace RevolutionCAD.Pages
 
         private List<StepCompositionLog> DoComposition()
         {
-            if (ComboBox_Method.SelectedIndex == 0 || ComboBox_Method.SelectedIndex == 1)
+            string msg = "";
+            switch (ComboBox_Method.SelectedIndex)
             {
-                string fileMatrQName = ApplicationData.FileName + ".q";
-                if (File.Exists(Environment.CurrentDirectory + fileMatrQName))
-                {
-                    switch (ComboBox_Method.SelectedIndex)
-                    {
-                        case 0:
-                            return PosledGypergraph.Compose();
-                        case 1:
-                            return PosledMultigraph.Compose();
-                    }
-                }
-                else
-                {
-                    MessageBox.Show($"Файл {fileMatrQName} не существует", "Revolution CAD");
-                }
-            } else
-            {
-                if (File.Exists(Environment.CurrentDirectory + ApplicationData.FileName + ".cmp"))
-                {
-                    if (File.Exists(Environment.CurrentDirectory + ApplicationData.FileName + ".r"))
-                    {
-                        switch (ComboBox_Method.SelectedIndex)
-                        {
-                            case 2:
-                                return IterGypergraph.Compose();
-                            case 3:
-                                return IterMultigraph.Compose();
-                        }
-                    } else
-                    {
-                        MessageBox.Show($"Файл {ApplicationData.FileName + ".r"} не существует", "Revolution CAD");
-                    }
-                }
-                else
-                {
-                    MessageBox.Show($"Файл {ApplicationData.FileName + ".cmp"} не существует", "Revolution CAD");
-                }
+                case 0:
+                    if (ApplicationData.IsFileExists(".q", out msg))
+                        return PosledGypergraph.Compose();
+                    break;
+                case 1:
+                    if (ApplicationData.IsFileExists(".q", out msg))
+                        return PosledMultigraph.Compose();
+                    break;
+                case 2:
+                    if (ApplicationData.IsFileExists(".cmp", out msg) && ApplicationData.IsFileExists(".r", out msg))
+                        return IterGypergraph.Compose();
+                    break;
+                case 3:
+                    if (ApplicationData.IsFileExists(".cmp", out msg) && ApplicationData.IsFileExists(".r", out msg))
+                        return IterMultigraph.Compose();
+                    break;
+                
             }
+            MessageBox.Show(msg, "Revolution CAD");
             return new List<StepCompositionLog>();
 
         }
@@ -95,6 +77,11 @@ namespace RevolutionCAD.Pages
 
             StepsLog = DoComposition();
 
+            if (StepsLog.Count == 0)
+            {
+                MessageBox.Show("Метод компоновки не сработал", "Revolution CAD");
+                return;
+            }
             Button_FullComposition.IsEnabled = false;
             Button_StartStepComposition.IsEnabled = false;
             Button_NextStep.IsEnabled = true;
