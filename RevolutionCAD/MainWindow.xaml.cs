@@ -151,7 +151,6 @@ namespace RevolutionCAD
                 serializer.Serialize(file, Q);
             }
             MessageBox.Show("Матрицы R и Q были удачно созданы!");
-
         }
     }
 }
