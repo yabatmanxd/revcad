@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace RevolutionCAD
     /// </summary>
     public class Matrix<T>
     {
+        [JsonProperty]
         private T[,] _matrix { get; set; }
 
         public int ColsCount { private set; get; }

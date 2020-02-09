@@ -3,8 +3,8 @@ using System.IO;
 using System.Windows;
 using Microsoft.Win32;
 using System.Collections.Generic;
-//using System.Text.Json;
 using Newtonsoft.Json;
+using System.Windows.Navigation;
 
 namespace RevolutionCAD
 {
@@ -130,6 +130,7 @@ namespace RevolutionCAD
                 catch (Exception)
                 {
                     MessageBox.Show("Ошибка формирования матриц! Проверьте исходный файл!");
+                    return;
                 }
                 R[i, j]++; R[j, i]++;
 
@@ -150,7 +151,8 @@ namespace RevolutionCAD
                 JsonSerializer serializer = new JsonSerializer();
                 serializer.Serialize(file, Q);
             }
-            MessageBox.Show("Матрицы R и Q были удачно созданы!");
+            MessageBox.Show("Матрицы R и Q были удачно сформированы!", "Revolution CAD");
+            
         }
     }
 }

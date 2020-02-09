@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,48 +25,55 @@ namespace RevolutionCAD.Pages
     {
         public MatricesPage()
         {
-            InitializeComponent();
-            
+            InitializeComponent();           
         }
 
+        /// <summary>
+        /// Считывание матриц R и Q из JSON и их отображение
+        /// </summary>
         public void UpdateMatrices()
         {
-            // тут должно быть считывание матриц Q и R из файла
-
-            var R = new Matrix<int>(5, 5);
-            for (int i = 0; i<5; i++)
+            // считывание матриц Q и R из файлов JSON
+            Matrix<int> R = new Matrix<int>(1, 1);
+            Matrix<int> Q = new Matrix<int>(1, 1);
+            if (File.Exists("R.json") && File.Exists("Q.json"))
             {
-                for (int j = 0; j<5; j++)
+                try
                 {
-                    R[i, j] = i + j;
+                    using (StreamReader file = File.OpenText("R.json"))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        R = (Matrix<int>)serializer.Deserialize(file, typeof(Matrix<int>));
+                    }
+                    using (StreamReader file = File.OpenText("Q.json"))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        Q = (Matrix<int>)serializer.Deserialize(file, typeof(Matrix<int>));
+                    }
+                }
+                catch (Exception exc)
+                {
+                    MessageBox.Show($"Произошла ошибка при попытке считывания матриц из файлов: {exc.Message}", "Revolution CAD");
                 }
             }
-
-            var Q = new Matrix<int>(5, 20);
-            for (int i = 0; i < 5; i++)
+            else
             {
-                for (int j = 0; j < 20; j++)
-                {
-                    Q[i, j] = (i + j);
-                }
+                MessageBox.Show($"Не созданы файлы матриц R и Q", "Revolution CAD");
             }
 
+            
             // запись матрицы R
             var dt1 = new DataTable();
             
             for (var i = 0; i < R.ColsCount; i++)
             {
-                if (i == 0)
-                    dt1.Columns.Add(new DataColumn("X"));
-                else
-                    dt1.Columns.Add(new DataColumn("D" + i, typeof(string)));
+                dt1.Columns.Add(new DataColumn("D" + i, typeof(string)));
             }
                 
             for (var i = 0; i < R.RowsCount; i++)
             {
                 var r = dt1.NewRow();
                 
-
                 for (var j = 0; j < R.ColsCount; j++)
                     r[j] = R[i,j];
                 dt1.Rows.Add(r);
@@ -82,8 +91,7 @@ namespace RevolutionCAD.Pages
             for (var i = 0; i < Q.RowsCount; i++)
             {
                 var r = dt2.NewRow();
-
-
+                
                 for (var j = 0; j < Q.ColsCount; j++)
                     r[j] = Q[i, j];
                 dt2.Rows.Add(r);
