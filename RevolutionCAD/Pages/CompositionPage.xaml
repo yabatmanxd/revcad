@@ -23,6 +23,10 @@
                 <ComboBoxItem Content="Итерационная по гиперграфу"></ComboBoxItem>
                 <ComboBoxItem Content="Итерационная по мультиграфу"></ComboBoxItem>
             </ComboBox>
+            <TextBlock VerticalAlignment="Center" Margin="0,3.02,0,2.98"><Run Text="Ограничение на элементы:"/></TextBlock>
+            <TextBox Name="tbCountOfElements" TextWrapping="Wrap" Width="45"/>
+            <TextBlock VerticalAlignment="Center" Margin="0,3.04,0,2.96"><Run Text="Ограничение на связи:"/></TextBlock>
+            <TextBox x:Name="tbLimitsOfWires" TextWrapping="Wrap" Width="45"/>
         </StackPanel>
 
         <StackPanel Name="StackPanel_Boards"

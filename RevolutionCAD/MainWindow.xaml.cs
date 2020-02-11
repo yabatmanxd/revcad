@@ -141,12 +141,13 @@ namespace RevolutionCAD
             }
 
             // сериализация данных в JSON
-            using (StreamWriter file = File.CreateText("R.json"))
+            
+            using (StreamWriter file = File.CreateText(ApplicationData.FileName + ".r"))
             {
                 JsonSerializer serializer = new JsonSerializer();
                 serializer.Serialize(file, R);
             }
-            using (StreamWriter file = File.CreateText("Q.json"))
+            using (StreamWriter file = File.CreateText(ApplicationData.FileName + ".q"))
             {
                 JsonSerializer serializer = new JsonSerializer();
                 serializer.Serialize(file, Q);

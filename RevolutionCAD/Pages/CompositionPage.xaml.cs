@@ -26,12 +26,16 @@ namespace RevolutionCAD.Pages
 
         private List<StepCompositionLog> DoComposition()
         {
+            int countOfElements, limitsOfWires; // Николаев
+
             string msg = "";
             switch (ComboBox_Method.SelectedIndex)
             {
                 case 0:
-                    if (ApplicationData.IsFileExists(".q", out msg))
-                        return PosledGypergraph.Compose();
+                    if (File.Exists(ApplicationData.FileName + ".q") 
+                        && int.TryParse(tbCountOfElements.Text, out countOfElements)
+                        && int.TryParse(tbLimitsOfWires.Text, out limitsOfWires)) // Николаев
+                        return PosledGypergraph.Compose(countOfElements, limitsOfWires);
                     break;
                 case 1:
                     if (ApplicationData.IsFileExists(".q", out msg))

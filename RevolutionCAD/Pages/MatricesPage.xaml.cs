@@ -33,19 +33,19 @@ namespace RevolutionCAD.Pages
         /// </summary>
         public void UpdateMatrices()
         {
-            // считывание матриц Q и R из файлов JSON
+            // считывание матриц Q и R из файлов JSON .r и .q
             Matrix<int> R = new Matrix<int>(1, 1);
             Matrix<int> Q = new Matrix<int>(1, 1);
-            if (File.Exists("R.json") && File.Exists("Q.json"))
+            if (File.Exists(ApplicationData.FileName + ".r") && File.Exists(ApplicationData.FileName + ".q"))
             {
                 try
                 {
-                    using (StreamReader file = File.OpenText("R.json"))
+                    using (StreamReader file = File.OpenText(ApplicationData.FileName + ".r"))
                     {
                         JsonSerializer serializer = new JsonSerializer();
                         R = (Matrix<int>)serializer.Deserialize(file, typeof(Matrix<int>));
                     }
-                    using (StreamReader file = File.OpenText("Q.json"))
+                    using (StreamReader file = File.OpenText(ApplicationData.FileName + ".q"))
                     {
                         JsonSerializer serializer = new JsonSerializer();
                         Q = (Matrix<int>)serializer.Deserialize(file, typeof(Matrix<int>));
