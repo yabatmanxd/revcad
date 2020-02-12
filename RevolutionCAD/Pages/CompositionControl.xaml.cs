@@ -1,25 +1,31 @@
 ﻿using RevolutionCAD.Composition;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace RevolutionCAD.Pages
 {
     /// <summary>
-    /// Логика взаимодействия для CompositionPage.xaml
+    /// Логика взаимодействия для CompositionControl.xaml
     /// </summary>
-    public partial class CompositionPage : Page
+    public partial class CompositionControl : UserControl
     {
         List<StepCompositionLog> StepsLog;
 
         public int CurrentStep { get; set; }
 
-        public CompositionPage()
+        public CompositionControl()
         {
             InitializeComponent();
         }
@@ -32,7 +38,7 @@ namespace RevolutionCAD.Pages
             switch (ComboBox_Method.SelectedIndex)
             {
                 case 0:
-                    if (File.Exists(ApplicationData.FileName + ".q") 
+                    if (ApplicationData.IsFileExists(".q", out msg)
                         && int.TryParse(tbCountOfElements.Text, out countOfElements)
                         && int.TryParse(tbLimitsOfWires.Text, out limitsOfWires)) // Николаев
                         return PosledGypergraph.Compose(countOfElements, limitsOfWires);
@@ -49,7 +55,7 @@ namespace RevolutionCAD.Pages
                     if (ApplicationData.IsFileExists(".cmp", out msg) && ApplicationData.IsFileExists(".r", out msg))
                         return IterMultigraph.Compose();
                     break;
-                
+
             }
             MessageBox.Show(msg, "Revolution CAD");
             return new List<StepCompositionLog>();
@@ -101,10 +107,11 @@ namespace RevolutionCAD.Pages
             TextBox_Log.Text += $"Шаг №{CurrentStep + 1}:" + "\n";
             TextBox_Log.Text += StepsLog[CurrentStep].Message + "\n";
             ShowStep(CurrentStep);
-            if (CurrentStep+1 >= StepsLog.Count)
+            if (CurrentStep + 1 >= StepsLog.Count)
             {
                 DropStepMode();
-            } else
+            }
+            else
             {
                 CurrentStep++;
             }
@@ -137,7 +144,7 @@ namespace RevolutionCAD.Pages
                 StackPanel_Boards.Children.Add(sp);
 
             }
-            
+
         }
 
         private void Button_DropStepMode_Click(object sender, RoutedEventArgs e)

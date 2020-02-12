@@ -121,7 +121,7 @@ namespace RevolutionCAD
                
                 List<string> elements = new List<string>();
 
-                // делим строку с элементами на список элементов ("D1.2", "D8.3", "D4.1")
+                // делим строку с элементами на список элементов ("D1.2", "D8.3")
                 elements.AddRange(s.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries));
 
                 // запускаем цикл по этим строкам, чтобы обрезать часть с номером ножки
@@ -140,7 +140,7 @@ namespace RevolutionCAD
                     }
                 }
 
-                // переходим от строк с названиями элементов ("0", "1", "2", "3") к непосредственным номерам int (0, 1, 2, 3)
+                // переходим от строк с названиями элементов ("0", "1") к непосредственным номерам int (0, 1)
                 List<int> elementNumbers = new List<int>();
                 foreach(string element in elements)
                 {
@@ -186,7 +186,9 @@ namespace RevolutionCAD
                 JsonSerializer serializer = new JsonSerializer();
                 serializer.Serialize(file, Q);
             }
-            MessageBox.Show("Матрицы R и Q были удачно сформированы!", "Revolution CAD");
+
+            MatrControl.UpdateMatrices();
+            TabControl_Main.SelectedIndex = 1;
 
         }
     }

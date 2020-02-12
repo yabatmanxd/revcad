@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace RevolutionCAD.Pages
 {
     /// <summary>
-    /// Логика взаимодействия для TracingPage.xaml
+    /// Логика взаимодействия для TracingControl.xaml
     /// </summary>
-    public partial class TracingPage : Page
+    public partial class TracingControl : UserControl
     {
-        public TracingPage()
+        public TracingControl()
         {
             InitializeComponent();
         }

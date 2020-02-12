@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace RevolutionCAD.Pages
 {
     /// <summary>
-    /// Логика взаимодействия для LayeringPage.xaml
+    /// Логика взаимодействия для PlacementControl.xaml
     /// </summary>
-    public partial class LayeringPage : Page
+    public partial class PlacementControl : UserControl
     {
-        public LayeringPage()
+        public PlacementControl()
         {
             InitializeComponent();
         }

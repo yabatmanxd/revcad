@@ -19,13 +19,13 @@ using System.Windows.Shapes;
 namespace RevolutionCAD.Pages
 {
     /// <summary>
-    /// Логика взаимодействия для MatricesPage.xaml
+    /// Логика взаимодействия для MatricesControl.xaml
     /// </summary>
-    public partial class MatricesPage : Page
+    public partial class MatricesControl : UserControl
     {
-        public MatricesPage()
+        public MatricesControl()
         {
-            InitializeComponent();           
+            InitializeComponent();
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace RevolutionCAD.Pages
             Matrix<int> R = new Matrix<int>(1, 1);
             Matrix<int> Q = new Matrix<int>(1, 1);
             string msg;
-            if (ApplicationData.IsFileExists(".r",out msg) && ApplicationData.IsFileExists(".q", out msg))
+            if (ApplicationData.IsFileExists(".r", out msg) && ApplicationData.IsFileExists(".q", out msg))
             {
                 try
                 {
@@ -62,7 +62,7 @@ namespace RevolutionCAD.Pages
                 MessageBox.Show(msg, "Revolution CAD");
             }
 
-            
+
             // запись матрицы R
             var dt1 = new DataTable();
 
@@ -71,13 +71,13 @@ namespace RevolutionCAD.Pages
             {
                 dt1.Columns.Add(new DataColumn("D" + i, typeof(string)));
             }
-                
+
             for (var i = 0; i < R.RowsCount; i++)
             {
                 var r = dt1.NewRow();
-                
+
                 for (var j = 0; j < R.ColsCount; j++)
-                    r[j] = R[i,j];
+                    r[j] = R[i, j];
                 dt1.Rows.Add(r);
             }
             Matrix_R.ItemsSource = dt1.DefaultView;
@@ -87,13 +87,13 @@ namespace RevolutionCAD.Pages
 
             for (var i = 0; i < Q.ColsCount; i++)
             {
-                dt2.Columns.Add(new DataColumn($"V{i+1}", typeof(string)));
+                dt2.Columns.Add(new DataColumn($"V{i + 1}", typeof(string)));
             }
 
             for (var i = 0; i < Q.RowsCount; i++)
             {
                 var r = dt2.NewRow();
-                
+
                 for (var j = 0; j < Q.ColsCount; j++)
                     r[j] = Q[i, j];
                 dt2.Rows.Add(r);

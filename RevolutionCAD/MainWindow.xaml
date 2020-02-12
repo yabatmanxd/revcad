@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RevolutionCAD"
+        xmlns:pages="clr-namespace:RevolutionCAD.Pages"
         mc:Ignorable="d"
         Title="Revolution CAD" Height="450" Width="800" WindowState="Maximized">
     <Grid>
@@ -56,27 +57,27 @@
 
             <!--Вкладка матриц-->
             <TabItem Header="Матрицы R и Q">
-                <Frame Source="Pages/MatricesPage.xaml"/>
+                <pages:MatricesControl x:Name="MatrControl"/>
             </TabItem>
 
             <!--Вкладка компоновки-->
             <TabItem Header="Компоновка">
-                <Frame Source="Pages/CompositionPage.xaml"/>
+                <pages:CompositionControl x:Name="CompControl"/>
             </TabItem>
 
             <!--Вкладка рамзещения-->
             <TabItem Header="Размещение">
-                <Frame Source="Pages/PlacementPage.xaml"/>
+                <pages:PlacementControl x:Name="PlaceControl"/>
             </TabItem>
 
             <!--Вкладка трассировки-->
-            <TabItem Header="Трассировка">
-                <Frame Source="Pages/TracingPage.xaml"/>
+            <TabItem Header="Трассировка" x:Name="TraceControl">
+                <pages:TracingControl/>
             </TabItem>
 
             <!--Вкладка расслоения-->
             <TabItem Header="Расслоение">
-                <Frame Source="Pages/LayeringPage.xaml"/>
+                <pages:LayeringControl x:Name="LayerControl"/>
             </TabItem>
         </TabControl>
     </Grid>

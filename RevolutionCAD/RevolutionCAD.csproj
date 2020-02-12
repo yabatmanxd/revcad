@@ -87,40 +87,40 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Matrix.cs" />
-    <Compile Include="Pages\CompositionPage.xaml.cs">
-      <DependentUpon>CompositionPage.xaml</DependentUpon>
+    <Compile Include="Pages\CompositionControl.xaml.cs">
+      <DependentUpon>CompositionControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\LayeringPage.xaml.cs">
-      <DependentUpon>LayeringPage.xaml</DependentUpon>
+    <Compile Include="Pages\LayeringControl.xaml.cs">
+      <DependentUpon>LayeringControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\MatricesPage.xaml.cs">
-      <DependentUpon>MatricesPage.xaml</DependentUpon>
+    <Compile Include="Pages\MatricesControl.xaml.cs">
+      <DependentUpon>MatricesControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\PlacementPage.xaml.cs">
-      <DependentUpon>PlacementPage.xaml</DependentUpon>
+    <Compile Include="Pages\PlacementControl.xaml.cs">
+      <DependentUpon>PlacementControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\TracingPage.xaml.cs">
-      <DependentUpon>TracingPage.xaml</DependentUpon>
+    <Compile Include="Pages\TracingControl.xaml.cs">
+      <DependentUpon>TracingControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tracing\Cell.cs" />
     <Compile Include="Tracing\StepTracingLog.cs" />
-    <Page Include="Pages\CompositionPage.xaml">
+    <Page Include="Pages\CompositionControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\LayeringPage.xaml">
+    <Page Include="Pages\LayeringControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\MatricesPage.xaml">
+    <Page Include="Pages\MatricesControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\PlacementPage.xaml">
+    <Page Include="Pages\PlacementControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\TracingPage.xaml">
+    <Page Include="Pages\TracingControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
