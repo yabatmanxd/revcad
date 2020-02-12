@@ -5,6 +5,8 @@ using Microsoft.Win32;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.Windows.Navigation;
+using System.Linq;
+
 
 namespace RevolutionCAD
 {
@@ -33,7 +35,8 @@ namespace RevolutionCAD
                 ApplicationData.FileName = wnd.Text;
                 TextBlock_NameOpenedFile.Text = wnd.Text;
                 TabControl_Main.IsEnabled = true;
-                TextBox_Code.Text = "// пишите код здесь";
+                // при создании файла откроется пример заполнения
+                TextBox_Code.Text = "D1 dip14\r\nD2 dip14\r\nD3 dip14\r\nD4 dip18\r\n#\r\nD1.1-D2.1-D3.2-X.1\r\nD4.1-D2.1\r\nD3.1-D1.1";
                 TextBox_Code.SelectionStart = TextBox_Code.Text.Length;
             }
             
@@ -63,7 +66,7 @@ namespace RevolutionCAD
         {
             if (ApplicationData.FileName != "")
             {
-                string writePath = $"{Environment.CurrentDirectory}\\{ApplicationData.FileName}.sch";
+                string writePath = $"{ApplicationData.FileName}.sch";
                 try
                 {
                     using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding.Unicode))
@@ -85,22 +88,21 @@ namespace RevolutionCAD
             bool IsSkipped = false; // флаг того, что ненужная часть файла пропущена
                                     // та, которая с dip
 
+            // массив строк всего кода
+            string[] lines = TextBox_Code.Text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+            // массив для строк с проводниками
             List<string> mas = new List<string>();
-            string path = $"{ApplicationData.FileName}.sch";
-            using (StreamReader sr = new StreamReader(path, System.Text.Encoding.Default))
+            
+            foreach(string line in lines)
             {
-                string line; // получаем строку из файла
-                while ((line = sr.ReadLine()) != null)
-                {
-                    if (line == "#")
-                        IsSkipped = true;
+                if (line == "#")
+                    IsSkipped = true;
 
-                    if (!IsSkipped)
-                        N++;
-                    else
-                        mas.Add(line);
-
-                }
+                if (!IsSkipped)
+                    N++;
+                else
+                    mas.Add(line);
             }
             mas.Remove("#"); // удаление лишнего разделителя
             int M = mas.Count; // число проводов
@@ -109,39 +111,71 @@ namespace RevolutionCAD
             Matrix<int> Q = new Matrix<int>(N, M); // матрица элементных комплексов
 
             // обнуление матриц
-            for (int i = 0; i < N; i++)
-                for (int j = 0; j < N; j++)
-                    R[i, j] = 0;
-            for (int i = 0; i < N; i++)
-                for (int j = 0; j < M; j++)
-                    Q[i, j] = 0;
+            R.Fill(0);
+            Q.Fill(0);
 
             // формирование матриц
-            int numberOfContact = 0; // номер текущего провода
-            foreach (string s in mas)
+            for (int numberOfContact = 0; numberOfContact<mas.Count; numberOfContact++)
             {
-                int i = 0, j = 0;
-                try
-                {
-                    // жёсткая структура с двумя проводами и числом знаков
-                    i = int.Parse(s[1].ToString());
-                    j = int.Parse(s[8].ToString());
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show("Ошибка формирования матриц! Проверьте исходный файл!");
-                    return;
-                }
-                R[i, j]++; R[j, i]++;
+                string s = mas[numberOfContact];
+               
+                List<string> elements = new List<string>();
 
-                Q[i, numberOfContact] = 1;
-                Q[j, numberOfContact] = 1;
+                // делим строку с элементами на список элементов ("D1.2", "D8.3", "D4.1")
+                elements.AddRange(s.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries));
 
-                numberOfContact++;
+                // запускаем цикл по этим строкам, чтобы обрезать часть с номером ножки
+                for (int i = 0; i<elements.Count; i++)
+                {
+                    int posOfPoint = elements[i].IndexOf("."); // находим точку в элементе после которой идёт номер ножки
+                    if (posOfPoint == -1)
+                    {
+                        MessageBox.Show("У одного из элементов не указан контакт подключения", "Revolution CAD");
+                        return;
+                    }
+                    elements[i] = elements[i].Substring(0, posOfPoint).Replace("D",""); // обрезаем эту часть, оставляем только номер платы
+                    if (elements[i] == "X")
+                    {
+                        elements[i] = "0"; // так будет удобнее дальше для формирования матриц
+                    }
+                }
+
+                // переходим от строк с названиями элементов ("0", "1", "2", "3") к непосредственным номерам int (0, 1, 2, 3)
+                List<int> elementNumbers = new List<int>();
+                foreach(string element in elements)
+                {
+                    int number;
+                    if (Int32.TryParse(element,out number) == false)
+                    {
+                        MessageBox.Show($"Ошибка в именовании элементов в {N+1+ numberOfContact} строке", "Revolution CAD");
+                        return;
+                    }
+                    if (number + 1 > N) // +1 чтобы учесть разъём
+                    {
+                        MessageBox.Show($"Ошибка в номере элемента в {N+1+ numberOfContact} строке. Все элементы должны быть описаны в начале файла до #", "Revolution CAD");
+                        return;
+                    }
+                    elementNumbers.Add(number);
+                }
+
+                // так как у элемента могут быть внутренние связи, а в матрице мы их не учитываем
+                elementNumbers = elementNumbers.Distinct().ToList(); // избавляемся от повторений номеров элементов
+
+                for (int i = 0; i<elementNumbers.Count; i++)
+                {
+                    for (int j = 0; j < elementNumbers.Count; j++)
+                    {
+                        if (i != j)
+                        {
+                            R[elementNumbers[i], elementNumbers[j]]++;
+                        }
+                    }
+                    Q[elementNumbers[i], numberOfContact] = 1;
+                }
+                
             }
-
             // сериализация данных в JSON
-            
+
             using (StreamWriter file = File.CreateText(ApplicationData.FileName + ".r"))
             {
                 JsonSerializer serializer = new JsonSerializer();
@@ -153,7 +187,7 @@ namespace RevolutionCAD
                 serializer.Serialize(file, Q);
             }
             MessageBox.Show("Матрицы R и Q были удачно сформированы!", "Revolution CAD");
-            
+
         }
     }
 }

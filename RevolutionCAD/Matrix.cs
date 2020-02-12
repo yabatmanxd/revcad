@@ -25,6 +25,13 @@ namespace RevolutionCAD
             _matrix = new T[rowsCount, colsCount];
         }
 
+        public void Fill(T objectToFill)
+        {
+            for(int i = 0; i < RowsCount; i++)
+                for (int j = 0; j < ColsCount; j++)
+                    _matrix[i, j] = objectToFill;
+        }
+
         public T this[int row, int col]
         {
             get

@@ -36,7 +36,8 @@ namespace RevolutionCAD.Pages
             // считывание матриц Q и R из файлов JSON .r и .q
             Matrix<int> R = new Matrix<int>(1, 1);
             Matrix<int> Q = new Matrix<int>(1, 1);
-            if (File.Exists(ApplicationData.FileName + ".r") && File.Exists(ApplicationData.FileName + ".q"))
+            string msg;
+            if (ApplicationData.IsFileExists(".r",out msg) && ApplicationData.IsFileExists(".q", out msg))
             {
                 try
                 {
@@ -58,14 +59,15 @@ namespace RevolutionCAD.Pages
             }
             else
             {
-                MessageBox.Show($"Не созданы файлы матриц R и Q", "Revolution CAD");
+                MessageBox.Show(msg, "Revolution CAD");
             }
 
             
             // запись матрицы R
             var dt1 = new DataTable();
-            
-            for (var i = 0; i < R.ColsCount; i++)
+
+            dt1.Columns.Add(new DataColumn("X", typeof(string)));
+            for (var i = 1; i < R.ColsCount; i++)
             {
                 dt1.Columns.Add(new DataColumn("D" + i, typeof(string)));
             }

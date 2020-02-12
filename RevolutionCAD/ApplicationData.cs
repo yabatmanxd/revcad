@@ -14,7 +14,7 @@ namespace RevolutionCAD
 
         public static bool IsFileExists(string extension, out string error)
         {
-            if (File.Exists(Environment.CurrentDirectory + FileName + extension))
+            if (File.Exists(FileName + extension))
             {
                 error = "";
                 return true;
