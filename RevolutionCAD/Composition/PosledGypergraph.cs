@@ -43,10 +43,10 @@ namespace RevolutionCAD.Composition
             // создаём список элементов в узлах
             var boards = new List<List<int>>();
             int elem;
-            boards.Add(new List<int>()); // начинаем алгоритм с создания и добавления нового списка элементов узла
                         
             while(nE.Count != 0) // пока не распределили все элементы
             {
+                boards.Add(new List<int>()); // добавляем новую плату
                 L1.Clear(); 
 
                 foreach (int it in nE)
@@ -55,15 +55,21 @@ namespace RevolutionCAD.Composition
                 
                 boards.Last().Add(elem); // элемент - на плату
                 E.Add(elem); nE.Remove(elem); // корректируем списки
+
                 // начинаем логирование действия
-                string msg = "Поместили элемент D" + elem + " на " + boards.Count + " плату - он имеет максимальный L1";
+                // формируем строку - обоснование
+                string msg = "";
+                for(int i = 0; i < nE.Count; i++)
+                    msg += "Для D" + nE[i] + " - L1 = " + L1[i] + "\n";
+                msg += "Поместили элемент D" + elem + " на " + boards.Count + " плату - он имеет максимальный L1";
+
                 var step = new StepCompositionLog(boards, msg);
                 log.Add(step);
                 
                 while(boards.Last().Count < countOfElements)
                 {
-                    if(nE.Count == 0)
-                        return log; // TODO
+                    if (nE.Count == 0)
+                        break;
                     L2.Clear(); L3.Clear();
 
                     int previousElem = elem;
@@ -81,20 +87,27 @@ namespace RevolutionCAD.Composition
                     elem = nE[L3.IndexOf(L3.Max())];
                     boards.Last().Add(elem); // элемент - на плату
                     E.Add(elem); nE.Remove(elem); // корректируем списки
+
                     // начинаем логирование действия
-                    msg = "Поместили элемент D" + elem + " на " + boards.Count + " плату - он имеет максимальный L3";
+                    // формируем строку - обоснование
+                    msg = "";
+                    for (int i = 0; i < nE.Count; i++)
+                        msg += "Для D" + nE[i] + " - L2 = " + L2[i] + ", L3 = " + L3[i] + "\n";
+                    msg += "Поместили элемент D" + elem + " на " + boards.Count + " плату - он имеет максимальный L3";
                     step = new StepCompositionLog(boards, msg);
                     log.Add(step);
                 }
-
-                boards.Add(new List<int>()); // добавляем новую плату
-
+                
             }
-            
-            // тут просто Сериализуем последнюю стадию логирования - это как раз та, на которой закончилось формирование и мы получили результат
-            // serialize(log.Last().boards)
 
-            // а вот в качестве результата выполнения метода возвращаем целый пошаговый лог
+            // формирование файла компоновки *.cmp
+            using (StreamWriter file = File.CreateText(ApplicationData.FileName + ".cmp"))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(file, log.Last().BoardsList);
+            }
+
+            // в качестве результата выполнения метода возвращаем целый пошаговый лог
             return log;
         }
 
