@@ -32,6 +32,36 @@ namespace RevolutionCAD
                     _matrix[i, j] = objectToFill;
         }
 
+        public void AddRow()
+        {
+            var newMatr = new T[RowsCount + 1, ColsCount];
+
+            for (int i = 0; i < RowsCount; i++)
+            {
+                for (int j = 0; j < ColsCount; j++)
+                {
+                    newMatr[i, j] = _matrix[i, j];
+                }
+            }
+            _matrix = newMatr;
+            RowsCount++;
+        }
+
+        public void AddColumn()
+        {
+            var newMatr = new T[RowsCount, ColsCount + 1];
+
+            for (int i = 0; i < RowsCount; i++)
+            {
+                for (int j = 0; j < ColsCount; j++)
+                {
+                    newMatr[i, j] = _matrix[i, j];
+                }
+            }
+            _matrix = newMatr;
+            ColsCount++;
+        }
+
         public T this[int row, int col]
         {
             get

@@ -29,7 +29,8 @@
                    Margin="5">Создайте или откройте файл...</TextBlock>
         
         <TabControl Name="TabControl_Main"
-                    Grid.Row="2">
+                    Grid.Row="2"
+					Visibility="Hidden">
             <!--Вкладка кода схемы-->
             <TabItem Header="Схема">
                 <Grid>

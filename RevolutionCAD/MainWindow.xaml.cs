@@ -18,7 +18,6 @@ namespace RevolutionCAD
         public MainWindow()
         {
             InitializeComponent();
-            TabControl_Main.IsEnabled = false;
         }
 
         private void MenuItem_Exit_Click(object sender, RoutedEventArgs e)
@@ -34,7 +33,7 @@ namespace RevolutionCAD
             {
                 ApplicationData.FileName = wnd.Text;
                 TextBlock_NameOpenedFile.Text = wnd.Text;
-                TabControl_Main.IsEnabled = true;
+                TabControl_Main.Visibility = Visibility.Visible;
                 // при создании файла откроется пример заполнения
                 TextBox_Code.Text = "D1 dip14\r\nD2 dip14\r\nD3 dip14\r\nD4 dip18\r\n#\r\nD1.1-D2.1-D3.2-X.1\r\nD4.1-D2.1\r\nD3.1-D1.1";
                 TextBox_Code.SelectionStart = TextBox_Code.Text.Length;
@@ -56,7 +55,7 @@ namespace RevolutionCAD
 
                 ApplicationData.FileName = fileName;
                 TextBlock_NameOpenedFile.Text = fileName;
-                TabControl_Main.IsEnabled = true;
+                TabControl_Main.Visibility = Visibility.Visible;
                 TextBox_Code.Text = File.ReadAllText(fullPath);
                 TextBox_Code.SelectionStart = TextBox_Code.Text.Length;
             }
@@ -84,6 +83,9 @@ namespace RevolutionCAD
 
         private void Button_CreateMatrices_Click(object sender, RoutedEventArgs e)
         {
+            // сохраняем схему
+            MenuItem_Save_Click(null, null);
+
             int N = 1; // количество микросхем (первая - разъём)
             bool IsSkipped = false; // флаг того, что ненужная часть файла пропущена
                                     // та, которая с dip
