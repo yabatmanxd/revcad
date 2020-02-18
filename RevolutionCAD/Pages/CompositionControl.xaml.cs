@@ -72,14 +72,13 @@ namespace RevolutionCAD.Pages
             {
                 // сериализуем результат
                 // формирование файла компоновки *.cmp
-                using (StreamWriter file = File.CreateText(ApplicationData.FileName + ".cmp"))
-                {
-                    JsonSerializer serializer = new JsonSerializer();
-                    serializer.Serialize(file, steps.Last().BoardsList);
-                }
+                if (steps.Count != 0)
+                    using (StreamWriter file = File.CreateText(ApplicationData.FileName + ".cmp"))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        serializer.Serialize(file, steps.Last().BoardsList);
+                    }
             }
-            
-
             return steps;
 
         }

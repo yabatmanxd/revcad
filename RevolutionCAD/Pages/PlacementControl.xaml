@@ -16,7 +16,7 @@
         <StackPanel Orientation="Horizontal"
                     Margin="10">
             <TextBlock VerticalAlignment="Center">Метод:</TextBlock>
-            <ComboBox SelectedIndex="0">
+            <ComboBox Name="ComboBox_Method" SelectedIndex="0">
                 <ComboBoxItem Content="Последовательный по максимуму с размещённым"></ComboBoxItem>
                 <ComboBoxItem Content="Последовательный по максимуму с размещёнными"></ComboBoxItem>
                 <ComboBoxItem Content="Последовательный по максимуму с размещёнными и минимуму с неразмещёнными"></ComboBoxItem>
