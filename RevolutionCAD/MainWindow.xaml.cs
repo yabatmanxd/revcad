@@ -98,8 +98,10 @@ namespace RevolutionCAD
             
             foreach(string line in lines)
             {
-                if (line == "#")
+                if (line == "#") {
                     IsSkipped = true;
+                    continue;
+                }
 
                 if (!IsSkipped)
                     N++;
