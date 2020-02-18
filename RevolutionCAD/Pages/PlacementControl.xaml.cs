@@ -24,5 +24,25 @@ namespace RevolutionCAD.Pages
         {
             InitializeComponent();
         }
+
+        private void Button_DropStepMode_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Button_NextStep_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Button_StartStepPlacement_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Button_FullPlacement_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

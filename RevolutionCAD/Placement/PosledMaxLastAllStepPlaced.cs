@@ -10,7 +10,11 @@ namespace RevolutionCAD.Placement
     {
         public List<StepPlacementLog> Place()
         {
-            return null;
+            var log = new List<StepPlacementLog>();
+
+
+
+            return log;
         }
     }
 }

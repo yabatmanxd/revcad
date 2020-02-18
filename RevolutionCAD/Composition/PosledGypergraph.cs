@@ -99,14 +99,7 @@ namespace RevolutionCAD.Composition
                 }
                 
             }
-
-            // формирование файла компоновки *.cmp
-            using (StreamWriter file = File.CreateText(ApplicationData.FileName + ".cmp"))
-            {
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.Serialize(file, log.Last().BoardsList);
-            }
-
+            
             // в качестве результата выполнения метода возвращаем целый пошаговый лог
             return log;
         }

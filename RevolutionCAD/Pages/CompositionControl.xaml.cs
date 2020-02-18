@@ -1,6 +1,8 @@
-﻿using RevolutionCAD.Composition;
+﻿using Newtonsoft.Json;
+using RevolutionCAD.Composition;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,36 +34,53 @@ namespace RevolutionCAD.Pages
 
         private List<StepCompositionLog> DoComposition()
         {
+            var steps = new List<StepCompositionLog>();
+
             int countOfElements, limitsOfWires; // Николаев
 
             string msg = "";
             if (int.TryParse(tbCountOfElements.Text, out countOfElements) == false || 
-                int.TryParse(tbLimitsOfWires.Text, out limitsOfWires) == false)
+                    int.TryParse(tbLimitsOfWires.Text, out limitsOfWires) == false)
             {
-                msg = "Вы написали какие-то бредни вместо цифр в полях";
-            } else
+                msg = "Вы написали какие-то бредни вместо цифр в полях для ввода";
+            }
+            else
             switch (ComboBox_Method.SelectedIndex)
             {
                 case 0:
                     if (ApplicationData.IsFileExists(".q", out msg))
-                        return PosledGypergraph.Compose(countOfElements, limitsOfWires);
+                        steps = PosledGypergraph.Compose(countOfElements, limitsOfWires);
                     break;
                 case 1:
                     if (ApplicationData.IsFileExists(".q", out msg))
-                        return PosledMultigraph.Compose(countOfElements, limitsOfWires);
+                        steps = PosledMultigraph.Compose(countOfElements, limitsOfWires);
                     break;
                 case 2:
                     if (ApplicationData.IsFileExists(".cmp", out msg) && ApplicationData.IsFileExists(".r", out msg))
-                        return IterGypergraph.Compose();
+                        steps = IterGypergraph.Compose();
                     break;
                 case 3:
                     if (ApplicationData.IsFileExists(".cmp", out msg) && ApplicationData.IsFileExists(".r", out msg))
-                        return IterMultigraph.Compose();
+                        steps = IterMultigraph.Compose();
                     break;
 
             }
-            MessageBox.Show(msg, "Revolution CAD");
-            return new List<StepCompositionLog>();
+            // если была ошибка - сообщаем
+            if (msg != "")
+                MessageBox.Show(msg, "Revolution CAD");
+            else
+            {
+                // сериализуем результат
+                // формирование файла компоновки *.cmp
+                using (StreamWriter file = File.CreateText(ApplicationData.FileName + ".cmp"))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+                    serializer.Serialize(file, steps.Last().BoardsList);
+                }
+            }
+            
+
+            return steps;
 
         }
 
@@ -81,6 +100,7 @@ namespace RevolutionCAD.Pages
                 TextBox_Log.Text += StepsLog[step].Message + "\n";
             }
             ShowStep(StepsLog.Count - 1); // отображаем только последний шаг графически, т.к. он будет результатом компоновки
+            
         }
 
         private void Button_StartStepComposition_Click(object sender, RoutedEventArgs e)
@@ -89,12 +109,13 @@ namespace RevolutionCAD.Pages
             StackPanel_Boards.Children.Clear();
 
             StepsLog = DoComposition();
-
+            
             if (StepsLog.Count == 0)
             {
                 MessageBox.Show("Метод компоновки не сработал", "Revolution CAD");
                 return;
             }
+            
             Button_FullComposition.IsEnabled = false;
             Button_StartStepComposition.IsEnabled = false;
             Button_NextStep.IsEnabled = true;
