@@ -8,5 +8,9 @@ namespace RevolutionCAD.Placement
 {
     class IterFull
     {
+        public List<StepPlacementLog> Place()
+        {
+            return null;
+        }
     }
 }

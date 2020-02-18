@@ -8,5 +8,9 @@ namespace RevolutionCAD.Placement
 {
     class IterShaffer
     {
+        public List<StepPlacementLog> Place()
+        {
+            return null;
+        }
     }
 }

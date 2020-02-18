@@ -9,7 +9,7 @@ namespace RevolutionCAD.Composition
     class PosledMultigraph
     {
         // метод должен возвратить целый лог действий
-        public static List<StepCompositionLog> Compose()
+        public static List<StepCompositionLog> Compose(int countOfElements, int limitsOfWires)
         {
             var log = new List<StepCompositionLog>();
             

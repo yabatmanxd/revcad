@@ -8,5 +8,9 @@ namespace RevolutionCAD.Placement
 {
     class PosledMaxLastAllStepPlaced
     {
+        public List<StepPlacementLog> Place()
+        {
+            return null;
+        }
     }
 }

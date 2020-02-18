@@ -15,7 +15,7 @@ namespace RevolutionCAD.Tracing
         /// Метод для трассировки
         /// </summary>
         /// <returns>Список логов шагов</returns>
-        public StepTracingLog Trace()
+        public List<StepTracingLog> Trace()
         {
             return null;
         }

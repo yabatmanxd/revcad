@@ -35,17 +35,20 @@ namespace RevolutionCAD.Pages
             int countOfElements, limitsOfWires; // Николаев
 
             string msg = "";
+            if (int.TryParse(tbCountOfElements.Text, out countOfElements) == false || 
+                int.TryParse(tbLimitsOfWires.Text, out limitsOfWires) == false)
+            {
+                msg = "Вы написали какие-то бредни вместо цифр в полях";
+            } else
             switch (ComboBox_Method.SelectedIndex)
             {
                 case 0:
-                    if (ApplicationData.IsFileExists(".q", out msg)
-                        && int.TryParse(tbCountOfElements.Text, out countOfElements)
-                        && int.TryParse(tbLimitsOfWires.Text, out limitsOfWires)) // Николаев
+                    if (ApplicationData.IsFileExists(".q", out msg))
                         return PosledGypergraph.Compose(countOfElements, limitsOfWires);
                     break;
                 case 1:
                     if (ApplicationData.IsFileExists(".q", out msg))
-                        return PosledMultigraph.Compose();
+                        return PosledMultigraph.Compose(countOfElements, limitsOfWires);
                     break;
                 case 2:
                     if (ApplicationData.IsFileExists(".cmp", out msg) && ApplicationData.IsFileExists(".r", out msg))
