@@ -17,5 +17,10 @@ namespace RevolutionCAD.Placement
         /// Сообщение которое будет выведено в консоль при выполнении шага.
         /// </summary>
         public string Message { get; set; }
+
+        public StepPlacementLog()
+        {
+            BoardsList = new List<Matrix<int>>();
+        }
     }
 }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace RevolutionCAD.Placement
 {
-    class PosledMaxLastAllStepPlaced
+    public class PosledMaxLastAllStepPlaced
     {
-        public List<StepPlacementLog> Place()
+        public static List<StepPlacementLog> Place()
         {
             var log = new List<StepPlacementLog>();
 

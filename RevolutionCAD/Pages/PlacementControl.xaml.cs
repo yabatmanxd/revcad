@@ -37,6 +37,7 @@ namespace RevolutionCAD.Pages
             switch (ComboBox_Method.SelectedIndex)
             {
                 case 0:
+                    steps = PosledMaxLastStepPlaced.Place();
                     break;
                 case 1:
                     break;
@@ -55,6 +56,41 @@ namespace RevolutionCAD.Pages
 
         private void ShowStep(int StepNumber)
         {
+            TextBox_Log.ScrollToEnd();
+
+            StackPanel_Boards.Children.Clear();
+            var OneStep = StepsLog[StepNumber];
+            for (int i = 0; i < OneStep.BoardsList.Count; i++)
+            {
+                var matr = OneStep.BoardsList[i];
+
+                var spBoard = new StackPanel();
+                spBoard.Orientation = Orientation.Vertical;
+                spBoard.Margin = new Thickness(5);
+
+                var tb = new TextBlock();
+                tb.Margin = new Thickness(5);
+                tb.Text = $"Узел №{i + 1}:";
+
+                spBoard.Children.Add(tb);
+
+                for (int matrRow = 0; matrRow < matr.RowsCount; matrRow++)
+                {
+                    var spRow = new StackPanel();
+                    spRow.Orientation = Orientation.Horizontal;
+
+                    for (int matrCol = 0; matrCol < matr.ColsCount; matrCol++)
+                    {
+                        var position = new TextBlock();
+                        tb.Margin = new Thickness(5);
+                        tb.Padding = new Thickness(5);
+                        tb.Text = "D" + matr[matrRow,matrCol].ToString();
+                    }
+                    spBoard.Children.Add(spRow);
+                }
+                
+                StackPanel_Boards.Children.Add(spBoard);
+            }
 
         }
 
@@ -65,25 +101,39 @@ namespace RevolutionCAD.Pages
 
         private void Button_StartStepPlacement_Click(object sender, RoutedEventArgs e)
         {
-            TextBox_Log.Text = "";
-            StackPanel_Boards.Children.Clear();
+            //TextBox_Log.Text = "";
+            //StackPanel_Boards.Children.Clear();
 
 
 
 
-            Button_FullPlacement.IsEnabled = false;
-            Button_StartStepPlacement.IsEnabled = false;
-            Button_NextStep.IsEnabled = true;
-            Button_DropStepMode.IsEnabled = true;
+            //Button_FullPlacement.IsEnabled = false;
+            //Button_StartStepPlacement.IsEnabled = false;
+            //Button_NextStep.IsEnabled = true;
+            //Button_DropStepMode.IsEnabled = true;
 
-            CurrentStep = 0;
+            //CurrentStep = 0;
 
-            Button_NextStep_Click(null, null);
+            //Button_NextStep_Click(null, null);
         }
 
         private void Button_FullPlacement_Click(object sender, RoutedEventArgs e)
         {
+            TextBox_Log.Text = "";
+            StackPanel_Boards.Children.Clear();
             StepsLog = DoPlacement();
+            if (StepsLog.Count == 0)
+            {
+                MessageBox.Show("Метод размещения не сработал", "Revolution CAD");
+                return;
+            }
+            for (int step = 0; step < StepsLog.Count; step++)
+            {
+                TextBox_Log.Text += $"Шаг №{step + 1}:" + "\n";
+                TextBox_Log.Text += StepsLog[step].Message + "\n";
+            }
+            ShowStep(StepsLog.Count - 1); // отображаем только последний шаг графически, т.к. он будет результатом компоновки
+
         }
 
         private void Button_DropStepMode_Click(object sender, RoutedEventArgs e)

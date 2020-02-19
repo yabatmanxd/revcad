@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace RevolutionCAD.Placement
 {
-    class IterShaffer
+    public class IterShaffer
     {
-        public List<StepPlacementLog> Place()
+        public static List<StepPlacementLog> Place()
         {
             return null;
         }
