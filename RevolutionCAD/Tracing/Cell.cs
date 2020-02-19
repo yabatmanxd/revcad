@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RevolutionCAD.Tracing
 {
-    class Cell
+    public class Cell
     {
         /// <summary>
         /// Поле в котором будет хранится состояние ячейки
@@ -31,7 +31,7 @@ namespace RevolutionCAD.Tracing
         }
     }
 
-    enum CellState
+    public enum CellState
     {
         ArrowUp,
         ArrowDown,
