@@ -25,6 +25,33 @@ namespace RevolutionCAD
             _matrix = new T[rowsCount, colsCount];
         }
 
+        public T getValueByPlatePos(int pos)
+        {
+            if (pos < 1 || pos > ColsCount * RowsCount)
+            {
+                throw new IndexOutOfRangeException();
+            } else
+            {
+                int j = pos % RowsCount;
+                int i = pos % ColsCount;
+                return _matrix[i,j];
+            }
+        }
+
+        public void setValueByPlatePos(int pos, T element)
+        {
+            if (pos < 0 || pos > ColsCount * RowsCount)
+            {
+                throw new IndexOutOfRangeException();
+            }
+            else
+            {
+                int j = pos / RowsCount;
+                int i = pos % ColsCount;
+                _matrix[i, j] = element;
+            }
+        }
+
         public void Fill(T objectToFill)
         {
             for(int i = 0; i < RowsCount; i++)
@@ -62,6 +89,19 @@ namespace RevolutionCAD
             ColsCount++;
         }
 
+        public Matrix<T> Copy()
+        {
+            var newMatrix = new Matrix<T>(RowsCount, ColsCount);
+            for (int i = 0; i < RowsCount; i++)
+            {
+                for (int j = 0; j < ColsCount; j++)
+                {
+                    newMatrix[i, j] = _matrix[i, j];
+                }
+            }
+            return newMatrix;
+        }
+
         public T this[int row, int col]
         {
             get
@@ -73,5 +113,7 @@ namespace RevolutionCAD
                 _matrix[row, col] = value;
             }
         }
+
+        
     }
 }

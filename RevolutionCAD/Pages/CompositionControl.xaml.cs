@@ -37,7 +37,7 @@ namespace RevolutionCAD.Pages
             var steps = new List<StepCompositionLog>();
 
             int countOfElements, limitsOfWires; // Николаев
-
+            
             string msg = "";
             if (int.TryParse(tbCountOfElements.Text, out countOfElements) == false || 
                     int.TryParse(tbLimitsOfWires.Text, out limitsOfWires) == false)
@@ -63,8 +63,11 @@ namespace RevolutionCAD.Pages
                     if (ApplicationData.IsFileExists(".cmp", out msg) && ApplicationData.IsFileExists(".r", out msg))
                         steps = IterMultigraph.Compose();
                     break;
+                case 4:
+                        steps = TestComposition.Compose();
+                    break;
 
-            }
+                }
             // если была ошибка - сообщаем
             if (msg != "")
                 MessageBox.Show(msg, "Revolution CAD");
@@ -132,6 +135,7 @@ namespace RevolutionCAD.Pages
             ShowStep(CurrentStep);
             if (CurrentStep + 1 >= StepsLog.Count)
             {
+                TextBox_Log.Text += "\n === Компоновка закончена ===\n";
                 DropStepMode();
             }
             else

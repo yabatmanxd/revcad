@@ -21,6 +21,7 @@
                 <ComboBoxItem Content="Последовательная по мультиграфу"></ComboBoxItem>
                 <ComboBoxItem Content="Итерационная по гиперграфу"></ComboBoxItem>
                 <ComboBoxItem Content="Итерационная по мультиграфу"></ComboBoxItem>
+                <ComboBoxItem Content="Тестовая компоновка"></ComboBoxItem>
             </ComboBox>
             <TextBlock VerticalAlignment="Center" Margin="0,3.02,0,2.98"><Run Text="Ограничение на элементы:"/></TextBlock>
             <TextBox Name="tbCountOfElements" TextWrapping="Wrap" Width="45"/>
