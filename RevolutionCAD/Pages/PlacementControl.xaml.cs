@@ -37,7 +37,6 @@ namespace RevolutionCAD.Pages
             switch (ComboBox_Method.SelectedIndex)
             {
                 case 0:
-                    steps = PosledMaxLastStepPlaced.Place();
                     break;
                 case 1:
                     break;
@@ -48,6 +47,9 @@ namespace RevolutionCAD.Pages
                 case 4:
                     break;
                 case 5:
+                    break;
+                case 6:
+                    steps = TestPlacement.Place();
                     break;
             }
 
@@ -64,15 +66,18 @@ namespace RevolutionCAD.Pages
             {
                 var matr = OneStep.BoardsList[i];
 
-                var spBoard = new StackPanel();
-                spBoard.Orientation = Orientation.Vertical;
-                spBoard.Margin = new Thickness(5);
+                var sp_BoardCard = new StackPanel();
+                sp_BoardCard.Orientation = Orientation.Vertical;
+                sp_BoardCard.Margin = new Thickness(5);
 
-                var tb = new TextBlock();
-                tb.Margin = new Thickness(5);
-                tb.Text = $"Узел №{i + 1}:";
+                var tb_HeaderBoard = new TextBlock();
+                tb_HeaderBoard.Margin = new Thickness(5);
+                tb_HeaderBoard.Text = $"Узел №{i + 1}:";
 
-                spBoard.Children.Add(tb);
+                sp_BoardCard.Children.Add(tb_HeaderBoard);
+
+                var sp_Board = new StackPanel();
+                sp_Board.Orientation = Orientation.Vertical;
 
                 for (int matrRow = 0; matrRow < matr.RowsCount; matrRow++)
                 {
@@ -81,40 +86,77 @@ namespace RevolutionCAD.Pages
 
                     for (int matrCol = 0; matrCol < matr.ColsCount; matrCol++)
                     {
-                        var position = new TextBlock();
-                        tb.Margin = new Thickness(5);
-                        tb.Padding = new Thickness(5);
-                        tb.Text = "D" + matr[matrRow,matrCol].ToString();
+                        var tb_position = new TextBlock();
+                        tb_position.Style = this.FindResource("TextBlockTemplate") as Style;
+
+                        var tb_border = new Border();
+                        tb_border.Style = this.FindResource("BorderPosTemplate") as Style;
+
+                        if (matr[matrRow, matrCol] == -1)
+                        {
+                            tb_border.Background = new SolidColorBrush(Colors.Gray);
+                            tb_border.Background.Opacity = 0.5;
+                        } else
+                        {
+                            tb_position.Text = "D" + matr[matrRow, matrCol].ToString();
+                        }
+                        
+                        tb_border.Child = tb_position;
+
+                        spRow.Children.Add(tb_border);
                     }
-                    spBoard.Children.Add(spRow);
+                    sp_Board.Children.Add(spRow);
                 }
-                
-                StackPanel_Boards.Children.Add(spBoard);
+
+                var border_Board = new Border();
+                border_Board.Style = this.FindResource("BorderPlateTemplate") as Style;
+                border_Board.Child = sp_Board;
+
+                sp_BoardCard.Children.Add(border_Board);
+
+                StackPanel_Boards.Children.Add(sp_BoardCard);
             }
 
         }
 
         private void Button_NextStep_Click(object sender, RoutedEventArgs e)
         {
-
+            TextBox_Log.Text += $"Шаг №{CurrentStep + 1}:" + "\n";
+            TextBox_Log.Text += StepsLog[CurrentStep].Message + "\n";
+            ShowStep(CurrentStep);
+            if (CurrentStep + 1 >= StepsLog.Count)
+            {
+                TextBox_Log.Text += "\n === Размещение закончено ===\n";
+                DropStepMode();
+            }
+            else
+            {
+                CurrentStep++;
+            }
         }
 
         private void Button_StartStepPlacement_Click(object sender, RoutedEventArgs e)
         {
-            //TextBox_Log.Text = "";
-            //StackPanel_Boards.Children.Clear();
+            TextBox_Log.Text = "";
+            StackPanel_Boards.Children.Clear();
+
+            StepsLog = DoPlacement();
+
+            if (StepsLog.Count == 0)
+            {
+                MessageBox.Show("Метод компоновки не сработал", "Revolution CAD");
+                return;
+            }
 
 
+            Button_FullPlacement.IsEnabled = false;
+            Button_StartStepPlacement.IsEnabled = false;
+            Button_NextStep.IsEnabled = true;
+            Button_DropStepMode.IsEnabled = true;
 
+            CurrentStep = 0;
 
-            //Button_FullPlacement.IsEnabled = false;
-            //Button_StartStepPlacement.IsEnabled = false;
-            //Button_NextStep.IsEnabled = true;
-            //Button_DropStepMode.IsEnabled = true;
-
-            //CurrentStep = 0;
-
-            //Button_NextStep_Click(null, null);
+            Button_NextStep_Click(null, null);
         }
 
         private void Button_FullPlacement_Click(object sender, RoutedEventArgs e)

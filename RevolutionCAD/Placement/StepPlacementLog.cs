@@ -18,9 +18,10 @@ namespace RevolutionCAD.Placement
         /// </summary>
         public string Message { get; set; }
 
-        public StepPlacementLog()
+        public StepPlacementLog(List<Matrix<int>> brds, string message)
         {
-            BoardsList = new List<Matrix<int>>();
+            BoardsList = brds.Select(x=>x.Copy()).ToList();
+            Message = message;
         }
     }
 }

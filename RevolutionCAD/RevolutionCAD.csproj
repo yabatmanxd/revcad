@@ -86,6 +86,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Composition\TestComposition.cs" />
     <Compile Include="Matrix.cs" />
     <Compile Include="Pages\CompositionControl.xaml.cs">
       <DependentUpon>CompositionControl.xaml</DependentUpon>
@@ -102,6 +103,7 @@
     <Compile Include="Pages\TracingControl.xaml.cs">
       <DependentUpon>TracingControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Placement\TestPlacement.cs" />
     <Compile Include="Tracing\Cell.cs" />
     <Compile Include="Tracing\StepTracingLog.cs" />
     <Compile Include="Tracing\TracingAkers.cs" />
