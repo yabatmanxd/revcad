@@ -77,7 +77,11 @@ namespace RevolutionCAD.Pages
         private void Button_FullTracing_Click(object sender, RoutedEventArgs e)
         {
             Matrix<Cell> dpr = new Matrix<Cell>(2, 10);
-            dpr.Fill(new Cell());
+
+            for (int i = 0; i < dpr.RowsCount; i++)
+                for (int j = 0; j < dpr.ColsCount; j++)
+                    dpr[i, j] = new Cell();
+
             dpr[0, 0].State = CellState.ArrowUp;
             dpr[0, 3].State = CellState.ArrowDown;
             dpr[0, 5].State = CellState.ArrowDown;

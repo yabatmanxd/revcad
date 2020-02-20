@@ -22,5 +22,7 @@ namespace RevolutionCAD
             error = $"Файл {FileName}{extension} не существует";
             return false;
         }
+
+        public static void Read
     }
 }
