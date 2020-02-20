@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace RevolutionCAD.Tracing
 {
-    class StepTracingLog
+    public class StepTracingLog
     {
         /// <summary>
         /// Представляет дискретное рабочее поле, каждая ячейка представлена классом Cell
         /// у неё есть вес и состояние
         /// </summary>
-        Matrix<Cell> DRP { get; set; }
+        public List<List<Matrix<Cell>>> DRP { get; set; } // имеем список узлов, в каждом элементе списка хранится список слоёв дрп для каждого провода
         public string Message { get; set; }
     }
 }
