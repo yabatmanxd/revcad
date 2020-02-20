@@ -16,17 +16,13 @@ namespace RevolutionCAD.Composition
         /// <param name="countOfBoards">Ограничение на количество узлов</param>
         /// <param name="limitsOfWires">Ограничение на количество связей</param>
         /// <returns>Полный лог действий</returns>
-        public static List<StepCompositionLog> Compose(int countOfElements, int limitsOfWires)
+        public static List<StepCompositionLog> Compose(int countOfElements, int limitsOfWires, out string error_msg)
         {
             var log = new List<StepCompositionLog>();
 
+            var sch = ApplicationData.ReadScheme(out error_msg);
             // считываем матрицу Q
-            Matrix<int> Q = new Matrix<int>(1, 1);
-            using (StreamReader file = File.OpenText(ApplicationData.FileName + ".q"))
-            {
-                JsonSerializer serializer = new JsonSerializer();
-                Q = (Matrix<int>)serializer.Deserialize(file, typeof(Matrix<int>));
-            }
+            Matrix<int> Q = sch.MatrixQ;
 
             var E = new List<int>(); // множество распределённых элементов
             var nE = new List<int>(); // множество нераспределённых элементов

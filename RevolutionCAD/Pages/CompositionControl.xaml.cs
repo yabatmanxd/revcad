@@ -38,50 +38,49 @@ namespace RevolutionCAD.Pages
 
             int countOfElements, limitsOfWires; // Николаев
             
-            string msg = "";
+            string err_msg = "";
             if (int.TryParse(tbCountOfElements.Text, out countOfElements) == false || 
                     int.TryParse(tbLimitsOfWires.Text, out limitsOfWires) == false)
             {
-                msg = "Вы написали какие-то бредни вместо цифр в полях для ввода";
+                err_msg = "Вы написали какие-то бредни вместо цифр в полях для ввода";
             }
             else
             switch (ComboBox_Method.SelectedIndex)
             {
                 case 0:
-                    if (ApplicationData.IsFileExists(".q", out msg))
-                        steps = PosledGypergraph.Compose(countOfElements, limitsOfWires);
+                    steps = PosledGypergraph.Compose(countOfElements, limitsOfWires, out err_msg);
                     break;
                 case 1:
-                    if (ApplicationData.IsFileExists(".q", out msg))
-                        steps = PosledMultigraph.Compose(countOfElements, limitsOfWires);
+                    steps = PosledMultigraph.Compose(countOfElements, limitsOfWires, out err_msg);
                     break;
                 case 2:
-                    if (ApplicationData.IsFileExists(".cmp", out msg) && ApplicationData.IsFileExists(".r", out msg))
-                        steps = IterGypergraph.Compose();
+                    steps = IterGypergraph.Compose(out err_msg);
                     break;
                 case 3:
-                    if (ApplicationData.IsFileExists(".cmp", out msg) && ApplicationData.IsFileExists(".r", out msg))
-                        steps = IterMultigraph.Compose();
+                    steps = IterMultigraph.Compose(out err_msg);
                     break;
                 case 4:
-                        steps = TestComposition.Compose();
+                    steps = TestComposition.Compose();
                     break;
 
-                }
-            // если была ошибка - сообщаем
-            if (msg != "")
-                MessageBox.Show(msg, "Revolution CAD");
-            else
-            {
-                // сериализуем результат
-                // формирование файла компоновки *.cmp
-                if (steps.Count != 0)
-                    using (StreamWriter file = File.CreateText(ApplicationData.FileName + ".cmp"))
-                    {
-                        JsonSerializer serializer = new JsonSerializer();
-                        serializer.Serialize(file, steps.Last().BoardsList);
-                    }
             }
+
+            // на последнем шаге получили результат компоновки
+            
+            
+            // если не было ошибки - сериализуем результат
+            if (err_msg == "")
+            {
+                if (steps.Count != 0)
+                {
+                    var result = steps.Last().BoardsList;
+                    if (steps.Count != 0)
+                        ApplicationData.WriteComposition(result, out err_msg);
+                    
+                }
+            }
+            if (err_msg != "")
+                MessageBox.Show(err_msg, "Revolution CAD");
             return steps;
 
         }

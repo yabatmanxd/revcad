@@ -10,8 +10,9 @@ namespace RevolutionCAD.Composition
     {
         // метод должен возвратить целый лог действий
         //Скударнов С.А.
-        public static List<StepCompositionLog> Compose()
+        public static List<StepCompositionLog> Compose(out string error_msg)
         {
+            error_msg = "";
             //с этого обязательно должен начинаться метод
             var log = new List<StepCompositionLog>();
             var boards = new List<List<int>>();

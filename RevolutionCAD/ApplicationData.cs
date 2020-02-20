@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using RevolutionCAD.Composition;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,33 +25,84 @@ namespace RevolutionCAD
             return false;
         }
 
-        public static void ReadFileCmp()
+        public static List<List<int>> ReadComposition(out string msg)
         {
-
+            msg = "";
+            List<List<int>> cmp = null;
+            if (IsFileExists(".cmp", out msg))
+            {
+                try
+                {
+                    using (StreamReader file = File.OpenText(FileName + ".cmp"))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        cmp = (List<List<int>>)serializer.Deserialize(file, typeof(List<List<int>>));
+                    }
+                }
+                catch (Exception exp)
+                {
+                    msg = $"Произошла ошибка при попытке чтения файла {FileName}.cmp: {exp.Message}";
+                }
+            }
+            return cmp;
         }
 
-        public static void WriteFileCmp()
+        public static void WriteComposition(List<List<int>> cmp, out string errWrite)
         {
-
+            errWrite = "";
+            if (FileName != "")
+            {
+                try
+                {
+                    using (StreamWriter file = File.CreateText(FileName + ".cmp"))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        serializer.Serialize(file, cmp);
+                    }
+                }
+                catch (Exception exc)
+                {
+                    errWrite = $"При записи в файл компоновки произошла ошибка: {exc.Message}";
+                }
+            }
         }
 
-        public static Scheme ReadScheme()
+        public static Scheme ReadScheme(out string msg)
         {
-            return new Scheme();
+            msg = "";
+            Scheme sch = null;
+            if (IsFileExists(".sch", out msg))
+            {
+                try
+                {
+                    using (StreamReader file = File.OpenText(FileName + ".sch"))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        sch = (Scheme)serializer.Deserialize(file, typeof(Scheme));
+                    }
+                } catch(Exception exp)
+                {
+                    msg = $"Произошла ошибка при попытке чтения файла {FileName}.sch: {exp.Message}";
+                }
+            }
+            return sch;
         }
 
         public static void WriteScheme(string textSchemeDefinition, out string errWrite)
         {
             Matrix<int> MatrixR = null;
             Matrix<int> MatrixQ = null;
+            List<int> dipsNumbers;
 
-            CreateMatrices(textSchemeDefinition, out MatrixR, out MatrixQ, out errWrite);
+            CreateMatrices(textSchemeDefinition, out MatrixR, out MatrixQ, out dipsNumbers, out errWrite);
 
             // сериализация данных в JSON
             var sch = new Scheme();
             sch.SchemeDefinition = textSchemeDefinition;
             sch.MatrixQ = MatrixQ;
             sch.MatrixR = MatrixR;
+            sch.DIPNumbers = dipsNumbers;
+
             if (FileName != "")
             {
                 try
@@ -63,17 +115,58 @@ namespace RevolutionCAD
                 }
                 catch(Exception exc)
                 {
-                    errWrite = $"При записи в файл произошла ошибка: {exc.Message}";
+                    errWrite = $"При записи в файл схемы произошла ошибка: {exc.Message}";
                 }
             }
-
-            
             
         }
 
-        public static bool CreateMatrices(string textSchemeDefinition, out Matrix<int> R, out Matrix<int> Q, out string errMsg)
+        public static List<Matrix<int>> ReadPlacement(out string msg)
+        {
+            msg = "";
+            List<Matrix<int>> plc = null;
+            if (IsFileExists(".plc", out msg))
+            {
+                try
+                {
+                    using (StreamReader file = File.OpenText(FileName + ".plc"))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        plc = (List<Matrix<int>>)serializer.Deserialize(file, typeof(List<Matrix<int>>));
+                    }
+                }
+                catch (Exception exp)
+                {
+                    msg = $"Произошла ошибка при попытке чтения файла {FileName}.plc: {exp.Message}";
+                }
+            }
+            return plc;
+        }
+
+        public static void WritePlacement(List<Matrix<int>> plc, out string errWrite)
+        {
+            errWrite = "";
+            if (FileName != "")
+            {
+                try
+                {
+                    using (StreamWriter file = File.CreateText(FileName + ".plc"))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        serializer.Serialize(file, plc);
+                    }
+                }
+                catch (Exception exc)
+                {
+                    errWrite = $"При записи в файл размещения произошла ошибка: {exc.Message}";
+                }
+            }
+        }
+
+        public static bool CreateMatrices(string textSchemeDefinition, out Matrix<int> R, out Matrix<int> Q, out List<int> dipsNumbers, out string errMsg)
         {
             errMsg = "";
+            dipsNumbers = new List<int>();
             int N = 1; // количество микросхем (первая - разъём)
             bool IsSkipped = false; // флаг того, что ненужная часть файла пропущена
                                     // та, которая с dip
@@ -92,8 +185,16 @@ namespace RevolutionCAD
                     continue;
                 }
 
-                if (!IsSkipped)
+                if (!IsSkipped) // значит это фрагмент до # с номером Dip
+                {
                     N++;
+                    // считываем номер Dip и записываем в список
+                    int dipNumber;
+                    string dipNumberStr = line.Replace("dip", "");
+                    if (Int32.TryParse(dipNumberStr, out dipNumber))
+                        dipsNumbers.Add(dipNumber);
+                }
+                    
                 else
                     mas.Add(line);
             }

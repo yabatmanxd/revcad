@@ -34,6 +34,8 @@ namespace RevolutionCAD.Pages
         {
             var steps = new List<StepPlacementLog>();
 
+            string err_msg = "";
+
             switch (ComboBox_Method.SelectedIndex)
             {
                 case 0:
@@ -49,10 +51,25 @@ namespace RevolutionCAD.Pages
                 case 5:
                     break;
                 case 6:
-                    steps = TestPlacement.Place();
+                    steps = TestPlacement.Place(out err_msg);
                     break;
             }
+            // на последнем шаге получили результат размещения
 
+
+            // если не было ошибки - сериализуем результат
+            if (err_msg == "")
+            {
+                if (steps.Count != 0)
+                {
+                    var result = steps.Last().BoardsList;
+                    if (steps.Count != 0)
+                        ApplicationData.WritePlacement(result, out err_msg);
+
+                }
+            }
+            if (err_msg != "")
+                MessageBox.Show(err_msg, "Revolution CAD");
             return steps;
         }
 

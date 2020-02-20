@@ -52,6 +52,50 @@ namespace RevolutionCAD
             }
         }
 
+        public Matrix<T> RemoveRow(int row)
+        {
+            var newMatr = new Matrix<T>(RowsCount-1, ColsCount);
+
+            int index = 0;
+            for (int i = 0; i < RowsCount; i++)
+            {
+                if (i == row)
+                    continue;
+                else
+                {
+                    for (int j = 0; j < ColsCount; j++)
+                    {
+                        newMatr[index, j] = _matrix[i, j];
+                    }
+                    index++;
+                }
+            }
+            return newMatr;
+        }
+
+        public Matrix<T> RemoveCol(int col)
+        {
+            var newMatr = new Matrix<T>(RowsCount, ColsCount-1);
+
+            int index = 0;
+            for (int i = 0; i < RowsCount; i++)
+            {
+                for (int j = 0; j < ColsCount; j++)
+                {
+                    if (j == col)
+                        continue;
+                    else
+                    {
+                        newMatr[i, index] = _matrix[i, j];
+                        index++;
+                    }
+                }
+                index = 0;
+                
+            }
+            return newMatr;
+        }
+
         public void Fill(T objectToFill)
         {
             for(int i = 0; i < RowsCount; i++)

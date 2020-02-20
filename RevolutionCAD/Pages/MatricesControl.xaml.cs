@@ -1,20 +1,6 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace RevolutionCAD.Pages
 {
@@ -33,36 +19,17 @@ namespace RevolutionCAD.Pages
         /// </summary>
         public void UpdateMatrices()
         {
-            // считывание матриц Q и R из файлов JSON .r и .q
-            Matrix<int> R = new Matrix<int>(1, 1);
-            Matrix<int> Q = new Matrix<int>(1, 1);
-            string msg;
-            if (ApplicationData.IsFileExists(".r", out msg) && ApplicationData.IsFileExists(".q", out msg))
-            {
-                try
-                {
-                    using (StreamReader file = File.OpenText(ApplicationData.FileName + ".r"))
-                    {
-                        JsonSerializer serializer = new JsonSerializer();
-                        R = (Matrix<int>)serializer.Deserialize(file, typeof(Matrix<int>));
-                    }
-                    using (StreamReader file = File.OpenText(ApplicationData.FileName + ".q"))
-                    {
-                        JsonSerializer serializer = new JsonSerializer();
-                        Q = (Matrix<int>)serializer.Deserialize(file, typeof(Matrix<int>));
-                    }
-                }
-                catch (Exception exc)
-                {
-                    MessageBox.Show($"Произошла ошибка при попытке считывания матриц из файлов: {exc.Message}", "Revolution CAD");
-                }
-            }
-            else
+            string msg = "";
+            Scheme sch = ApplicationData.ReadScheme(out msg);
+            if (msg != "")
             {
                 MessageBox.Show(msg, "Revolution CAD");
+                return;
             }
 
-
+            var R = sch.MatrixR;
+            var Q = sch.MatrixQ;
+            
             // запись матрицы R
             var dt1 = new DataTable();
 

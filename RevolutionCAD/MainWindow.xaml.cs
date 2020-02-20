@@ -2,10 +2,6 @@
 using System.IO;
 using System.Windows;
 using Microsoft.Win32;
-using System.Collections.Generic;
-using Newtonsoft.Json;
-using System.Windows.Navigation;
-using System.Linq;
 
 
 namespace RevolutionCAD
@@ -56,14 +52,23 @@ namespace RevolutionCAD
                 ApplicationData.FileName = fileName;
                 TextBlock_NameOpenedFile.Text = fileName;
                 TabControl_Main.Visibility = Visibility.Visible;
-                TextBox_Code.Text = File.ReadAllText(fullPath);
+
+                string msg;
+                var sch = ApplicationData.ReadScheme(out msg);
+                if (msg != "")
+                {
+                    MessageBox.Show(msg, "Revolution CAD");
+                    return;
+                }
+
+                TextBox_Code.Text = sch.SchemeDefinition;
                 TextBox_Code.SelectionStart = TextBox_Code.Text.Length;
             }
         }
 
         private void MenuItem_Save_Click(object sender, RoutedEventArgs e)
         {
-            string error;
+            string error = "";
             ApplicationData.WriteScheme(TextBox_Code.Text, out error);
             if (error != "")
                 MessageBox.Show(error, "Revolution CAD");
@@ -73,10 +78,14 @@ namespace RevolutionCAD
         private void Button_CreateMatrices_Click(object sender, RoutedEventArgs e)
         {
             // сохраняем схему
-            MenuItem_Save_Click(null, null);
-
-            
-
+            string error = "";
+            ApplicationData.WriteScheme(TextBox_Code.Text, out error);
+            if (error != "")
+            {
+                MessageBox.Show(error, "Revolution CAD");
+                return;
+            }
+               
             MatrControl.UpdateMatrices();
             TabControl_Main.SelectedIndex = 1;
 

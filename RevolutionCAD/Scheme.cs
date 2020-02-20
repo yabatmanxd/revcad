@@ -12,6 +12,7 @@ namespace RevolutionCAD
     public class Scheme
     {
         public string SchemeDefinition { get; set; }
+        public List<int> DIPNumbers { get; set; }
         public Matrix<int> MatrixR { get; set; }
         public Matrix<int> MatrixQ { get; set; }
     }
