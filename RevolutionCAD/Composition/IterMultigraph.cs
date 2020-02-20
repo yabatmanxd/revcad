@@ -9,7 +9,7 @@ namespace RevolutionCAD.Composition
     class IterMultigraph
     {
         // метод должен возвратить целый лог действий
-        //Скударнов С.А.
+        //Скударнов С.А. 
         public static List<StepCompositionLog> Compose()
         {
             //с этого обязательно должен начинаться метод
