@@ -65,6 +65,10 @@ namespace RevolutionCAD.Pages
                             elem.Source = new BitmapImage(
                                 new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imArrowUp.png"));
                             break;
+                        case CellState.Contact:
+                            elem.Source = new BitmapImage(
+                                new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imContact.png"));
+                            break;
                         default:
                             elem.Source = new BitmapImage(
                                 new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imEmpty.png"));
@@ -76,21 +80,26 @@ namespace RevolutionCAD.Pages
 
         private void Button_FullTracing_Click(object sender, RoutedEventArgs e)
         {
-            Matrix<Cell> dpr = new Matrix<Cell>(2, 10);
+            Matrix<Cell> dpr = new Matrix<Cell>(17, 16);
 
             for (int i = 0; i < dpr.RowsCount; i++)
                 for (int j = 0; j < dpr.ColsCount; j++)
                     dpr[i, j] = new Cell();
 
-            dpr[0, 0].State = CellState.ArrowUp;
-            dpr[0, 3].State = CellState.ArrowDown;
-            dpr[0, 5].State = CellState.ArrowDown;
-            dpr[0, 7].State = CellState.ArrowDown;
-            dpr[0, 9].State = CellState.ArrowDown;
-            dpr[1, 2].State = CellState.ArrowUp;
-            dpr[1, 4].State = CellState.ArrowUp;
-            dpr[1, 6].State = CellState.ArrowUp;
-            dpr[1, 8].State = CellState.ArrowDown;
+            dpr[2, 2].State = CellState.Contact;
+            dpr[2, 4].State = CellState.Contact;
+            dpr[2, 6].State = CellState.Contact;
+            dpr[2, 8].State = CellState.Contact;
+            dpr[2, 10].State = CellState.Contact;
+            dpr[2, 12].State = CellState.Contact;
+            dpr[2, 14].State = CellState.Contact;
+            dpr[6, 2].State = CellState.Contact;
+            dpr[6, 4].State = CellState.Contact;
+            dpr[6, 6].State = CellState.Contact;
+            dpr[6, 8].State = CellState.Contact;
+            dpr[6, 10].State = CellState.Contact;
+            dpr[6, 12].State = CellState.Contact;
+            dpr[6, 14].State = CellState.Contact;
 
             Draw(dpr);
         }
