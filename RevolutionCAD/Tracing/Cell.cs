@@ -35,6 +35,7 @@ namespace RevolutionCAD.Tracing
 
     public enum CellState
     {
+        Empty,
         ArrowUp,
         ArrowDown,
         ArrowLeft,
