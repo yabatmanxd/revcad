@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:RevolutionCAD.Pages"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid x:Name="Grid_Parent">
+    <Grid >
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="2*"/>
@@ -31,7 +31,10 @@
                 <ComboBoxItem Content="Метод Хейса"></ComboBoxItem>
             </ComboBox>
         </StackPanel>
-        <StackPanel Grid.Row="3"
+        <ScrollViewer  Grid.Row="1">
+            <StackPanel x:Name="Grid_Parent"></StackPanel>
+        </ScrollViewer>
+            <StackPanel Grid.Row="3"
                     Margin="10"
                     Orientation="Horizontal">
             <Button Name="Button_FullTracing" 

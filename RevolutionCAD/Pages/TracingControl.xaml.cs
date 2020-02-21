@@ -34,7 +34,7 @@ namespace RevolutionCAD.Pages
                 Orientation = Orientation.Vertical,
                 Background = new SolidColorBrush(Colors.Azure)
             };
-            Grid.SetRow(mainsp, 1);
+            //Grid.SetRow(mainsp, 1);
             Grid_Parent.Children.Add(mainsp);
             // добавление стекпанелей по строкам
             for(int i = 0; i<DRP.RowsCount; i++)
@@ -50,9 +50,9 @@ namespace RevolutionCAD.Pages
                 {
                     Image elem = new Image
                     {
-                        Height = 20,
-                        Width = 20,
-                        Tag = DateTime.Now
+                        Height = 12,
+                        Width = 12,
+                        Stretch = Stretch.Fill
                     };
                     rowsp.Children.Add(elem);
                     switch (DRP[i, c].State)
@@ -69,6 +69,34 @@ namespace RevolutionCAD.Pages
                             elem.Source = new BitmapImage(
                                 new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imContact.png"));
                             break;
+                        case CellState.WireBottomLeft:
+                            elem.Source = new BitmapImage(
+                                new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireBottomLeft.png"));
+                            break;
+                        case CellState.WireBottomRight:
+                            elem.Source = new BitmapImage(
+                                new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireBottomRight.png"));
+                            break;
+                        case CellState.WireCross:
+                            elem.Source = new BitmapImage(
+                                new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireCross.png"));
+                            break;
+                        case CellState.WireHorizontal:
+                            elem.Source = new BitmapImage(
+                                new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireHorizontal.png"));
+                            break;
+                        case CellState.WireTopLeft:
+                            elem.Source = new BitmapImage(
+                                new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireTopLeft.png"));
+                            break;
+                        case CellState.WireTopRight:
+                            elem.Source = new BitmapImage(
+                                new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireTopRight.png"));
+                            break;
+                        case CellState.WireVertical:
+                            elem.Source = new BitmapImage(
+                                new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireVertical.png"));
+                            break;
                         default:
                             elem.Source = new BitmapImage(
                                 new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imEmpty.png"));
@@ -80,7 +108,7 @@ namespace RevolutionCAD.Pages
 
         private void Button_FullTracing_Click(object sender, RoutedEventArgs e)
         {
-            Matrix<Cell> dpr = new Matrix<Cell>(17, 16);
+            Matrix<Cell> dpr = new Matrix<Cell>(20, 40);
 
             for (int i = 0; i < dpr.RowsCount; i++)
                 for (int j = 0; j < dpr.ColsCount; j++)
@@ -100,6 +128,74 @@ namespace RevolutionCAD.Pages
             dpr[6, 10].State = CellState.Contact;
             dpr[6, 12].State = CellState.Contact;
             dpr[6, 14].State = CellState.Contact;
+            dpr[11, 2].State = CellState.Contact;
+            dpr[11, 4].State = CellState.Contact;
+            dpr[11, 6].State = CellState.Contact;
+            dpr[11, 8].State = CellState.Contact;
+            dpr[11, 10].State = CellState.Contact;
+            dpr[11, 12].State = CellState.Contact;
+            dpr[11, 14].State = CellState.Contact;
+            dpr[15, 2].State = CellState.Contact;
+            dpr[15, 4].State = CellState.Contact;
+            dpr[15, 6].State = CellState.Contact;
+            dpr[15, 8].State = CellState.Contact;
+            dpr[15, 10].State = CellState.Contact;
+            dpr[15, 12].State = CellState.Contact;
+            dpr[15, 14].State = CellState.Contact;
+
+            dpr[3, 2].State = CellState.WireVertical;
+            dpr[4, 2].State = CellState.WireTopRight;
+            dpr[4, 3].State = CellState.WireHorizontal;
+            dpr[4, 4].State = CellState.WireBottomLeft;
+            dpr[5, 4].State = CellState.WireVertical;
+            dpr[7, 4].State = CellState.WireVertical;
+            dpr[8, 4].State = CellState.WireTopRight;
+            dpr[8, 5].State = CellState.WireHorizontal;
+            dpr[8, 6].State = CellState.WireBottomLeft;
+            dpr[9, 6].State = CellState.WireVertical;
+            dpr[10, 6].State = CellState.WireVertical;
+
+            dpr[2, 7].State = CellState.WireBottomLeft;
+            dpr[3, 7].State = CellState.WireVertical;
+            dpr[4, 7].State = CellState.WireVertical;
+            dpr[5, 7].State = CellState.WireVertical;
+            dpr[6, 7].State = CellState.WireVertical;
+            dpr[7, 7].State = CellState.WireVertical;
+            dpr[8, 7].State = CellState.WireVertical;
+            dpr[9, 7].State = CellState.WireTopRight;
+            dpr[9, 8].State = CellState.WireHorizontal;
+            dpr[9, 9].State = CellState.WireHorizontal;
+            dpr[9, 10].State = CellState.WireBottomLeft;
+            dpr[10, 10].State = CellState.WireVertical;
+
+            dpr[2, 19].State = CellState.Contact;
+            dpr[2, 21].State = CellState.Contact;
+            dpr[2, 23].State = CellState.Contact;
+            dpr[2, 25].State = CellState.Contact;
+            dpr[2, 27].State = CellState.Contact;
+            dpr[2, 29].State = CellState.Contact;
+            dpr[2, 31].State = CellState.Contact;
+            dpr[6, 19].State = CellState.Contact;
+            dpr[6, 21].State = CellState.Contact;
+            dpr[6, 23].State = CellState.Contact;
+            dpr[6, 25].State = CellState.Contact;
+            dpr[6, 27].State = CellState.Contact;
+            dpr[6, 29].State = CellState.Contact;
+            dpr[6, 31].State = CellState.Contact;
+            dpr[11, 19].State = CellState.Contact;
+            dpr[11, 21].State = CellState.Contact;
+            dpr[11, 23].State = CellState.Contact;
+            dpr[11, 25].State = CellState.Contact;
+            dpr[11, 27].State = CellState.Contact;
+            dpr[11, 29].State = CellState.Contact;
+            dpr[11, 31].State = CellState.Contact;
+            dpr[15, 19].State = CellState.Contact;
+            dpr[15, 21].State = CellState.Contact;
+            dpr[15, 23].State = CellState.Contact;
+            dpr[15, 25].State = CellState.Contact;
+            dpr[15, 27].State = CellState.Contact;
+            dpr[15, 29].State = CellState.Contact;
+            dpr[15, 31].State = CellState.Contact;
 
             Draw(dpr);
         }

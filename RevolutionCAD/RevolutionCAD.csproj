@@ -218,5 +218,14 @@
   <ItemGroup>
     <Resource Include="Resources\imContact.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\imWireBottomLeft.png" />
+    <Resource Include="Resources\imWireBottomRight.png" />
+    <Resource Include="Resources\imWireCross.png" />
+    <Resource Include="Resources\imWireHorizontal.png" />
+    <Resource Include="Resources\imWireTopLeft.png" />
+    <Resource Include="Resources\imWireTopRight.png" />
+    <Resource Include="Resources\imWireVertical.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
