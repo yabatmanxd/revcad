@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using RevolutionCAD.Composition;
+using RevolutionCAD.Placement;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,7 +13,10 @@ namespace RevolutionCAD
     public static class ApplicationData
     {
         public static string FileName { get; set; }
-        
+
+        public static int PinDistance = 1;
+        public static int RowDistance = 3;
+        public static int ElementsDistance = 4;
 
         public static bool IsFileExists(string extension, out string error)
         {
@@ -121,10 +125,10 @@ namespace RevolutionCAD
             
         }
 
-        public static List<Matrix<int>> ReadPlacement(out string msg)
+        public static PlacementResult ReadPlacement(out string msg)
         {
             msg = "";
-            List<Matrix<int>> plc = null;
+            PlacementResult plc = null;
             if (IsFileExists(".plc", out msg))
             {
                 try
@@ -132,7 +136,7 @@ namespace RevolutionCAD
                     using (StreamReader file = File.OpenText(FileName + ".plc"))
                     {
                         JsonSerializer serializer = new JsonSerializer();
-                        plc = (List<Matrix<int>>)serializer.Deserialize(file, typeof(List<Matrix<int>>));
+                        plc = (PlacementResult)serializer.Deserialize(file, typeof(PlacementResult));
                     }
                 }
                 catch (Exception exp)
@@ -143,7 +147,7 @@ namespace RevolutionCAD
             return plc;
         }
 
-        public static void WritePlacement(List<Matrix<int>> plc, out string errWrite)
+        public static void WritePlacement(PlacementResult plc, out string errWrite)
         {
             errWrite = "";
             if (FileName != "")
@@ -167,6 +171,7 @@ namespace RevolutionCAD
         {
             errMsg = "";
             dipsNumbers = new List<int>();
+            dipsNumbers.Add(0);
             int N = 1; // количество микросхем (первая - разъём)
             bool IsSkipped = false; // флаг того, что ненужная часть файла пропущена
                                     // та, которая с dip
@@ -192,7 +197,25 @@ namespace RevolutionCAD
                     int dipNumber;
                     string dipNumberStr = line.Replace("dip", "");
                     if (Int32.TryParse(dipNumberStr, out dipNumber))
-                        dipsNumbers.Add(dipNumber);
+                    {
+                        if (dipNumber % 2 == 0)
+                        {
+                            dipsNumbers.Add(dipNumber);
+                        } else
+                        {
+                            errMsg = $"DIP корпуса может быть только чётный в строке {N - 2}";
+                            R = Q = null;
+                            return false;
+                        }
+                        
+                    }
+                        
+                    else
+                    {
+                        errMsg = $"Ошибка в именовании типа корпуса dip в строке {N - 2}";
+                        R = Q = null;
+                        return false;
+                    }
                 }
                     
                 else

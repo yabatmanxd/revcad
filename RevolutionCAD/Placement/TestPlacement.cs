@@ -24,24 +24,25 @@ namespace RevolutionCAD.Placement
 
             // тут начинается алгоритм для тупого поочерёдного заполнения позиций матрицы элементами без всякого анализа
 
-            boards.Add(new Matrix<int>(3,3)); // начинаем алгоритм с создания матрицы
-            boards[0].Fill(-1);
-            int pos = 0;
-            for (int elem = 0; elem < 20; elem++)
+            var cmp = ApplicationData.ReadComposition(out err);
+            
+            for (int numBoard = 0; numBoard < cmp.Count; numBoard++)
             {
-                if (pos > 6) // единственным условием является чтобы в 1 узле было по 7 элементов
+                var size = Convert.ToInt32(Math.Ceiling(Math.Sqrt(cmp[numBoard].Count)));
+                var boardMatr = new Matrix<int>(size, size);
+                boardMatr.Fill(-1);
+                boards.Add(boardMatr);
+                for (int pos = 0; pos < cmp[numBoard].Count; pos++)
                 {
-                    boards.Add(new Matrix<int>(3, 3));
-                    boards.Last().Fill(-1);
-                    pos = 0;
+                    boards.Last().setValueByPlatePos(pos, cmp[numBoard][pos]);
+
+                    string msg = "Поместили элемент D" + cmp[numBoard][pos] + " на " + boards.Count + " плату"; // пишем сообщение чё произошло на этом шаге
+                    var step = new StepPlacementLog(boards, msg);
+                    log.Add(step);
                 }
-                // этот метод позволяет обращаться к плате не как к массиву [строка, столбец], а просто от 0 до 8 если матрица 3х3, или от 0 до 15 если 4х4
-                boards.Last().setValueByPlatePos(pos,elem);
-                pos++;
-                string msg = "Поместили элмент D" + elem + " на " + boards.Count + " плату"; // пишем сообщение чё произошло на этом шаге
-                var step = new StepPlacementLog(boards, msg);
-                log.Add(step);
+               
             }
+            
 
             return log;
         }

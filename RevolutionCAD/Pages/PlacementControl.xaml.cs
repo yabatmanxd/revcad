@@ -57,12 +57,24 @@ namespace RevolutionCAD.Pages
             // на последнем шаге получили результат размещения
 
 
+
             // если не было ошибки - сериализуем результат
             if (err_msg == "")
             {
                 if (steps.Count != 0)
                 {
-                    var result = steps.Last().BoardsList;
+
+                    //var result = steps.Last().BoardsList;
+                    var result = new PlacementResult();
+                    result.BoardsMatrices = steps.Last().BoardsList;
+
+                    var sch = ApplicationData.ReadScheme(out err_msg);
+                    var matrQ = sch.MatrixQ;
+                    var dips = sch.DIPNumbers;
+                    var elementsInBoards = ApplicationData.ReadComposition(out err_msg);
+                    
+                    result.BoardsDRPs = result.getBoardsDRPs(result.BoardsMatrices, matrQ, elementsInBoards, dips);
+
                     if (steps.Count != 0)
                         ApplicationData.WritePlacement(result, out err_msg);
 
