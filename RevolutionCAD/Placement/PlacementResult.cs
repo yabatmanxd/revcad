@@ -65,7 +65,7 @@ namespace RevolutionCAD.Placement
                         int elementNumber = brdMatr[i, j];
                         if (elementNumber != -1) // пропускаем пустые места
                         {
-                            int elementDip = dips[elementNumber-1];
+                            int elementDip = dips[elementNumber];
                             int pinsInColumn = elementDip / 2;
                             currentColHeight += ApplicationData.ElementsDistance + pinsInColumn + (ApplicationData.PinDistance * pinsInColumn) - ApplicationData.PinDistance;
                         }

@@ -108,6 +108,7 @@
     <Compile Include="Tracing\Cell.cs" />
     <Compile Include="Scheme.cs" />
     <Compile Include="Tracing\StepTracingLog.cs" />
+    <Compile Include="Tracing\TestTracing.cs" />
     <Compile Include="Tracing\TracingAkers.cs" />
     <Compile Include="Tracing\TracingConnectComplexes.cs" />
     <Compile Include="Tracing\TracingFourBeam.cs" />
