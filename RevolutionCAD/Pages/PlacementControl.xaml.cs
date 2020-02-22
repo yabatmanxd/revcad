@@ -35,6 +35,17 @@ namespace RevolutionCAD.Pages
             var steps = new List<StepPlacementLog>();
 
             string err_msg = "";
+            
+            var cmp = ApplicationData.ReadComposition(out err_msg);
+
+            var sch = ApplicationData.ReadScheme(out err_msg);
+            var matrR = sch.MatrixR;
+
+            if (err_msg != "")
+            {
+                MessageBox.Show(err_msg, "Revolution CAD");
+                return steps;
+            }
 
             switch (ComboBox_Method.SelectedIndex)
             {
@@ -51,7 +62,7 @@ namespace RevolutionCAD.Pages
                 case 5:
                     break;
                 case 6:
-                    steps = TestPlacement.Place(out err_msg);
+                    steps = TestPlacement.Place(cmp, out err_msg);
                     break;
             }
             // на последнем шаге получили результат размещения
@@ -63,24 +74,27 @@ namespace RevolutionCAD.Pages
             {
                 if (steps.Count != 0)
                 {
-
                     //var result = steps.Last().BoardsList;
                     var result = new PlacementResult();
                     result.BoardsMatrices = steps.Last().BoardsList;
-
-                    var sch = ApplicationData.ReadScheme(out err_msg);
+                    
                     var matrQ = sch.MatrixQ;
                     var dips = sch.DIPNumbers;
                     var elementsInBoards = ApplicationData.ReadComposition(out err_msg);
                     
-                    result.BoardsDRPs = result.getBoardsDRPs(result.BoardsMatrices, matrQ, elementsInBoards, dips);
+                    result.CreateBoardsDRPs(matrQ, elementsInBoards, dips, out err_msg);
 
                     if (steps.Count != 0)
                         ApplicationData.WritePlacement(result, out err_msg);
 
+                    if (err_msg != "")
+                    {
+                        MessageBox.Show(err_msg, "Revolution CAD");
+                        return steps;
+                    }
+
                 }
-            }
-            if (err_msg != "")
+            } else
                 MessageBox.Show(err_msg, "Revolution CAD");
             return steps;
         }

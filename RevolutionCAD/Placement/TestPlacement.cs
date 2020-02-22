@@ -8,24 +8,17 @@ namespace RevolutionCAD.Placement
 {
     public class TestPlacement
     {
-        public static List<StepPlacementLog> Place(out string err)
+        public static List<StepPlacementLog> Place(List<List<int>> cmp, out string err)
         {
             err = "";
             // создаём класс для логирования (обязательно)
             var log = new List<StepPlacementLog>();
-
-            // для моего тестового заполнения не нужно знать какие элементы в каком узле
-            // а вам для этого придётся выполнить чтение файла предыдущего этапа:
-            //var ElementsInBoards = ApplicationData.ReadComposition(out err);
             
-
             // создаём список с матрицами для каждого узла
             var boards = new List<Matrix<int>>();
 
-            // тут начинается алгоритм для тупого поочерёдного заполнения позиций матрицы элементами без всякого анализа
-
-            var cmp = ApplicationData.ReadComposition(out err);
-            
+            // тестовый алгоритм просто последовательно размещает все элементы на плату
+                        
             for (int numBoard = 0; numBoard < cmp.Count; numBoard++)
             {
                 var size = Convert.ToInt32(Math.Ceiling(Math.Sqrt(cmp[numBoard].Count)));

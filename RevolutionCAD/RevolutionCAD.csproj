@@ -105,6 +105,7 @@
     </Compile>
     <Compile Include="Placement\PlacementResult.cs" />
     <Compile Include="Placement\TestPlacement.cs" />
+    <Compile Include="Position.cs" />
     <Compile Include="Tracing\Cell.cs" />
     <Compile Include="Scheme.cs" />
     <Compile Include="Tracing\StepTracingLog.cs" />

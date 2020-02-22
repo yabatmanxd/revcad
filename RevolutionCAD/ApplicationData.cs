@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using RevolutionCAD.Composition;
 using RevolutionCAD.Placement;
+using RevolutionCAD.Tracing;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -167,6 +168,48 @@ namespace RevolutionCAD
             }
         }
 
+        public static List<List<Matrix<Cell>>> ReadTracing(out string msg)
+        {
+            msg = "";
+            List<List<Matrix<Cell>>> trs = null;
+            if (IsFileExists(".trs", out msg))
+            {
+                try
+                {
+                    using (StreamReader file = File.OpenText(FileName + ".trs"))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        trs = (List<List<Matrix<Cell>>>)serializer.Deserialize(file, typeof(List<List<Matrix<Cell>>>));
+                    }
+                }
+                catch (Exception exp)
+                {
+                    msg = $"Произошла ошибка при попытке чтения файла {FileName}.trs: {exp.Message}";
+                }
+            }
+            return trs;
+        }
+
+        public static void WriteTracing(List<List<Matrix<Cell>>> trs, out string msg)
+        {
+            msg = "";
+            if (FileName != "")
+            {
+                try
+                {
+                    using (StreamWriter file = File.CreateText(FileName + ".trs"))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        serializer.Serialize(file, trs);
+                    }
+                }
+                catch (Exception exc)
+                {
+                    msg = $"При записи в файл трассировки произошла ошибка: {exc.Message}";
+                }
+            }
+        }
+
         public static bool CreateMatrices(string textSchemeDefinition, out Matrix<int> R, out Matrix<int> Q, out List<int> dipsNumbers, out string errMsg)
         {
             errMsg = "";
@@ -251,6 +294,11 @@ namespace RevolutionCAD
                         return false;
                     }
                     elements[i] = elements[i].Substring(0, posOfPoint).Replace("D", ""); // обрезаем эту часть, оставляем только номер платы
+                    if (elements[i] == "0")
+                    {
+                        errMsg = $"Нумерация элементов должна начинаться с 1. Ошибка в строке {N+i}";
+                        return false;
+                    }
                     if (elements[i] == "X")
                     {
                         elements[i] = "0"; // так будет удобнее дальше для формирования матриц

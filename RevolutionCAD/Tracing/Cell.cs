@@ -29,6 +29,21 @@ namespace RevolutionCAD.Tracing
                     return false;
             }   
         }
+
+        public Cell()
+        {
+            State = CellState.Empty;
+            Weight = 0;
+        }
+
+        public Cell Clone()
+        {
+            var cell = new Cell();
+            cell.State = this.State;
+            cell.Weight = this.Weight;
+            
+            return cell;
+        }
     }
 
     

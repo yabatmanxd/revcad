@@ -12,21 +12,30 @@ namespace RevolutionCAD.Placement
     {
         public List<Matrix<int>> BoardsMatrices { get; set; }
         public List<Matrix<Cell>> BoardsDRPs { get; set; }
-        public List<Dictionary<int,List<Point>>> BoardsElementsContactsPos { get; set; }
+        public List<Dictionary<int,List<Position>>> BoardsElementsContactsPos { get; set; }
 
-        public List<Matrix<Cell>> getBoardsDRPs(List<Matrix<int>> brdMatrs, Matrix<int> matrQ, List<List<int>> elInBoards, List<int> dips)
+        public void CreateBoardsDRPs(Matrix<int> matrQ, List<List<int>> elInBoards, List<int> dips, out string err)
         {
-            if (brdMatrs == null)
-                return null;
-            if (brdMatrs.Count == 0)
-                return null;
+            err = "";
+            if (BoardsMatrices == null)
+            {
+                err = "Список плат пустой";
+                return;
+            }
+            if (BoardsMatrices.Count == 0)
+            {
+                err = "Список плат пустой";
+                return;
+            }
+            
 
             // список в котором будет хранится размер разъёма для каждой платы
             var BoardsCountContactsConnector = new List<int>();
-            var boardsDRPs = new List<Matrix<Cell>>();
+            BoardsElementsContactsPos = new List<Dictionary<int, List<Position>>>();
+            BoardsDRPs = new List<Matrix<Cell>>();
 
             // запускаем цикл для формирования своего дрп для каждого узла
-            for (int boardNumber = 0; boardNumber < brdMatrs.Count; boardNumber++)
+            for (int boardNumber = 0; boardNumber < BoardsMatrices.Count; boardNumber++)
             {
                 // запускаем цикл по матрице Q чтобы подсчитать количество связей элементов узла с разъёмом (чтобы потом сформировать определённого размера разъём)
                 int countContactsConnector = 0;
@@ -52,7 +61,7 @@ namespace RevolutionCAD.Placement
                 // расчёт размера ДРП платы
                 int drpHeight = 0;
                 int drpWidth = 0;
-                var brdMatr = brdMatrs[boardNumber];
+                var brdMatr = BoardsMatrices[boardNumber];
 
 
                 // подсчитываем необходимую высоту платы
@@ -94,31 +103,111 @@ namespace RevolutionCAD.Placement
                 }
 
                 drpHeight += ApplicationData.ElementsDistance;
-                drpWidth += ApplicationData.ElementsDistance;
+                drpWidth += ApplicationData.ElementsDistance + 2; // ширина + 2, чтобы учесть разъём
 
-                var boardDRP = new Matrix<Cell>(drpHeight,drpWidth);
+                // создаём итоговое дрп на базе расчётов
+                var boardDRP = new Matrix<Cell>(drpHeight, drpWidth);
 
-                for (int i = 0; i<drpHeight; i++)
+                // заполняем его пустыми ячейками
+                for (int drpRow = 0; drpRow < boardDRP.RowsCount; drpRow++)
                 {
-                    for (int j = 0; j<drpWidth; j++)
+                    for (int drpCol = 0; drpCol < boardDRP.ColsCount; drpCol++)
                     {
-                        boardDRP[i, j] = new Cell()
-                        {
-                            State = CellState.ArrowUp
-                        };
+                        boardDRP[drpRow, drpCol] = new Cell();
                     }
                 }
 
-                boardDRP[0, 0].State = CellState.Contact;
-                boardDRP[0, 1].State = CellState.Contact;
-                boardDRP[1, 0].State = CellState.Contact;
-                boardDRP[drpHeight-1, drpWidth-1].State = CellState.Contact;
+                // создаём словарь координат контактов разъёма и элементов
+                var ElementsContactsPos = new Dictionary<int, List<Position>>();
 
-                boardsDRPs.Add(boardDRP);
+                // переходим к размещению разъёма
+                var heightConnector = BoardsCountContactsConnector.Last();
+
+                int startRowConnector = drpHeight / 2 - heightConnector / 2;
+
+                var ConnectorContactsPos = new List<Position>();
+                for (int r = 0; r<heightConnector; r++)
+                {
+                    boardDRP[startRowConnector + r, r % 2].State = CellState.Contact;
+                    ConnectorContactsPos.Add(new Position(startRowConnector + r, r % 2));
+                }
+
+                ElementsContactsPos.Add(0, ConnectorContactsPos);
+                
+
+                Position startPos = new Position(ApplicationData.ElementsDistance, ApplicationData.ElementsDistance + 2);
+                Position currentPos = new Position(ApplicationData.ElementsDistance, ApplicationData.ElementsDistance + 2);
+
+                
+                // запускаем цикл по столбцам матрицы, в которой хранятся номера элементов
+                for (int j = 0; j < brdMatr.ColsCount; j++)
+                {
+                    // запускаем цикл по строкам матрицы, в которой хранятся номера элементов
+                    for (int i = 0; i < brdMatr.RowsCount; i++)
+                    {
+                        // узнаём номер элемента в позиции
+                        int elementNumber = brdMatr[i, j];
+                        
+                        // если -1 - значит место не занято
+                        if (elementNumber != -1) // пропускаем пустые места
+                        {
+                            // список координат каждого контакта
+                            var ElementContactsPos = new List<Position>();
+                            // узнаём номер дипа
+                            int elementDip = dips[elementNumber];
+                            // количество контактов в столбце = номер дипа / 2
+                            int pinsInColumn = elementDip / 2;
+                            int offsetRow = 0;
+                            // сначала формируем первый ряд контактов элемента сверху вниз
+                            while( offsetRow < elementDip - ApplicationData.PinDistance)
+                            {
+                                boardDRP[currentPos.Row + offsetRow, currentPos.Column].State = CellState.Contact;
+                                // записываем текущую координату в список координат контактов
+                                ElementContactsPos.Add(new Position(currentPos.Row + offsetRow, j));
+                                offsetRow += 1 + ApplicationData.PinDistance;
+                            }
+                            offsetRow -= 1 + ApplicationData.PinDistance; ;
+                            // сдвигаемся вправо на расстояние в клетках от первого ряда контактов
+                            currentPos.Column += ApplicationData.RowDistance;
+                            // теперь идём обратно вверх
+                            while (offsetRow >= 0)
+                            {
+                                boardDRP[currentPos.Row + offsetRow, currentPos.Column].State = CellState.Contact;
+                                // записываем текущую координату в список координат контактов
+                                ElementContactsPos.Add(new Position(currentPos.Row + offsetRow, currentPos.Column));
+                                offsetRow -= 1 + ApplicationData.PinDistance;
+                            }
+                            // добавляем сформированный список координат каждого контакта
+                            ElementsContactsPos.Add(elementNumber, ElementContactsPos);
+
+                            // возвращаемся опять в позицию для печати первого ряда контактов, но уже следующего элемента
+                            currentPos.Column -= ApplicationData.RowDistance;
+                            // пропускаем ячейки с уже размещённым элементом
+                            currentPos.Row += elementDip - ApplicationData.PinDistance;
+
+                            currentPos.Row += ApplicationData.ElementsDistance;
+                        } else
+                        { 
+                            // если позиция пустая, то нужно пропустить определённое количество клеточек
+                            // формула приблизительная
+                            currentPos.Row += drpHeight / (brdMatr.RowsCount + 1);
+                        }
+
+                    }
+                    // возвращаемся к начальной точке размещения элементов
+                    currentPos.Row = startPos.Row;
+                    currentPos.Column = startPos.Column;
+                    // пропускаем определённое количество столбцов, которое определяется по количеству уже размещённых умноженное на отступы
+                    currentPos.Column += ((j + 1) * ApplicationData.RowDistance) + ((j + 1) * ApplicationData.ElementsDistance);
+
+                }
+                
+                BoardsDRPs.Add(boardDRP);
+                BoardsElementsContactsPos.Add(ElementsContactsPos);
 
             }
 
-            return boardsDRPs;
+            return;
             
         }
     }

@@ -21,9 +21,264 @@ namespace RevolutionCAD.Pages
     /// </summary>
     public partial class TracingControl : UserControl
     {
+        List<StepTracingLog> StepsLog;
+
+        public int CurrentStep { get; set; }
+
         public TracingControl()
         {
             InitializeComponent();
+        }
+
+        private List<StepTracingLog> DoTracing()
+        {
+            var steps = new List<StepTracingLog>();
+
+            string err_msg = "";
+
+            var sch = ApplicationData.ReadScheme(out err_msg);
+
+            var plc = ApplicationData.ReadPlacement(out err_msg);
+
+            switch (ComboBox_Method.SelectedIndex)
+            {
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    break;
+                case 8:
+                    break;
+                case 9:
+                    break;
+                case 10:
+                    break;
+                case 11:
+                    break;
+                case 12:
+                    steps = TestTracing.Trace(sch, plc, out err_msg);
+                    break;
+            }
+            
+            // если не было ошибки - сериализуем результат
+            if (err_msg == "")
+            {
+                if (steps.Count != 0)
+                {
+                    if (steps.Count != 0)
+                    {
+                        var result = steps.Last().BoardsDRPs;
+                        ApplicationData.WriteTracing(result, out err_msg);
+                    }
+                       
+                }
+            } else 
+                MessageBox.Show(err_msg, "Revolution CAD");
+            return steps;
+        }
+        
+        private void Button_FullTracing_Click(object sender, RoutedEventArgs e)
+        {
+            TextBox_Log.Text = "";
+            Grid_Parent.Children.Clear();
+            StepsLog = DoTracing();
+            if (StepsLog.Count == 0)
+            {
+                MessageBox.Show("Метод трассировки не сработал", "Revolution CAD");
+                return;
+            }
+            for (int step = 0; step < StepsLog.Count; step++)
+            {
+                TextBox_Log.Text += $"Шаг №{step + 1}:" + "\n";
+                TextBox_Log.Text += StepsLog[step].Message + "\n";
+            }
+            ShowStep(StepsLog.Count - 1); // отображаем только последний шаг графически, т.к. он будет результатом трассировки
+
+        }
+
+        private void ShowStep(int StepNumber)
+        {
+            TextBox_Log.ScrollToEnd();
+
+            Grid_Parent.Children.Clear();
+            var OneStep = StepsLog[StepNumber];
+
+            for (int numBoard = 0; numBoard < OneStep.BoardsDRPs.Count; numBoard++)
+            {
+                var drp = MergeLayersDRP(OneStep.BoardsDRPs[numBoard]);
+
+                var sp_BoardCard = new StackPanel();
+                sp_BoardCard.Orientation = Orientation.Vertical;
+                sp_BoardCard.Margin = new Thickness(5);
+
+                var tb_HeaderBoard = new TextBlock();
+                tb_HeaderBoard.Margin = new Thickness(5);
+                tb_HeaderBoard.Text = $"Узел №{numBoard + 1}:";
+
+                sp_BoardCard.Children.Add(tb_HeaderBoard);
+
+                var sp_Board = new StackPanel();
+                sp_Board.Orientation = Orientation.Vertical;
+
+                for (int i = 0; i < drp.RowsCount; i++)
+                {
+                    var spRow = new StackPanel();
+                    spRow.Orientation = Orientation.Horizontal;
+                    // добавление строки элементов
+                    for (int c = 0; c < drp.ColsCount; c++)
+                    {
+                        Image elem = new Image
+                        {
+                            Height = 12,
+                            Width = 12,
+                            Stretch = Stretch.Fill
+                        };
+                        switch (drp[i, c].State)
+                        {
+                            case CellState.ArrowDown:
+                                elem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imArrowDown.png"));
+                                break;
+                            case CellState.ArrowUp:
+                                elem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imArrowUp.png"));
+                                break;
+                            case CellState.Contact:
+                                elem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imContact.png"));
+                                break;
+                            case CellState.WireBottomLeft:
+                                elem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireBottomLeft.png"));
+                                break;
+                            case CellState.WireBottomRight:
+                                elem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireBottomRight.png"));
+                                break;
+                            case CellState.WireCross:
+                                elem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireCross.png"));
+                                break;
+                            case CellState.WireHorizontal:
+                                elem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireHorizontal.png"));
+                                break;
+                            case CellState.WireTopLeft:
+                                elem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireTopLeft.png"));
+                                break;
+                            case CellState.WireTopRight:
+                                elem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireTopRight.png"));
+                                break;
+                            case CellState.WireVertical:
+                                elem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireVertical.png"));
+                                break;
+                            default:
+                                elem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imEmpty.png"));
+                                break;
+                        }
+                        spRow.Children.Add(elem);
+                    }
+                    sp_Board.Children.Add(spRow);
+                }
+
+                sp_BoardCard.Children.Add(sp_Board);
+
+                Grid_Parent.Children.Add(sp_BoardCard);
+            }
+
+
+        }
+
+        private void Button_NextStep_Click(object sender, RoutedEventArgs e)
+        {
+            TextBox_Log.Text += $"Шаг №{CurrentStep + 1}:" + "\n";
+            TextBox_Log.Text += StepsLog[CurrentStep].Message + "\n";
+            ShowStep(CurrentStep);
+            if (CurrentStep + 1 >= StepsLog.Count)
+            {
+                TextBox_Log.Text += "\n === Трассировка окончена ===\n";
+                DropStepMode();
+            }
+            else
+            {
+                CurrentStep++;
+            }
+        }
+
+        private void Button_DropStepMode_Click(object sender, RoutedEventArgs e)
+        {
+            DropStepMode();
+        }
+
+        private void Button_StartStepTracing_Click(object sender, RoutedEventArgs e)
+        {
+            TextBox_Log.Text = "";
+            Grid_Parent.Children.Clear();
+
+            StepsLog = DoTracing();
+
+            if (StepsLog.Count == 0)
+            {
+                MessageBox.Show("Метод трассировки не сработал", "Revolution CAD");
+                return;
+            }
+
+
+            Button_FullTracing.IsEnabled = false;
+            Button_StartStepTracing.IsEnabled = false;
+            Button_NextStep.IsEnabled = true;
+            Button_DropStepMode.IsEnabled = true;
+
+            CurrentStep = 0;
+
+            Button_NextStep_Click(null, null);
+        }
+
+        private void DropStepMode()
+        {
+            Button_FullTracing.IsEnabled = true;
+            Button_StartStepTracing.IsEnabled = true;
+            Button_NextStep.IsEnabled = false;
+            Button_DropStepMode.IsEnabled = false;
+        }
+
+        private Matrix<Cell> MergeLayersDRP(List<Matrix<Cell>> LayersDRPs)
+        {
+            int heightDRP = LayersDRPs.First().RowsCount;
+            int widthDRP = LayersDRPs.First().ColsCount;
+
+            var resDRP = new Matrix<Cell>(heightDRP, widthDRP);
+
+            foreach (var layerDRP in LayersDRPs)
+            {
+                for (int i = 0; i < layerDRP.RowsCount; i++)
+                {
+                    for (int j = 0; j < layerDRP.ColsCount; j++)
+                    {
+                        if (layerDRP[i, j].State != CellState.Empty)
+                            resDRP[i, j] = layerDRP[i, j].Clone();
+                        else
+                            resDRP[i, j] = new Cell();
+                    }
+                }
+            }
+
+            return resDRP;
         }
 
         public void Draw(Matrix<Cell> DRP)
@@ -37,167 +292,7 @@ namespace RevolutionCAD.Pages
             //Grid.SetRow(mainsp, 1);
             Grid_Parent.Children.Add(mainsp);
             // добавление стекпанелей по строкам
-            for(int i = 0; i<DRP.RowsCount; i++)
-            {
-                StackPanel rowsp = new StackPanel
-                {
-                    Orientation = Orientation.Horizontal,
-                    Background = new SolidColorBrush(Colors.BlanchedAlmond)
-                };
-                mainsp.Children.Add(rowsp);
-                // добавление строки элементов
-                for(int c = 0; c<DRP.ColsCount; c++)
-                {
-                    Image elem = new Image
-                    {
-                        Height = 12,
-                        Width = 12,
-                        Stretch = Stretch.Fill
-                    };
-                    rowsp.Children.Add(elem);
-                    switch (DRP[i, c].State)
-                    {
-                        case CellState.ArrowDown:
-                            elem.Source =  new BitmapImage(
-                                new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imArrowDown.png"));
-                            break;
-                        case CellState.ArrowUp:
-                            elem.Source = new BitmapImage(
-                                new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imArrowUp.png"));
-                            break;
-                        case CellState.Contact:
-                            elem.Source = new BitmapImage(
-                                new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imContact.png"));
-                            break;
-                        case CellState.WireBottomLeft:
-                            elem.Source = new BitmapImage(
-                                new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireBottomLeft.png"));
-                            break;
-                        case CellState.WireBottomRight:
-                            elem.Source = new BitmapImage(
-                                new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireBottomRight.png"));
-                            break;
-                        case CellState.WireCross:
-                            elem.Source = new BitmapImage(
-                                new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireCross.png"));
-                            break;
-                        case CellState.WireHorizontal:
-                            elem.Source = new BitmapImage(
-                                new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireHorizontal.png"));
-                            break;
-                        case CellState.WireTopLeft:
-                            elem.Source = new BitmapImage(
-                                new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireTopLeft.png"));
-                            break;
-                        case CellState.WireTopRight:
-                            elem.Source = new BitmapImage(
-                                new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireTopRight.png"));
-                            break;
-                        case CellState.WireVertical:
-                            elem.Source = new BitmapImage(
-                                new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireVertical.png"));
-                            break;
-                        default:
-                            elem.Source = new BitmapImage(
-                                new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imEmpty.png"));
-                            break;
-                    }
-                }
-            }
-        }
-
-        private void Button_FullTracing_Click(object sender, RoutedEventArgs e)
-        {
-            Matrix<Cell> dpr = new Matrix<Cell>(20, 40);
-
-            for (int i = 0; i < dpr.RowsCount; i++)
-                for (int j = 0; j < dpr.ColsCount; j++)
-                    dpr[i, j] = new Cell();
-
-            dpr[2, 2].State = CellState.Contact;
-            dpr[2, 4].State = CellState.Contact;
-            dpr[2, 6].State = CellState.Contact;
-            dpr[2, 8].State = CellState.Contact;
-            dpr[2, 10].State = CellState.Contact;
-            dpr[2, 12].State = CellState.Contact;
-            dpr[2, 14].State = CellState.Contact;
-            dpr[6, 2].State = CellState.Contact;
-            dpr[6, 4].State = CellState.Contact;
-            dpr[6, 6].State = CellState.Contact;
-            dpr[6, 8].State = CellState.Contact;
-            dpr[6, 10].State = CellState.Contact;
-            dpr[6, 12].State = CellState.Contact;
-            dpr[6, 14].State = CellState.Contact;
-            dpr[11, 2].State = CellState.Contact;
-            dpr[11, 4].State = CellState.Contact;
-            dpr[11, 6].State = CellState.Contact;
-            dpr[11, 8].State = CellState.Contact;
-            dpr[11, 10].State = CellState.Contact;
-            dpr[11, 12].State = CellState.Contact;
-            dpr[11, 14].State = CellState.Contact;
-            dpr[15, 2].State = CellState.Contact;
-            dpr[15, 4].State = CellState.Contact;
-            dpr[15, 6].State = CellState.Contact;
-            dpr[15, 8].State = CellState.Contact;
-            dpr[15, 10].State = CellState.Contact;
-            dpr[15, 12].State = CellState.Contact;
-            dpr[15, 14].State = CellState.Contact;
-
-            dpr[3, 2].State = CellState.WireVertical;
-            dpr[4, 2].State = CellState.WireTopRight;
-            dpr[4, 3].State = CellState.WireHorizontal;
-            dpr[4, 4].State = CellState.WireBottomLeft;
-            dpr[5, 4].State = CellState.WireVertical;
-            dpr[7, 4].State = CellState.WireVertical;
-            dpr[8, 4].State = CellState.WireTopRight;
-            dpr[8, 5].State = CellState.WireHorizontal;
-            dpr[8, 6].State = CellState.WireBottomLeft;
-            dpr[9, 6].State = CellState.WireVertical;
-            dpr[10, 6].State = CellState.WireVertical;
-
-            dpr[2, 7].State = CellState.WireBottomLeft;
-            dpr[3, 7].State = CellState.WireVertical;
-            dpr[4, 7].State = CellState.WireVertical;
-            dpr[5, 7].State = CellState.WireVertical;
-            dpr[6, 7].State = CellState.WireVertical;
-            dpr[7, 7].State = CellState.WireVertical;
-            dpr[8, 7].State = CellState.WireVertical;
-            dpr[9, 7].State = CellState.WireTopRight;
-            dpr[9, 8].State = CellState.WireHorizontal;
-            dpr[9, 9].State = CellState.WireHorizontal;
-            dpr[9, 10].State = CellState.WireBottomLeft;
-            dpr[10, 10].State = CellState.WireVertical;
-
-            dpr[2, 19].State = CellState.Contact;
-            dpr[2, 21].State = CellState.Contact;
-            dpr[2, 23].State = CellState.Contact;
-            dpr[2, 25].State = CellState.Contact;
-            dpr[2, 27].State = CellState.Contact;
-            dpr[2, 29].State = CellState.Contact;
-            dpr[2, 31].State = CellState.Contact;
-            dpr[6, 19].State = CellState.Contact;
-            dpr[6, 21].State = CellState.Contact;
-            dpr[6, 23].State = CellState.Contact;
-            dpr[6, 25].State = CellState.Contact;
-            dpr[6, 27].State = CellState.Contact;
-            dpr[6, 29].State = CellState.Contact;
-            dpr[6, 31].State = CellState.Contact;
-            dpr[11, 19].State = CellState.Contact;
-            dpr[11, 21].State = CellState.Contact;
-            dpr[11, 23].State = CellState.Contact;
-            dpr[11, 25].State = CellState.Contact;
-            dpr[11, 27].State = CellState.Contact;
-            dpr[11, 29].State = CellState.Contact;
-            dpr[11, 31].State = CellState.Contact;
-            dpr[15, 19].State = CellState.Contact;
-            dpr[15, 21].State = CellState.Contact;
-            dpr[15, 23].State = CellState.Contact;
-            dpr[15, 25].State = CellState.Contact;
-            dpr[15, 27].State = CellState.Contact;
-            dpr[15, 29].State = CellState.Contact;
-            dpr[15, 31].State = CellState.Contact;
-
-            Draw(dpr);
+            
         }
     }
 }
