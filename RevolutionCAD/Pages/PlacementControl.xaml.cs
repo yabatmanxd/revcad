@@ -43,7 +43,7 @@ namespace RevolutionCAD.Pages
 
             if (err_msg != "")
             {
-                MessageBox.Show(err_msg, "Revolution CAD");
+                MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
                 return steps;
             }
 
@@ -80,22 +80,27 @@ namespace RevolutionCAD.Pages
                     
                     var matrQ = sch.MatrixQ;
                     var dips = sch.DIPNumbers;
-                    var elementsInBoards = ApplicationData.ReadComposition(out err_msg);
+                    var elementsInBoards = ApplicationData.ReadComposition(out err_msg).BoardsElements;
                     
                     result.CreateBoardsDRPs(matrQ, elementsInBoards, dips, out err_msg);
 
-                    if (steps.Count != 0)
-                        ApplicationData.WritePlacement(result, out err_msg);
+                    if (err_msg != "")
+                    {
+                        MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return null;
+                    }
+
+                    ApplicationData.WritePlacement(result, out err_msg);
 
                     if (err_msg != "")
                     {
-                        MessageBox.Show(err_msg, "Revolution CAD");
-                        return steps;
+                        MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return null;
                     }
 
                 }
             } else
-                MessageBox.Show(err_msg, "Revolution CAD");
+                MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
             return steps;
         }
 
@@ -187,7 +192,7 @@ namespace RevolutionCAD.Pages
 
             if (StepsLog.Count == 0)
             {
-                MessageBox.Show("Метод компоновки не сработал", "Revolution CAD");
+                MessageBox.Show("Метод размещения не сработал", "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -209,7 +214,7 @@ namespace RevolutionCAD.Pages
             StepsLog = DoPlacement();
             if (StepsLog.Count == 0)
             {
-                MessageBox.Show("Метод размещения не сработал", "Revolution CAD");
+                MessageBox.Show("Метод размещения не сработал", "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             for (int step = 0; step < StepsLog.Count; step++)

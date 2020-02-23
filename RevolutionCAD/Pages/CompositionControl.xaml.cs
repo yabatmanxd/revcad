@@ -73,14 +73,41 @@ namespace RevolutionCAD.Pages
             {
                 if (steps.Count != 0)
                 {
-                    var result = steps.Last().BoardsList;
-                    if (steps.Count != 0)
-                        ApplicationData.WriteComposition(result, out err_msg);
-                    
+                    //var result = steps.Last().BoardsList;
+
+                    var result = new CompositionResult();
+                    result.BoardsElements = steps.Last().BoardsList;
+
+                    var sch = ApplicationData.ReadScheme(out err_msg);
+
+                    if (err_msg != "")
+                    {
+                        MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return null;
+                    }
+
+                    // в данном методе нужно дописать логику расделения проводов, я хуй знает как это сделать
+
+                    //result.CreateBoardsWires(sch, out err_msg);
+
+                    //if (err_msg != "")
+                    //{
+                    //    MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
+                    //    return null;
+                    //}
+
+                    ApplicationData.WriteComposition(result, out err_msg);
+
+                    if (err_msg != "")
+                    {
+                        MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return null;
+                    }
+
                 }
             }
             if (err_msg != "")
-                MessageBox.Show(err_msg, "Revolution CAD");
+                MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
             return steps;
 
         }
@@ -92,7 +119,7 @@ namespace RevolutionCAD.Pages
             StepsLog = DoComposition();
             if (StepsLog.Count == 0)
             {
-                MessageBox.Show("Метод компоновки не сработал", "Revolution CAD");
+                MessageBox.Show("Метод компоновки не сработал", "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             for (int step = 0; step < StepsLog.Count; step++)
@@ -113,7 +140,7 @@ namespace RevolutionCAD.Pages
             
             if (StepsLog.Count == 0)
             {
-                MessageBox.Show("Метод компоновки не сработал", "Revolution CAD");
+                MessageBox.Show("Метод компоновки не сработал", "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             

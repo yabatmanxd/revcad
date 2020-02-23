@@ -30,10 +30,10 @@ namespace RevolutionCAD
             return false;
         }
 
-        public static List<List<int>> ReadComposition(out string msg)
+        public static CompositionResult ReadComposition(out string msg)
         {
             msg = "";
-            List<List<int>> cmp = null;
+            CompositionResult cmp = null;
             if (IsFileExists(".cmp", out msg))
             {
                 try
@@ -41,7 +41,7 @@ namespace RevolutionCAD
                     using (StreamReader file = File.OpenText(FileName + ".cmp"))
                     {
                         JsonSerializer serializer = new JsonSerializer();
-                        cmp = (List<List<int>>)serializer.Deserialize(file, typeof(List<List<int>>));
+                        cmp = (CompositionResult)serializer.Deserialize(file, typeof(CompositionResult));
                     }
                 }
                 catch (Exception exp)
@@ -52,7 +52,7 @@ namespace RevolutionCAD
             return cmp;
         }
 
-        public static void WriteComposition(List<List<int>> cmp, out string errWrite)
+        public static void WriteComposition(CompositionResult cmp, out string errWrite)
         {
             errWrite = "";
             if (FileName != "")
@@ -98,8 +98,9 @@ namespace RevolutionCAD
             Matrix<int> MatrixR = null;
             Matrix<int> MatrixQ = null;
             List<int> dipsNumbers;
+            List<List<Contact>> WiresContacts;
 
-            CreateMatrices(textSchemeDefinition, out MatrixR, out MatrixQ, out dipsNumbers, out errWrite);
+            CreateMatrices(textSchemeDefinition, out MatrixR, out MatrixQ, out dipsNumbers, out WiresContacts, out errWrite);
 
             // сериализация данных в JSON
             var sch = new Scheme();
@@ -107,6 +108,7 @@ namespace RevolutionCAD
             sch.MatrixQ = MatrixQ;
             sch.MatrixR = MatrixR;
             sch.DIPNumbers = dipsNumbers;
+            sch.WiresContacts = WiresContacts;
 
             if (FileName != "")
             {
@@ -210,10 +212,11 @@ namespace RevolutionCAD
             }
         }
 
-        public static bool CreateMatrices(string textSchemeDefinition, out Matrix<int> R, out Matrix<int> Q, out List<int> dipsNumbers, out string errMsg)
+        public static bool CreateMatrices(string textSchemeDefinition, out Matrix<int> R, out Matrix<int> Q, out List<int> dipsNumbers, out List<List<Contact>> wiresContactsList, out string errMsg)
         {
             errMsg = "";
             dipsNumbers = new List<int>();
+            wiresContactsList = new List<List<Contact>>(); // список контактов для каждого провода
             dipsNumbers.Add(0);
             int N = 1; // количество микросхем (первая - разъём)
             bool IsSkipped = false; // флаг того, что ненужная часть файла пропущена
@@ -251,8 +254,7 @@ namespace RevolutionCAD
                             return false;
                         }
                         
-                    }
-                        
+                    }  
                     else
                     {
                         errMsg = $"Ошибка в именовании типа корпуса dip в строке {N - 2}";
@@ -264,7 +266,6 @@ namespace RevolutionCAD
                 else
                     mas.Add(line);
             }
-            mas.Remove("#"); // удаление лишнего разделителя
             int M = mas.Count; // число проводов
 
             R = new Matrix<int>(N, N); // матрица соединений
@@ -275,54 +276,39 @@ namespace RevolutionCAD
             Q.Fill(0);
 
             // формирование матриц
+            // запускам цикл по всем строкам, содержащим описание контактов провода
+            int connectorCurrentContact = 0;
             for (int numberOfContact = 0; numberOfContact < mas.Count; numberOfContact++)
             {
                 string s = mas[numberOfContact];
 
-                List<string> elements = new List<string>();
+                var elements = new List<string>();
+                var contacts = new List<Contact>();
 
-                // делим строку с элементами на список элементов ("D1.2", "D8.3")
-                elements.AddRange(s.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries));
-
-                // запускаем цикл по этим строкам, чтобы обрезать часть с номером ножки
+                // делим строку на подстроки ("D1.2", "D8.3")
+                elements = s.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                
                 for (int i = 0; i < elements.Count; i++)
                 {
-                    int posOfPoint = elements[i].IndexOf("."); // находим точку в элементе после которой идёт номер ножки
-                    if (posOfPoint == -1)
+                    string err;
+                    var contact = GetContactInfoByText(elements[i], connectorCurrentContact, N, out err);
+                    if (err != "")
                     {
-                        errMsg = "У одного из элементов не указан контакт подключения";
+                        errMsg = $"Ошибка в строке {N + numberOfContact + 1}: {err}";
                         return false;
                     }
-                    elements[i] = elements[i].Substring(0, posOfPoint).Replace("D", ""); // обрезаем эту часть, оставляем только номер платы
-                    if (elements[i] == "0")
-                    {
-                        errMsg = $"Нумерация элементов должна начинаться с 1. Ошибка в строке {N+i}";
-                        return false;
-                    }
-                    if (elements[i] == "X")
-                    {
-                        elements[i] = "0"; // так будет удобнее дальше для формирования матриц
-                    }
-                }
 
-                // переходим от строк с названиями элементов ("0", "1") к непосредственным номерам int (0, 1)
-                List<int> elementNumbers = new List<int>();
-                foreach (string element in elements)
-                {
-                    int number;
-                    if (Int32.TryParse(element, out number) == false)
-                    {
-                        errMsg = $"Ошибка в именовании элементов в {N + 1 + numberOfContact} строке";
-                        return false;
-                    }
-                    if (number + 1 > N) // +1 чтобы учесть разъём
-                    {
-                        errMsg = $"Ошибка в номере элемента в {N + 1 + numberOfContact} строке. Все элементы должны быть описаны в начале файла до #";
-                        return false;
-                    }
-                    elementNumbers.Add(number);
-                }
+                    if (contact.ElementNumber == 0)
+                        connectorCurrentContact++;
 
+                    contacts.Add(contact);
+                }
+                // добавляем список контактов только что сформированного проводника в общий список проводников
+                wiresContactsList.Add(contacts);
+
+                // получаем список номеров элементов
+                var elementNumbers = contacts.Select(x => x.ElementNumber).ToList();
+                
                 // так как у элемента могут быть внутренние связи, а в матрице мы их не учитываем
                 elementNumbers = elementNumbers.Distinct().ToList(); // избавляемся от повторений номеров элементов
 
@@ -340,6 +326,69 @@ namespace RevolutionCAD
 
             }
             return true;
+        }
+
+        public static Contact GetContactInfoByText(string str, int connectorContact, int countElements, out string err)
+        {
+            err = "";
+            var contact = new Contact();
+
+            if (str.Contains("X"))
+            {
+                if (str.Length != 1)
+                {
+                    err = $"Недопустимо назначение контакта разъёму";
+                    return null;
+                }
+                contact.ElementNumber = 0;
+                contact.ElementContact = connectorContact;
+                return contact;
+            }
+
+            int posOfPoint = str.IndexOf("."); // находим точку в элементе после которой идёт номер ножки
+
+            if (posOfPoint == -1)
+            {
+                err = $"У элемента не указан контакт подключения";
+                return null;
+            }
+
+            int numberContact;
+
+            if (Int32.TryParse(str.Substring(posOfPoint + 1), out numberContact) == false)
+            {
+                err = $"У элемента неверно указан номер контакта";
+                return null;
+            }
+
+            contact.ElementContact = numberContact;
+
+            str = str.Substring(0, posOfPoint).Replace("D", ""); // обрезаем эту часть, оставляем только номер платы
+            if (str == "0")
+            {
+                err = $"Нумерация элементов должна начинаться с 1";
+                return null;
+            }
+
+            int numberElement;
+
+            if (Int32.TryParse(str, out numberElement) == false)
+            {
+                err = $"Ошибка в именовании элемента";
+                return null;
+            }
+
+            if (numberElement + 1 > countElements) // +1 чтобы учесть разъём
+            {
+                err = $"Элементу не назначен тип корпуса DIP вначале файла";
+                return null;
+            }
+
+            contact.ElementNumber = numberElement;
+
+            return contact;
+
+
         }
 
 

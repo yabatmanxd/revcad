@@ -76,15 +76,16 @@ namespace RevolutionCAD.Pages
             {
                 if (steps.Count != 0)
                 {
-                    if (steps.Count != 0)
+                    var result = steps.Last().BoardsDRPs;
+                    ApplicationData.WriteTracing(result, out err_msg);
+                    if (err_msg != "")
                     {
-                        var result = steps.Last().BoardsDRPs;
-                        ApplicationData.WriteTracing(result, out err_msg);
+                        MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return null;
                     }
-                       
                 }
             } else 
-                MessageBox.Show(err_msg, "Revolution CAD");
+                MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
             return steps;
         }
         
@@ -95,7 +96,7 @@ namespace RevolutionCAD.Pages
             StepsLog = DoTracing();
             if (StepsLog.Count == 0)
             {
-                MessageBox.Show("Метод трассировки не сработал", "Revolution CAD");
+                MessageBox.Show("Метод трассировки не сработал", "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             for (int step = 0; step < StepsLog.Count; step++)
@@ -234,11 +235,10 @@ namespace RevolutionCAD.Pages
 
             if (StepsLog.Count == 0)
             {
-                MessageBox.Show("Метод трассировки не сработал", "Revolution CAD");
+                MessageBox.Show("Метод трассировки не сработал", "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-
-
+            
             Button_FullTracing.IsEnabled = false;
             Button_StartStepTracing.IsEnabled = false;
             Button_NextStep.IsEnabled = true;

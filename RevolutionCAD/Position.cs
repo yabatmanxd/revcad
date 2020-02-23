@@ -16,5 +16,10 @@ namespace RevolutionCAD
             Row = r;
             Column = c;
         }
+
+        public Position Clone()
+        {
+            return (Position)this.MemberwiseClone();
+        }
     }
 }

@@ -23,7 +23,7 @@ namespace RevolutionCAD.Pages
             Scheme sch = ApplicationData.ReadScheme(out msg);
             if (msg != "")
             {
-                MessageBox.Show(msg, "Revolution CAD");
+                MessageBox.Show(msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 

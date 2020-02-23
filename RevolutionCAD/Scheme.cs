@@ -7,13 +7,14 @@ using System.Text;
 namespace RevolutionCAD
 {
     /// <summary>
-    /// Класс для хранения информации о схеме, в нём будет хранится матрицы R, Q, сопоставление номера микросхемы и DIP и само текстовое описание схемы
+    /// Класс для хранения информации о схеме
     /// </summary>
     public class Scheme
     {
-        public string SchemeDefinition { get; set; }
-        public List<int> DIPNumbers { get; set; }
-        public Matrix<int> MatrixR { get; set; }
-        public Matrix<int> MatrixQ { get; set; }
+        public string SchemeDefinition { get; set; } // текстовое описание схемы
+        public List<int> DIPNumbers { get; set; } // номера DIP элементов
+        public List<List<Contact>> WiresContacts { get; set; } // список Проводов, в котором хранится список контактов, которые они соединяют
+        public Matrix<int> MatrixR { get; set; } // матрица R (количество связей между элементами)
+        public Matrix<int> MatrixQ { get; set; } // матрица Q (какие провода какие элементы связывают)
     }
 }

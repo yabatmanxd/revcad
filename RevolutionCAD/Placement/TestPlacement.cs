@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RevolutionCAD.Composition;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,10 @@ namespace RevolutionCAD.Placement
 {
     public class TestPlacement
     {
-        public static List<StepPlacementLog> Place(List<List<int>> cmp, out string err)
+        public static List<StepPlacementLog> Place(CompositionResult cmp_res, out string err)
         {
             err = "";
+            var cmp = cmp_res.BoardsElements;
             // создаём класс для логирования (обязательно)
             var log = new List<StepPlacementLog>();
             
