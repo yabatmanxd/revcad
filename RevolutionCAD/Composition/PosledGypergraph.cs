@@ -48,17 +48,17 @@ namespace RevolutionCAD.Composition
                 foreach (int it in nE)
                     L1.Add(DefineL1(it, E, Q)); // вычисляем для каждого элемента L1
                 elem = nE[L1.IndexOf(L1.Max())]; // на плату отправляется элемент с максимальным L1
-                
-                boards.Last().Add(elem); // элемент - на плату
-                E.Add(elem); nE.Remove(elem); // корректируем списки
 
                 // начинаем логирование действия
                 // формируем строку - обоснование
                 string msg = "";
-                for(int i = 0; i < nE.Count; i++)
+                for (int i = 0; i < nE.Count; i++)
                     msg += "Для D" + nE[i] + " - L1 = " + L1[i] + "\n";
                 msg += "Поместили элемент D" + elem + " на " + boards.Count + " плату - он имеет максимальный L1";
 
+                boards.Last().Add(elem); // помещаем элемент на плату
+                E.Add(elem); nE.Remove(elem); // корректируем списки
+                
                 var step = new StepCompositionLog(boards, msg);
                 log.Add(step);
                 
@@ -80,20 +80,43 @@ namespace RevolutionCAD.Composition
                             L3.Add(-1);
                     }
 
-                    elem = nE[L3.IndexOf(L3.Max())];
-                    boards.Last().Add(elem); // элемент - на плату
-                    E.Add(elem); nE.Remove(elem); // корректируем списки
+                    bool fault = true; // флаг того, что ни один элемент нельзя разместить
+                    foreach(int it in L3)
+                        if(it != -1)
+                        {
+                            fault = false;
+                            break;
+                        }
 
-                    // начинаем логирование действия
-                    // формируем строку - обоснование
-                    msg = "";
-                    for (int i = 0; i < nE.Count; i++)
-                        msg += "Для D" + nE[i] + " - L2 = " + L2[i] + ", L3 = " + L3[i] + "\n";
-                    msg += "Поместили элемент D" + elem + " на " + boards.Count + " плату - он имеет максимальный L3";
-                    step = new StepCompositionLog(boards, msg);
-                    log.Add(step);
+                    if(fault)
+                    {
+                        msg = "";
+                        for (int i = 0; i < nE.Count; i++)
+                            msg += "Для D" + nE[i] + " - L2 = " + L2[i] + ", L3 = " + L3[i] + "\n";
+
+                        msg += "Ни один из элементов нельзя поместить на плату, потому что не соблюдается условие на ограничение связей";
+                        step = new StepCompositionLog(boards, msg);
+                        log.Add(step);
+                        break;
+                    }
+                    else
+                    {
+                        elem = nE[L3.IndexOf(L3.Max())];
+
+                        // начинаем логирование действия
+                        // формируем строку - обоснование
+                        msg = "";
+                        for (int i = 0; i < nE.Count; i++)
+                            msg += "Для D" + nE[i] + " - L2 = " + L2[i] + ", L3 = " + L3[i] + "\n";
+                        msg += "Поместили элемент D" + elem + " на " + boards.Count + " плату - он имеет максимальный L3";
+
+                        boards.Last().Add(elem); // помещаем элемент на плату
+                        E.Add(elem); nE.Remove(elem); // корректируем списки
+
+                        step = new StepCompositionLog(boards, msg);
+                        log.Add(step);
+                    }
                 }
-                
             }
             
             // в качестве результата выполнения метода возвращаем целый пошаговый лог
