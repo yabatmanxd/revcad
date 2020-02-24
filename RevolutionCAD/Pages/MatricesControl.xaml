@@ -12,7 +12,7 @@
 
             <StackPanel Orientation="Horizontal"
                         Margin="5">
-                <Button Name="Button_LoadMatrices" Click="Button_LoadMatrices_Click">Загрузить</Button>
+                <Button Padding="10 3" Name="Button_LoadMatrices" Click="Button_LoadMatrices_Click">Загрузить</Button>
             </StackPanel>
 
             <TextBlock Text="Матрица R"

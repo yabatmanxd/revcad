@@ -42,11 +42,11 @@ namespace RevolutionCAD.Composition
                         {
                             if (board.Contains(c.ElementNumber))
                             {
-                                new_wire.Add(c);
+                                new_wire.Add(c.Clone());
                             }
                             else if (c.ElementNumber == 0)
                             {
-                                new_wire.Add(c);
+                                new_wire.Add(c.Clone());
                                 isConnector = true;
                             }
                             else if (!isConnector)

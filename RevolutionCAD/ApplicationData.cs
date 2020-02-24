@@ -277,7 +277,6 @@ namespace RevolutionCAD
 
             // формирование матриц
             // запускам цикл по всем строкам, содержащим описание контактов провода
-            int connectorCurrentContact = 0;
             for (int numberOfContact = 0; numberOfContact < mas.Count; numberOfContact++)
             {
                 string s = mas[numberOfContact];
@@ -287,19 +286,22 @@ namespace RevolutionCAD
 
                 // делим строку на подстроки ("D1.2", "D8.3")
                 elements = s.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+                if (elements.Count < 2)
+                {
+                    errMsg = $"Ошибка в строке {N + numberOfContact + 1}: Провод должен состоять из 2 и более контактов";
+                    return false;
+                }
                 
                 for (int i = 0; i < elements.Count; i++)
                 {
                     string err;
-                    var contact = GetContactInfoByText(elements[i], connectorCurrentContact, N, out err);
+                    var contact = GetContactInfoByText(elements[i], N, out err);
                     if (err != "")
                     {
                         errMsg = $"Ошибка в строке {N + numberOfContact + 1}: {err}";
                         return false;
                     }
-
-                    if (contact.ElementNumber == 0)
-                        connectorCurrentContact++;
 
                     contacts.Add(contact);
                 }
@@ -328,7 +330,7 @@ namespace RevolutionCAD
             return true;
         }
 
-        public static Contact GetContactInfoByText(string str, int connectorContact, int countElements, out string err)
+        public static Contact GetContactInfoByText(string str, int countElements, out string err)
         {
             err = "";
             var contact = new Contact();
@@ -341,7 +343,7 @@ namespace RevolutionCAD
                     return null;
                 }
                 contact.ElementNumber = 0;
-                contact.ElementContact = connectorContact;
+                contact.ElementContact = 0;
                 return contact;
             }
 

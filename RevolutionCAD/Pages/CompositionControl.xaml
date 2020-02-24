@@ -15,18 +15,18 @@
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal"
                     Margin="10">
-            <TextBlock VerticalAlignment="Center">Компоновка:</TextBlock>
-            <ComboBox Name="ComboBox_Method" SelectedIndex="0">
+            <TextBlock Padding="10 3" VerticalAlignment="Center">Метод компоновки:</TextBlock>
+            <ComboBox Name="ComboBox_Method" VerticalAlignment="Center" SelectedIndex="0">
                 <ComboBoxItem Content="Последовательная по гиперграфу"></ComboBoxItem>
                 <ComboBoxItem Content="Последовательная по мультиграфу"></ComboBoxItem>
                 <ComboBoxItem Content="Итерационная по гиперграфу"></ComboBoxItem>
                 <ComboBoxItem Content="Итерационная по мультиграфу"></ComboBoxItem>
                 <ComboBoxItem Content="Тестовая компоновка"></ComboBoxItem>
             </ComboBox>
-            <TextBlock VerticalAlignment="Center" Margin="0,3.02,0,2.98"><Run Text="Ограничение на элементы:"/></TextBlock>
-            <TextBox Name="tbCountOfElements" TextWrapping="Wrap" Width="45"/>
-            <TextBlock VerticalAlignment="Center" Margin="0,3.04,0,2.96"><Run Text="Ограничение на связи:"/></TextBlock>
-            <TextBox x:Name="tbLimitsOfWires" TextWrapping="Wrap" Width="45"/>
+            <TextBlock Padding="10 3" VerticalAlignment="Center" Margin="0,3.02,0,2.98"><Run Text="Ограничение на элементы:"/></TextBlock>
+            <TextBox Name="tbCountOfElements" VerticalAlignment="Center" TextWrapping="Wrap" Width="45"/>
+            <TextBlock Padding="10 3" VerticalAlignment="Center" Margin="0,3.04,0,2.96"><Run Text="Ограничение на связи:"/></TextBlock>
+            <TextBox x:Name="tbLimitsOfWires" VerticalAlignment="Center" TextWrapping="Wrap" Width="45"/>
         </StackPanel>
 
         <StackPanel Name="StackPanel_Boards"
@@ -50,16 +50,20 @@
                     Orientation="Horizontal">
             <Button Name="Button_FullComposition" 
                     Margin="5" 
+                    Padding="10 3"
                     Click="Button_FullComposition_Click">Скомпоновать</Button>
             <Button Name="Button_StartStepComposition" 
                     Margin="5" 
+                    Padding="10 3"
                     Click="Button_StartStepComposition_Click">Начать пошаговую компоновку</Button>
             <Button Name="Button_NextStep" 
                     Margin="5" 
+                    Padding="10 3"
                     Click="Button_NextStep_Click" 
                     IsEnabled="False">Следующий шаг</Button>
             <Button Name="Button_DropStepMode" 
                     Margin="5" 
+                    Padding="10 3"
                     Click="Button_DropStepMode_Click" 
                     IsEnabled="False">Прервать компоновку</Button>
         </StackPanel>

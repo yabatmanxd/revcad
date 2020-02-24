@@ -29,6 +29,7 @@
                 Grid.Row="2"
                 Grid.Column="0"
                 Margin="10"
+                IsDefault="True"
                 Click="Button_Ok_Click">Ок</Button>
         <Button Name="Button_Cancel"
                 Grid.Row="2"

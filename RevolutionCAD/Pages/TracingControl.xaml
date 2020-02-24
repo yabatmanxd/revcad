@@ -19,8 +19,8 @@
         
         <StackPanel Orientation="Horizontal"
                     Margin="10">
-            <TextBlock VerticalAlignment="Center">Метод:</TextBlock>
-            <ComboBox Name="ComboBox_Method"  SelectedIndex="0" Margin="10 0" MinWidth="200">
+            <TextBlock Padding="10 3" VerticalAlignment="Center">Метод трассировки:</TextBlock>
+            <ComboBox Padding="10 3" Name="ComboBox_Method"  SelectedIndex="0" Margin="10 0" MinWidth="200">
                 <ComboBoxItem Content="Метод Ли"></ComboBoxItem>
                 <ComboBoxItem Content="Метод Акерса"></ComboBoxItem>
                 <ComboBoxItem Content="Метод Ли по модулю 3"></ComboBoxItem>
@@ -55,16 +55,20 @@
                     Margin="10"
                     Orientation="Horizontal">
             <Button Name="Button_FullTracing" 
+                    Padding="10 3"
                     Margin="5" Click="Button_FullTracing_Click" >Трассировать</Button>
             <Button Name="Button_StartStepTracing" 
                     Margin="5" 
+                    Padding="10 3"
                     Click="Button_StartStepTracing_Click">Начать пошаговую трассировку</Button>
             <Button Name="Button_NextStep" 
                     Margin="5" 
+                    Padding="10 3"
                     IsEnabled="False"
                     Click="Button_NextStep_Click">Следующий шаг</Button>
             <Button Name="Button_DropStepMode" 
                     Margin="5"  
+                    Padding="10 3"
                     IsEnabled="False"
                     Click="Button_DropStepMode_Click">Прервать трассировку</Button>
         </StackPanel>

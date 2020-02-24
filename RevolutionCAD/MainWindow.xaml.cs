@@ -62,6 +62,12 @@ namespace RevolutionCAD
                 }
 
                 TextBox_Code.Text = sch.SchemeDefinition;
+
+                MatrControl.UpdateMatrices();
+                CompControl.Update();
+                PlaceControl.Update();
+                TraceControl.Update();
+
                 TextBox_Code.SelectionStart = TextBox_Code.Text.Length;
             }
         }

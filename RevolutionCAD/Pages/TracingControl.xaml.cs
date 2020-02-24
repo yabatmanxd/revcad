@@ -92,7 +92,6 @@ namespace RevolutionCAD.Pages
         private void Button_FullTracing_Click(object sender, RoutedEventArgs e)
         {
             TextBox_Log.Text = "";
-            Grid_Parent.Children.Clear();
             StepsLog = DoTracing();
             if (StepsLog.Count == 0)
             {
@@ -104,20 +103,25 @@ namespace RevolutionCAD.Pages
                 TextBox_Log.Text += $"Шаг №{step + 1}:" + "\n";
                 TextBox_Log.Text += StepsLog[step].Message + "\n";
             }
+            TextBox_Log.ScrollToEnd();
             ShowStep(StepsLog.Count - 1); // отображаем только последний шаг графически, т.к. он будет результатом трассировки
 
         }
 
         private void ShowStep(int StepNumber)
         {
-            TextBox_Log.ScrollToEnd();
-
-            Grid_Parent.Children.Clear();
             var OneStep = StepsLog[StepNumber];
 
-            for (int numBoard = 0; numBoard < OneStep.BoardsDRPs.Count; numBoard++)
+            Draw(OneStep.BoardsDRPs);
+            
+        }
+
+        private void Draw(List<List<Matrix<Cell>>> boardsDRPs)
+        {
+            Grid_Parent.Children.Clear();
+            for (int numBoard = 0; numBoard < boardsDRPs.Count; numBoard++)
             {
-                var drp = MergeLayersDRP(OneStep.BoardsDRPs[numBoard]);
+                var drp = MergeLayersDRP(boardsDRPs[numBoard]);
 
                 var sp_BoardCard = new StackPanel();
                 sp_BoardCard.Orientation = Orientation.Vertical;
@@ -201,14 +205,13 @@ namespace RevolutionCAD.Pages
 
                 Grid_Parent.Children.Add(sp_BoardCard);
             }
-
-
         }
 
         private void Button_NextStep_Click(object sender, RoutedEventArgs e)
         {
             TextBox_Log.Text += $"Шаг №{CurrentStep + 1}:" + "\n";
             TextBox_Log.Text += StepsLog[CurrentStep].Message + "\n";
+            TextBox_Log.ScrollToEnd();
             ShowStep(CurrentStep);
             if (CurrentStep + 1 >= StepsLog.Count)
             {
@@ -281,18 +284,12 @@ namespace RevolutionCAD.Pages
             return resDRP;
         }
 
-        public void Draw(Matrix<Cell> DRP)
+        public void Update()
         {
-            // Создание вертикальной стекпанели
-            StackPanel mainsp = new StackPanel
-            {
-                Orientation = Orientation.Vertical,
-                Background = new SolidColorBrush(Colors.Azure)
-            };
-            //Grid.SetRow(mainsp, 1);
-            Grid_Parent.Children.Add(mainsp);
-            // добавление стекпанелей по строкам
-            
+            string t = "";
+            var boardsDRPs = ApplicationData.ReadTracing(out t);
+            if (t == "")
+                Draw(boardsDRPs);
         }
     }
 }

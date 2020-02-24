@@ -65,27 +65,21 @@ namespace RevolutionCAD.Pages
                     steps = TestPlacement.Place(cmp, out err_msg);
                     break;
             }
-            // на последнем шаге получили результат размещения
-
-
 
             // если не было ошибки - сериализуем результат
             if (err_msg == "")
             {
                 if (steps.Count != 0)
                 {
-                    //var result = steps.Last().BoardsList;
                     var result = new PlacementResult();
                     result.BoardsMatrices = steps.Last().BoardsList;
                     
                     var matrQ = sch.MatrixQ;
                     var dips = sch.DIPNumbers;
-                    var elementsInBoards = ApplicationData.ReadComposition(out err_msg).BoardsElements;
+
+                    result.CreateBoardsDRPs(cmp, dips, out err_msg);
+                    result.CreateWires(cmp.BoardsWires);
                     
-                    result.CreateBoardsDRPs(matrQ, elementsInBoards, dips, out err_msg);
-
-
-
                     if (err_msg != "")
                     {
                         MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -108,13 +102,16 @@ namespace RevolutionCAD.Pages
 
         private void ShowStep(int StepNumber)
         {
-            TextBox_Log.ScrollToEnd();
-
-            StackPanel_Boards.Children.Clear();
             var OneStep = StepsLog[StepNumber];
-            for (int i = 0; i < OneStep.BoardsList.Count; i++)
+            Draw(OneStep.BoardsList);
+        }
+
+        private void Draw(List<Matrix<int>> boardsMatrices)
+        {
+            StackPanel_Boards.Children.Clear();
+            for (int i = 0; i < boardsMatrices.Count; i++)
             {
-                var matr = OneStep.BoardsList[i];
+                var matr = boardsMatrices[i];
 
                 var sp_BoardCard = new StackPanel();
                 sp_BoardCard.Orientation = Orientation.Vertical;
@@ -146,11 +143,12 @@ namespace RevolutionCAD.Pages
                         {
                             tb_border.Background = new SolidColorBrush(Colors.Gray);
                             tb_border.Background.Opacity = 0.5;
-                        } else
+                        }
+                        else
                         {
                             tb_position.Text = "D" + matr[matrRow, matrCol].ToString();
                         }
-                        
+
                         tb_border.Child = tb_position;
 
                         spRow.Children.Add(tb_border);
@@ -166,13 +164,13 @@ namespace RevolutionCAD.Pages
 
                 StackPanel_Boards.Children.Add(sp_BoardCard);
             }
-
         }
 
         private void Button_NextStep_Click(object sender, RoutedEventArgs e)
         {
             TextBox_Log.Text += $"Шаг №{CurrentStep + 1}:" + "\n";
             TextBox_Log.Text += StepsLog[CurrentStep].Message + "\n";
+            TextBox_Log.ScrollToEnd();
             ShowStep(CurrentStep);
             if (CurrentStep + 1 >= StepsLog.Count)
             {
@@ -198,7 +196,6 @@ namespace RevolutionCAD.Pages
                 return;
             }
 
-
             Button_FullPlacement.IsEnabled = false;
             Button_StartStepPlacement.IsEnabled = false;
             Button_NextStep.IsEnabled = true;
@@ -212,7 +209,6 @@ namespace RevolutionCAD.Pages
         private void Button_FullPlacement_Click(object sender, RoutedEventArgs e)
         {
             TextBox_Log.Text = "";
-            StackPanel_Boards.Children.Clear();
             StepsLog = DoPlacement();
             if (StepsLog.Count == 0)
             {
@@ -224,6 +220,7 @@ namespace RevolutionCAD.Pages
                 TextBox_Log.Text += $"Шаг №{step + 1}:" + "\n";
                 TextBox_Log.Text += StepsLog[step].Message + "\n";
             }
+            TextBox_Log.ScrollToEnd();
             ShowStep(StepsLog.Count - 1); // отображаем только последний шаг графически, т.к. он будет результатом компоновки
 
         }
@@ -239,6 +236,18 @@ namespace RevolutionCAD.Pages
             Button_StartStepPlacement.IsEnabled = true;
             Button_NextStep.IsEnabled = false;
             Button_DropStepMode.IsEnabled = false;
+        }
+
+        public void Update()
+        {
+            string t = "";
+            var plc = ApplicationData.ReadPlacement(out t);
+            if (t == "")
+            {
+                var boardsMatrices = plc.BoardsMatrices;
+                Draw(boardsMatrices);
+            }
+                
         }
     }
 }

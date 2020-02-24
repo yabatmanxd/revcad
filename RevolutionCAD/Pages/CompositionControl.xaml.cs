@@ -86,15 +86,13 @@ namespace RevolutionCAD.Pages
                         return null;
                     }
 
-                    // в данном методе нужно дописать логику расделения проводов, я хуй знает как это сделать
+                    result.CreateBoardsWires(sch, out err_msg);
 
-                    //result.CreateBoardsWires(sch, out err_msg);
-
-                    //if (err_msg != "")
-                    //{
-                    //    MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
-                    //    return null;
-                    //}
+                    if (err_msg != "")
+                    {
+                        MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return null;
+                    }
 
                     ApplicationData.WriteComposition(result, out err_msg);
 
@@ -115,7 +113,6 @@ namespace RevolutionCAD.Pages
         private void Button_FullComposition_Click(object sender, RoutedEventArgs e)
         {
             TextBox_Log.Text = "";
-            StackPanel_Boards.Children.Clear();
             StepsLog = DoComposition();
             if (StepsLog.Count == 0)
             {
@@ -127,6 +124,7 @@ namespace RevolutionCAD.Pages
                 TextBox_Log.Text += $"Шаг №{step + 1}:" + "\n";
                 TextBox_Log.Text += StepsLog[step].Message + "\n";
             }
+            TextBox_Log.ScrollToEnd();
             ShowStep(StepsLog.Count - 1); // отображаем только последний шаг графически, т.к. он будет результатом компоновки
             
         }
@@ -158,6 +156,7 @@ namespace RevolutionCAD.Pages
         {
             TextBox_Log.Text += $"Шаг №{CurrentStep + 1}:" + "\n";
             TextBox_Log.Text += StepsLog[CurrentStep].Message + "\n";
+            TextBox_Log.ScrollToEnd();
             ShowStep(CurrentStep);
             if (CurrentStep + 1 >= StepsLog.Count)
             {
@@ -172,11 +171,15 @@ namespace RevolutionCAD.Pages
 
         private void ShowStep(int StepNumber)
         {
-            TextBox_Log.ScrollToEnd();
-
-            StackPanel_Boards.Children.Clear();
             var OneStep = StepsLog[StepNumber];
-            for (int i = 0; i < OneStep.BoardsList.Count; i++)
+
+            Draw(OneStep.BoardsList);
+        }
+
+        private void Draw(List<List<int>> boardsList)
+        {
+            StackPanel_Boards.Children.Clear();
+            for (int i = 0; i < boardsList.Count; i++)
             {
                 var sp = new StackPanel();
                 sp.Orientation = Orientation.Vertical;
@@ -190,15 +193,14 @@ namespace RevolutionCAD.Pages
 
                 var lw = new ListView();
                 lw.Margin = new Thickness(5);
-                lw.ItemsSource = OneStep.BoardsList[i];
+                lw.ItemsSource = boardsList[i];
 
                 sp.Children.Add(lw);
 
                 StackPanel_Boards.Children.Add(sp);
 
             }
-
-        }
+        } 
 
         private void Button_DropStepMode_Click(object sender, RoutedEventArgs e)
         {
@@ -207,10 +209,22 @@ namespace RevolutionCAD.Pages
 
         private void DropStepMode()
         {
+            CurrentStep = 0;
             Button_FullComposition.IsEnabled = true;
             Button_StartStepComposition.IsEnabled = true;
             Button_NextStep.IsEnabled = false;
             Button_DropStepMode.IsEnabled = false;
+        }
+
+        public void Update()
+        {
+            string t = "";
+            var cmp = ApplicationData.ReadComposition(out t);
+            if (t == "")
+            {
+                var boardsElements = cmp.BoardsElements;
+                Draw(boardsElements);
+            } 
         }
     }
 }

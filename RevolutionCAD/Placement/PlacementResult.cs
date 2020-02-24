@@ -1,4 +1,5 @@
-﻿using RevolutionCAD.Tracing;
+﻿using RevolutionCAD.Composition;
+using RevolutionCAD.Tracing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,11 @@ namespace RevolutionCAD.Placement
         public List<Dictionary<int,List<Position>>> BoardsElementsContactsPos { get; set; } // список словарей плат, в словаре по ключу (номеру элемента) можно получить список координат  определённого контакта
         public List<List<List<Wire>>> BoardsWiresPositions { get; set; } // список плат, в котором хранится список проводов для каждой платы. в списке проводов хранится список проводников, которые соединяют всего 2 контакта.
 
-        public void CreateBoardsDRPs(Matrix<int> matrQ, List<List<int>> elInBoards, List<int> dips, out string err)
+        public void CreateBoardsDRPs(CompositionResult cmp, List<int> dips, out string err)
         {
             err = "";
+            var elInBoards = cmp.BoardsElements;
+            var boardsWires = cmp.BoardsWires;
             if (BoardsMatrices == null)
             {
                 err = "Список плат пустой";
@@ -36,38 +39,40 @@ namespace RevolutionCAD.Placement
             BoardsDRPs = new List<Matrix<Cell>>();
 
             // запускаем цикл для формирования своего дрп для каждого узла
-            for (int boardNumber = 0; boardNumber < BoardsMatrices.Count; boardNumber++)
+            for (int numBoard = 0; numBoard < BoardsMatrices.Count; numBoard++)
             {
-                // запускаем цикл по матрице Q чтобы подсчитать количество связей элементов узла с разъёмом (чтобы потом сформировать определённого размера разъём)
                 int countContactsConnector = 0;
-                for (int j = 0; j < matrQ.ColsCount; j++)
-                {
-                    if (matrQ[0, j] == 1)
-                    {
-                        bool isConnectedToElementOnBoard = false;
-                        foreach (var num_element in elInBoards[boardNumber])
-                        {
-                            if (matrQ[num_element, j] == 1)
-                            {
-                                isConnectedToElementOnBoard = true;
-                            }
-                        }
-                        if (isConnectedToElementOnBoard)
-                            countContactsConnector++;
-                    }
-                }
+
+                countContactsConnector = boardsWires[numBoard].Count(x => x.Any(y => y.ElementNumber == 0));
+
+                //for (int j = 0; j < matrQ.ColsCount; j++)
+                //{
+                //    if (matrQ[0, j] == 1)
+                //    {
+                //        bool isConnectedToElementOnBoard = false;
+                //        foreach (var num_element in elInBoards[boardNumber])
+                //        {
+                //            if (matrQ[num_element, j] == 1)
+                //            {
+                //                isConnectedToElementOnBoard = true;
+                //            }
+                //        }
+                //        if (isConnectedToElementOnBoard)
+                //            countContactsConnector++;
+                //    }
+                //}
+
                 BoardsCountContactsConnector.Add(countContactsConnector);
 
                 
                 // расчёт размера ДРП платы
                 int drpHeight = 0;
                 int drpWidth = 0;
-                var brdMatr = BoardsMatrices[boardNumber];
-
+                var brdMatr = BoardsMatrices[numBoard];
 
                 // подсчитываем необходимую высоту платы
                 // запускаем цикл по столбцам, и определяем его высоту суммируя размер для каждого элемента
-                for(int j = 0; j<brdMatr.ColsCount; j++)
+                for (int j = 0; j<brdMatr.ColsCount; j++)
                 {
                     int currentColHeight = 0;
                     for (int i = 0; i<brdMatr.RowsCount; i++)
