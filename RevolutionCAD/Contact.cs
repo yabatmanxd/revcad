@@ -17,10 +17,10 @@ namespace RevolutionCAD
             PositionContact = new Position(-1,-1);
         }
 
-        public Contact(bool IsCreateConnectorContact)
+        public Contact(int el_num, int cont_num)
         {
-            ElementContact = 0;
-            ElementNumber = 0;
+            ElementNumber = el_num;
+            ElementContact = cont_num;
         }
 
         public Contact Clone()
@@ -29,6 +29,7 @@ namespace RevolutionCAD
             contact.ElementNumber = ElementNumber;
             contact.ElementContact = ElementContact;
             contact.PositionContact = PositionContact.Clone();
+            return contact;
         }
     }
 }

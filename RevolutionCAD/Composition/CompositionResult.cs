@@ -53,7 +53,7 @@ namespace RevolutionCAD.Composition
                                 }
                             }
                             var t_wire = new List<Contact>();
-                            t_wire.Add(new Contact(true));
+                            t_wire.Add(new Contact(0,0));
                             t_wire.Add(contact.Clone());
                             BoardsWires[findNumBoard].Add(t_wire);
                         }

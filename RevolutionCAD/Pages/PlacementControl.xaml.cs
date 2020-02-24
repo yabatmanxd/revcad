@@ -84,6 +84,8 @@ namespace RevolutionCAD.Pages
                     
                     result.CreateBoardsDRPs(matrQ, elementsInBoards, dips, out err_msg);
 
+
+
                     if (err_msg != "")
                     {
                         MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
