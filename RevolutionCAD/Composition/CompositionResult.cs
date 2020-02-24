@@ -15,53 +15,49 @@ namespace RevolutionCAD.Composition
         {
             err_msg = "";
 
+            var wiresContacts = sch.WiresContacts;
+
             BoardsWires = new List<List<List<Contact>>>();
 
             foreach(var board in BoardsElements)
             {
                 BoardsWires.Add(new List<List<Contact>>());
-            }
 
-            var wiresContacts = sch.WiresContacts;
-
-            for (int boardNum = 0; boardNum < BoardsElements.Count; boardNum++)
-            {
-                var boardElements = BoardsElements[boardNum];
-
-                for (int wireNum = 0; wireNum < wiresContacts.Count; wireNum++)
+                foreach (var wire in wiresContacts)
                 {
+                    // текущий провод
                     var new_wire = new List<Contact>();
 
-                    var wire = wiresContacts[wireNum];
+                    bool isConnector = false; // флаг наличия коннектора для провода
+                    bool canWired = false; // флаг существования провода для текущей платы
 
-                    for (int contactNum = 0; contactNum < wire.Count; contactNum++)
+                    // проверка, есть ли провод для этой платы
+                    foreach (Contact c in wire)
                     {
-                        var contact = wire[contactNum];
-                        if (boardElements.Contains(contact.ElementNumber) || contact.ElementNumber == 0)
-                        {
-                            new_wire.Add(contact);
-                            
-                        } else
-                        {
-                            int findNumBoard = -1;
-                            for (int f = 0; f < BoardsElements.Count; f++)
-                            {
-                                if (BoardsElements[f].Contains(contact.ElementNumber))
-                                {
-                                    findNumBoard = f;
-                                    break;
-                                }
-                            }
-                            var t_wire = new List<Contact>();
-                            t_wire.Add(new Contact(0,0));
-                            t_wire.Add(contact.Clone());
-                            BoardsWires[findNumBoard].Add(t_wire);
-                        }
+                        if (board.Contains(c.ElementNumber)) canWired = true;
                     }
 
-                    BoardsWires[boardNum].Add(new_wire);
+                    if (canWired) {
+                        foreach (Contact c in wire)
+                        {
+                            if (board.Contains(c.ElementNumber))
+                            {
+                                new_wire.Add(c);
+                            }
+                            else if (c.ElementNumber == 0)
+                            {
+                                new_wire.Add(c);
+                                isConnector = true;
+                            }
+                            else if (!isConnector)
+                            {
+                                new_wire.Add(new Contact(0, 0));
+                                isConnector = true;
+                            }
+                        }
 
-
+                        if (new_wire.Count > 0) BoardsWires.Last().Add(new_wire);
+                    }
                 }
             }
         }
