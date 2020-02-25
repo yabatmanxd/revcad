@@ -43,6 +43,7 @@ namespace RevolutionCAD.Pages
             switch (ComboBox_Method.SelectedIndex)
             {
                 case 0:
+                    steps = TestTracing.Trace(sch, plc, out err_msg);
                     break;
                 case 1:
                     break;
@@ -67,7 +68,6 @@ namespace RevolutionCAD.Pages
                 case 11:
                     break;
                 case 12:
-                    steps = TestTracing.Trace(sch, plc, out err_msg);
                     break;
             }
             
@@ -125,7 +125,7 @@ namespace RevolutionCAD.Pages
 
                 var sp_BoardCard = new StackPanel();
                 sp_BoardCard.Orientation = Orientation.Vertical;
-                sp_BoardCard.Margin = new Thickness(5);
+                sp_BoardCard.Margin = new Thickness(25);
 
                 var tb_HeaderBoard = new TextBlock();
                 tb_HeaderBoard.Margin = new Thickness(5);
@@ -201,7 +201,12 @@ namespace RevolutionCAD.Pages
                     sp_Board.Children.Add(spRow);
                 }
 
-                sp_BoardCard.Children.Add(sp_Board);
+                var brd = new Border();
+                brd.BorderThickness = new Thickness(1);
+                brd.BorderBrush = new SolidColorBrush(Colors.Black);
+                brd.Child = sp_Board;
+
+                sp_BoardCard.Children.Add(brd);
 
                 Grid_Parent.Children.Add(sp_BoardCard);
             }

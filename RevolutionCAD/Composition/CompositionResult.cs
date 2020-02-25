@@ -44,7 +44,7 @@ namespace RevolutionCAD.Composition
                             {
                                 new_wire.Add(c.Clone());
                             }
-                            else if (c.ElementNumber == 0)
+                            else if (c.ElementNumber == 0 && !isConnector)
                             {
                                 new_wire.Add(c.Clone());
                                 isConnector = true;

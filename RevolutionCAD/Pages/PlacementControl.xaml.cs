@@ -50,6 +50,7 @@ namespace RevolutionCAD.Pages
             switch (ComboBox_Method.SelectedIndex)
             {
                 case 0:
+                    steps = TestPlacement.Place(cmp, out err_msg);
                     break;
                 case 1:
                     break;
@@ -62,7 +63,6 @@ namespace RevolutionCAD.Pages
                 case 5:
                     break;
                 case 6:
-                    steps = TestPlacement.Place(cmp, out err_msg);
                     break;
             }
 

@@ -40,13 +40,13 @@
                     Margin="10">
             <TextBlock Padding="10 3" VerticalAlignment="Center" Margin="0 0 5 0">Метод размещения:</TextBlock>
             <ComboBox Padding="10 3" Name="ComboBox_Method" SelectedIndex="0">
+                <ComboBoxItem Content="Тестовое размещение"></ComboBoxItem>
                 <ComboBoxItem Content="Последовательный по максимуму с размещённым"></ComboBoxItem>
                 <ComboBoxItem Content="Последовательный по максимуму с размещёнными"></ComboBoxItem>
                 <ComboBoxItem Content="Последовательный по максимуму с размещёнными и минимуму с неразмещёнными"></ComboBoxItem>
                 <ComboBoxItem Content="Итерационный общее"></ComboBoxItem>
                 <ComboBoxItem Content="Итерационный по парам"></ComboBoxItem>
                 <ComboBoxItem Content="Итерационный методом Шафера"></ComboBoxItem>
-                <ComboBoxItem Content="Тестовое размещение"></ComboBoxItem>
             </ComboBox>
         </StackPanel>
 
