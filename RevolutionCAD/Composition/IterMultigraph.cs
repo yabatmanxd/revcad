@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+//using Newtonsoft.Json;
 using System.IO;
 
 namespace RevolutionCAD.Composition
@@ -26,13 +26,16 @@ namespace RevolutionCAD.Composition
             Matrix<int> R = sch.MatrixR;
 
             // считываем результат последовательной компоновки
-            var boards = ApplicationData.ReadComposition(out error_msg);
-            if (boards == null)
+            var boards_t = ApplicationData.ReadComposition(out error_msg);
+            if (boards_t == null)
             {
                 error_msg = "Сначала необходимо выполнить последовательную компоновку";
                 return null;
             }
 
+            var boards = ApplicationData.ReadComposition(out error_msg).BoardsElements;
+           
+            
             R.RemoveCol(0); R.RemoveRow(0); // удаляем разъём
 
             var Result = new Matrix<int>(R.ColsCount, R.ColsCount);
@@ -50,7 +53,7 @@ namespace RevolutionCAD.Composition
                     if (i == 1) M[i, j] = 1;
                     if (i == 2) M[i, j] = 2;
                 }
-            var X = ReplaceMatrix(0, 1, M);
+            var X = ReplaceMatrix(0, 1, R);
             // -------------------------------------------------------------
 
 
