@@ -12,6 +12,11 @@ namespace RevolutionCAD.Composition
     {
         // метод должен возвратить целый лог действий
         //Скударнов С.А.
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="error_msg"></param>
+        /// <returns></returns>
         public static List<StepCompositionLog> Compose(out string error_msg)
         {
             error_msg = "";
@@ -36,7 +41,8 @@ namespace RevolutionCAD.Composition
             var boards = ApplicationData.ReadComposition(out error_msg).BoardsElements;
            
             
-            R.RemoveCol(0); R.RemoveRow(0); // удаляем разъём
+            R=R.RemoveCol(0); 
+            R=R.RemoveRow(0); // удаляем разъём
 
             var Result = new Matrix<int>(R.ColsCount, R.ColsCount);
             // формируем матрицу таким образом, чтобы строки и столбцы скомпонованных плат оказались рядом
@@ -44,7 +50,7 @@ namespace RevolutionCAD.Composition
             // TODO
             // для теста
             // -------------------------------------------------------------
-            Matrix<int> M = new Matrix<int>(3, 3);
+   /*         Matrix<int> M = new Matrix<int>(3, 3);
 
             for (int i = 0; i < M.ColsCount; i++)
                 for (int j = 0; j < M.ColsCount; j++)
@@ -53,7 +59,20 @@ namespace RevolutionCAD.Composition
                     if (i == 1) M[i, j] = 1;
                     if (i == 2) M[i, j] = 2;
                 }
-            var X = ReplaceMatrix(0, 1, R);
+            M[0, 0] = 0;
+            M[0, 1] = 2;
+            M[0, 2] = 1;
+
+            M[1, 0] = 2;
+            M[1, 1] = 0;
+            M[1, 2] = 3;
+
+            M[2, 0] = 1;
+            M[2, 1] = 3;
+            M[2, 2] = 0;
+            */
+                       
+            var X = ReplaceMatrix(0, 1, R); // пример замены строк и столбцов (строка/столбец 1, строка/столбец 1, изменяемая матрица )
             // -------------------------------------------------------------
 
 
