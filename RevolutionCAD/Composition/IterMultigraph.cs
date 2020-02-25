@@ -39,10 +39,12 @@ namespace RevolutionCAD.Composition
             }
 
             var boards = ApplicationData.ReadComposition(out error_msg).BoardsElements;
-           
-            
-            R=R.RemoveCol(0); 
+            //var boards = new List<List<int>>();
+
+
+            R =R.RemoveCol(0); 
             R=R.RemoveRow(0); // удаляем разъём
+
 
             var Result = new Matrix<int>(R.ColsCount, R.ColsCount);
             // формируем матрицу таким образом, чтобы строки и столбцы скомпонованных плат оказались рядом
@@ -82,7 +84,34 @@ namespace RevolutionCAD.Composition
             buf *= kol_plat; // необходимая размерность матрицы R  
                              // поскольку у нас матрица должна разбиваться на равные части - 
                              // необходимо добавить нулевые строки и столбцы
+           
+            //***************************************************************************************************************************
+            int[] el_position = new int[sn]; //массив, который хранит порядок расположения элементов в преобразоваанной матрице R
+            int k = 0;
 
+            for(int i=0;i<kol_plat;i++)
+            {
+                int kol_elements = boards[i].Count;
+                for (int j = 0; j < kol_elements; j++)
+                {
+                    el_position[k] = boards[i][j];
+                    k++;
+                }
+            }
+
+            //****************************************************************************************************************************
+            el_position[0] = 2;
+            el_position[1] = 0;
+            el_position[2] = 3;
+            el_position[3] = 1;
+
+            for (int m=0;m<k;m++)
+            {
+                int a = el_position[m];
+                if (a != m) 
+                R = ReplaceMatrix(m,a,R);
+            }
+            
             // добавление нулевых строк и столбцов
             while (sn < buf)
             {
