@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RevolutionCAD.Placement;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,15 +10,32 @@ namespace RevolutionCAD.Tracing
     /// <summary>
     /// Трассировка по двухлучевому методу
     /// </summary>
-    class TracingTwoBeam
+    public class TracingTwoBeam
     {
         /// <summary>
         /// Метод для трассировки
         /// </summary>
         /// <returns>Список логов шагов</returns>
-        public List<StepTracingLog> Trace()
+        public static List<StepTracingLog> Trace(Scheme sch, PlacementResult plc, out string err)
         {
-            return null;
+            // обязательно создаём лог действий
+            var log = new List<StepTracingLog>();
+
+            // при возникновении критической ошибки её нужно занести в эту переменную и сделать return null
+            err = "";
+
+            // формируем список плат, в котором хранится список слоёв (для каждого проводника свой слой ДРП)
+            var boards = new List<List<Matrix<Cell>>>();
+
+            // считываем список плат, в каждой плате хранится список проводников, в каждом проводнике хранится список поводничков
+            // проводнички (Wire) соединяют всего 2 контакта
+            List<List<List<Wire>>> boardsWiresPositions = plc.BoardsWiresPositions;
+
+            // тут выполняете действия по алгоритму используя список проводков и обязательно логируете действия
+            // пример логирования в классе TestTracing
+
+
+            return log;
         }
     }
 }

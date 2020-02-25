@@ -46,28 +46,40 @@ namespace RevolutionCAD.Pages
                     steps = TestTracing.Trace(sch, plc, out err_msg);
                     break;
                 case 1:
+                    steps = TracingLi.Trace(sch, plc, out err_msg);
                     break;
                 case 2:
+                    steps = TracingAkers.Trace(sch, plc, out err_msg);
                     break;
                 case 3:
+                    steps = TracingLiMod.Trace(sch, plc, out err_msg);
                     break;
                 case 4:
+                    steps = TracingOncomingWave.Trace(sch, plc, out err_msg);
                     break;
                 case 5:
+                    steps = TracingConnectComplexes.Trace(sch, plc, out err_msg);
                     break;
                 case 6:
+                    steps = TracingTrackCoordinates.Trace(sch, plc, out err_msg);
                     break;
                 case 7:
+                    steps = TracingMinCrossing.Trace(sch, plc, out err_msg);
                     break;
                 case 8:
+                    steps = TracingUniformDistribution.Trace(sch, plc, out err_msg);
                     break;
                 case 9:
+                    steps = TracingTwoBeam.Trace(sch, plc, out err_msg);
                     break;
                 case 10:
+                    steps = TracingFourBeam.Trace(sch, plc, out err_msg);
                     break;
                 case 11:
+                    steps = TracingOptimized.Trace(sch, plc, out err_msg);
                     break;
                 case 12:
+                    steps = TracingHayes.Trace(sch, plc, out err_msg);
                     break;
             }
             
@@ -121,7 +133,7 @@ namespace RevolutionCAD.Pages
             Grid_Parent.Children.Clear();
             for (int numBoard = 0; numBoard < boardsDRPs.Count; numBoard++)
             {
-                var drp = MergeLayersDRP(boardsDRPs[numBoard]);
+                var drp = ApplicationData.MergeLayersDRPs(boardsDRPs[numBoard]);
 
                 var sp_BoardCard = new StackPanel();
                 sp_BoardCard.Orientation = Orientation.Vertical;
@@ -265,29 +277,7 @@ namespace RevolutionCAD.Pages
             Button_DropStepMode.IsEnabled = false;
         }
 
-        private Matrix<Cell> MergeLayersDRP(List<Matrix<Cell>> LayersDRPs)
-        {
-            int heightDRP = LayersDRPs.First().RowsCount;
-            int widthDRP = LayersDRPs.First().ColsCount;
-
-            var resDRP = new Matrix<Cell>(heightDRP, widthDRP);
-
-            foreach (var layerDRP in LayersDRPs)
-            {
-                for (int i = 0; i < layerDRP.RowsCount; i++)
-                {
-                    for (int j = 0; j < layerDRP.ColsCount; j++)
-                    {
-                        if (layerDRP[i, j].State != CellState.Empty)
-                            resDRP[i, j] = layerDRP[i, j].Clone();
-                        else
-                            resDRP[i, j] = new Cell();
-                    }
-                }
-            }
-
-            return resDRP;
-        }
+        
 
         public void Update()
         {

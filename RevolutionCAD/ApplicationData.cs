@@ -13,12 +13,16 @@ namespace RevolutionCAD
 {
     public static class ApplicationData
     {
-        public static string FileName { get; set; }
+        public static string FileName { get; set; } // свойство в котором хранится название файла с которым работаете
 
-        public static int PinDistance = 1;
-        public static int RowDistance = 3;
-        public static int ElementsDistance = 4;
 
+        public static int PinDistance = 1; // расстояние между контактами микросхем на ДРП
+        public static int RowDistance = 3; // расстояние между рядами микросхем
+        public static int ElementsDistance = 4; // расстояние между микросхемами на ДРП
+
+        /// <summary>
+        /// Метод для проверки существования файла с определённым расширением
+        /// </summary>
         public static bool IsFileExists(string extension, out string error)
         {
             if (File.Exists(FileName + extension))
@@ -30,6 +34,9 @@ namespace RevolutionCAD
             return false;
         }
 
+        /// <summary>
+        /// Метод для чтения результатов компоновки в файл (десериализация)
+        /// </summary>
         public static CompositionResult ReadComposition(out string msg)
         {
             msg = "";
@@ -52,6 +59,9 @@ namespace RevolutionCAD
             return cmp;
         }
 
+        /// <summary>
+        /// Метод для записи результатов компоновки в файл (сериализация)
+        /// </summary>
         public static void WriteComposition(CompositionResult cmp, out string errWrite)
         {
             errWrite = "";
@@ -72,6 +82,9 @@ namespace RevolutionCAD
             }
         }
 
+        /// <summary>
+        /// Метод для чтения схемы из файла (десериализация)
+        /// </summary>
         public static Scheme ReadScheme(out string msg)
         {
             msg = "";
@@ -93,6 +106,9 @@ namespace RevolutionCAD
             return sch;
         }
 
+        /// <summary>
+        /// Метод для записи схемы в файла (сериализация)
+        /// </summary>
         public static void WriteScheme(string textSchemeDefinition, out string errWrite)
         {
             Matrix<int> MatrixR = null;
@@ -128,6 +144,9 @@ namespace RevolutionCAD
             
         }
 
+        /// <summary>
+        /// Метод для чтения результатов размещения в файла (десериализация)
+        /// </summary>
         public static PlacementResult ReadPlacement(out string msg)
         {
             msg = "";
@@ -150,6 +169,9 @@ namespace RevolutionCAD
             return plc;
         }
 
+        /// <summary>
+        /// Метод для записи результатов размещения в файла (сериализация)
+        /// </summary>
         public static void WritePlacement(PlacementResult plc, out string errWrite)
         {
             errWrite = "";
@@ -170,6 +192,9 @@ namespace RevolutionCAD
             }
         }
 
+        /// <summary>
+        /// Метод для чтения результатов трассировки из файла (десериализация)
+        /// </summary>
         public static List<List<Matrix<Cell>>> ReadTracing(out string msg)
         {
             msg = "";
@@ -192,6 +217,9 @@ namespace RevolutionCAD
             return trs;
         }
 
+        /// <summary>
+        /// Метод для записи результатов трассировки в файл (сериализация)
+        /// </summary>
         public static void WriteTracing(List<List<Matrix<Cell>>> trs, out string msg)
         {
             msg = "";
@@ -212,6 +240,9 @@ namespace RevolutionCAD
             }
         }
 
+        /// <summary>
+        /// Метод, формирующий матрицы R, Q, список контактов и список номеров dip элементов
+        /// </summary>
         public static bool CreateMatrices(string textSchemeDefinition, out Matrix<int> R, out Matrix<int> Q, out List<int> dipsNumbers, out List<List<Contact>> wiresContactsList, out string errMsg)
         {
             errMsg = "";
@@ -292,7 +323,7 @@ namespace RevolutionCAD
                     errMsg = $"Ошибка в строке {N + numberOfContact + 1}: Провод должен состоять из 2 и более контактов";
                     return false;
                 }
-                
+                int countConnectorsInWire = 0;
                 for (int i = 0; i < elements.Count; i++)
                 {
                     string err;
@@ -300,6 +331,13 @@ namespace RevolutionCAD
                     if (err != "")
                     {
                         errMsg = $"Ошибка в строке {N + numberOfContact + 1}: {err}";
+                        return false;
+                    }
+                    if (contact.ElementNumber == 0)
+                        countConnectorsInWire++;
+                    if (countConnectorsInWire>1)
+                    {
+                        errMsg = $"Ошибка в строке {N + numberOfContact + 1}: В проводнике не должно быть больше 1 соединения с разъёмом";
                         return false;
                     }
 
@@ -330,6 +368,9 @@ namespace RevolutionCAD
             return true;
         }
 
+        /// <summary>
+        /// Метод для получения информации о контакте по его текстовой строке
+        /// </summary>
         public static Contact GetContactInfoByText(string str, int countElements, out string err)
         {
             err = "";
@@ -393,6 +434,32 @@ namespace RevolutionCAD
 
         }
 
+        /// <summary>
+        /// Метод, объеденяющий слои ДРП в один
+        /// </summary>
+        public static Matrix<Cell> MergeLayersDRPs(List<Matrix<Cell>> LayersDRPs)
+        {
+            int heightDRP = LayersDRPs.First().RowsCount;
+            int widthDRP = LayersDRPs.First().ColsCount;
+
+            var resDRP = new Matrix<Cell>(heightDRP, widthDRP);
+
+            foreach (var layerDRP in LayersDRPs)
+            {
+                for (int i = 0; i < layerDRP.RowsCount; i++)
+                {
+                    for (int j = 0; j < layerDRP.ColsCount; j++)
+                    {
+                        if (layerDRP[i, j].State != CellState.Empty)
+                            resDRP[i, j] = layerDRP[i, j].Clone();
+                        else
+                            resDRP[i, j] = new Cell();
+                    }
+                }
+            }
+
+            return resDRP;
+        }
 
     }
 }

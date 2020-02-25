@@ -26,7 +26,7 @@
         </Menu>
         <TextBlock Name="TextBlock_NameOpenedFile"
                    Grid.Row="1"
-                   FontSize="18"
+                   FontSize="16"
                    Margin="5">Создайте или откройте файл...</TextBlock>
         
         <TabControl Name="TabControl_Main"

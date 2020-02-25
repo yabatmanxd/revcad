@@ -39,12 +39,6 @@ namespace RevolutionCAD.Pages
             int countOfElements, limitsOfWires; // Николаев
             
             string err_msg = "";
-            if (int.TryParse(tbCountOfElements.Text, out countOfElements) == false || 
-                    int.TryParse(tbLimitsOfWires.Text, out limitsOfWires) == false)
-            {
-                err_msg = "Вы написали какие-то бредни вместо цифр в полях для ввода";
-            }
-            else
             switch (ComboBox_Method.SelectedIndex)
             {
                 case 0:
