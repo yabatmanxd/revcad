@@ -12,6 +12,7 @@ namespace RevolutionCAD.Composition
         public static List<StepCompositionLog> Compose(out string error_msg)
         {
             error_msg = "";
+            
             //с этого обязательно должен начинаться метод
             var log = new List<StepCompositionLog>();
             var boards = new List<List<int>>();

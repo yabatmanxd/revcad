@@ -48,9 +48,21 @@ namespace RevolutionCAD.Pages
             switch (ComboBox_Method.SelectedIndex)
             {
                 case 0:
+                    if (int.TryParse(tbCountOfElements.Text, out countOfElements) == false ||
+                    int.TryParse(tbLimitsOfWires.Text, out limitsOfWires) == false)
+                    {
+                        err_msg = "Поля ввода заполнены неверно";
+                        break;
+                    }
                     steps = PosledGypergraph.Compose(countOfElements, limitsOfWires, out err_msg);
                     break;
                 case 1:
+                    if (int.TryParse(tbCountOfElements.Text, out countOfElements) == false ||
+                        int.TryParse(tbLimitsOfWires.Text, out limitsOfWires) == false)
+                    {
+                        err_msg = "Поля ввода заполнены неверно";
+                        break;
+                    }
                     steps = PosledMultigraph.Compose(countOfElements, limitsOfWires, out err_msg);
                     break;
                 case 2:
@@ -62,11 +74,7 @@ namespace RevolutionCAD.Pages
                 case 4:
                     steps = TestComposition.Compose();
                     break;
-
             }
-
-            // на последнем шаге получили результат компоновки
-            
             
             // если не было ошибки - сериализуем результат
             if (err_msg == "")
