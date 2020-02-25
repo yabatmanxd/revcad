@@ -28,7 +28,7 @@ namespace RevolutionCAD
             if (wnd.ShowDialog() == true)
             {
                 ApplicationData.FileName = wnd.Text;
-                TextBlock_NameOpenedFile.Text = wnd.Text;
+                TextBlock_NameOpenedFile.Text = $"Файл: {wnd.Text}";
                 TabControl_Main.Visibility = Visibility.Visible;
                 // при создании файла откроется пример заполнения
                 TextBox_Code.Text = "dip14\r\ndip14\r\ndip14\r\ndip18\r\n#\r\nX-D1.1-D2.1\r\nD1.1-D2.1-D3.2-X\r\nD4.1-D2.1\r\nD3.1-D1.1";
@@ -50,7 +50,7 @@ namespace RevolutionCAD
                 string fileName = Path.GetFileNameWithoutExtension(fullPath);
 
                 ApplicationData.FileName = fileName;
-                TextBlock_NameOpenedFile.Text = fileName;
+                TextBlock_NameOpenedFile.Text = $"Файл: {fileName}";
                 TabControl_Main.Visibility = Visibility.Visible;
 
                 string msg;

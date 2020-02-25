@@ -26,6 +26,7 @@
         </Menu>
         <TextBlock Name="TextBlock_NameOpenedFile"
                    Grid.Row="1"
+                   FontSize="18"
                    Margin="5">Создайте или откройте файл...</TextBlock>
         
         <TabControl Name="TabControl_Main"
@@ -50,6 +51,7 @@
                         <Button Name="Button_CreateMatrices"
                                 Grid.Row="1"
                                 Margin="5"
+                                Padding="10 5"
                                 Click="Button_CreateMatrices_Click">Сформировать матрицы R и Q</Button>
                     </StackPanel>
                     
