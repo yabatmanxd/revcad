@@ -39,14 +39,14 @@ namespace RevolutionCAD.Composition
             }
 
             var boards = ApplicationData.ReadComposition(out error_msg).BoardsElements;
-            //var boards = new List<List<int>>();
 
 
-            R =R.RemoveCol(0); 
-            R=R.RemoveRow(0); // удаляем разъём
+            R = R.RemoveCol(0); 
+            R= R.RemoveRow(0); // удаляем разъём
 
 
             var Result = new Matrix<int>(R.ColsCount, R.ColsCount);
+
             // формируем матрицу таким образом, чтобы строки и столбцы скомпонованных плат оказались рядом
             
             // TODO
@@ -74,7 +74,7 @@ namespace RevolutionCAD.Composition
             M[2, 2] = 0;
             */
                        
-            var X = ReplaceMatrix(0, 1, R); // пример замены строк и столбцов (строка/столбец 1, строка/столбец 1, изменяемая матрица )
+            var X = ReplaceMatrix(0, 1, R); // пример замены строк и столбцов (строка/столбец 1, строка/столбец 2, изменяемая матрица )
             // -------------------------------------------------------------
 
 
@@ -88,26 +88,30 @@ namespace RevolutionCAD.Composition
             //***************************************************************************************************************************
             int[] el_position = new int[sn]; //массив, который хранит порядок расположения элементов в преобразоваанной матрице R
             int k = 0;
+            int[] kol_elem_for_plata = new int[kol_plat];//массив, который хранит кол-во микросхем на каждой плате. Нужен для поиска макс кол-ва эл-ов и в дальнейшем добавления 0 строк и столбцов в матрицы на которых меньше эл-ов
 
-            for(int i=0;i<kol_plat;i++)
+            for (int i=0;i<kol_plat;i++)
             {
                 int kol_elements = boards[i].Count;
+                kol_elem_for_plata[i] = kol_elements;
                 for (int j = 0; j < kol_elements; j++)
                 {
-                    el_position[k] = boards[i][j]-1;
+                    el_position[k] = boards[i][j]-1;// (-1) т.к. индекс начинается с 0, а номера эл-ов с 1
                     k++;
                 }
             }
 
+                int Max_kol_elem_for_plata = kol_elem_for_plata.Max(); // Максимальное кол-во микросхем на платах 
+
             //****************************************************************************************************************************
-            el_position[0] = 2;
+            /*el_position[0] = 2; //Значения для теста
             el_position[1] = 0;
             el_position[2] = 3;
             el_position[3] = 1;
 
             R[0,0]= R[1, 1] = R[2, 2]=R[3, 3] = R[2, 3] = R[3, 2] = 0;
             R[0, 1] = R[0, 2] = R[1, 0] = R[2, 0] = 2;
-            R[1, 2] = R[1, 3] = R[2, 1] = R[3, 1] = 1;
+            R[1, 2] = R[1, 3] = R[2, 1] = R[3, 1] = 1;*/
 
 
             int [,] R_buf = new int [sn,sn];// буфферная матрица для хранения порядка элементов в порядке расположения по платам
@@ -136,6 +140,7 @@ namespace RevolutionCAD.Composition
             for (int i = 0; i < sn; i++) //перезаписываем матрицу с расположенными в нужном порядке элементами
                 for (int j = 0; j < sn; j++)
                     R[i, j] = R_buf[i, j];
+
 
             // добавление нулевых строк и столбцов
             while (sn < buf)
