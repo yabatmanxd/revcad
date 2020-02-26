@@ -87,7 +87,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Composition\CompositionResult.cs" />
-    <Compile Include="Composition\TestComposition.cs" />
     <Compile Include="Contact.cs" />
     <Compile Include="Matrix.cs" />
     <Compile Include="Pages\CompositionControl.xaml.cs">

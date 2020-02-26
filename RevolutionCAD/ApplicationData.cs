@@ -346,6 +346,8 @@ namespace RevolutionCAD
                 // добавляем список контактов только что сформированного проводника в общий список проводников
                 wiresContactsList.Add(contacts);
 
+                
+
                 // получаем список номеров элементов
                 var elementNumbers = contacts.Select(x => x.ElementNumber).ToList();
                 
@@ -365,6 +367,22 @@ namespace RevolutionCAD
                 }
 
             }
+
+            var wiresPairs = new List<List<Contact>>();
+
+            foreach (var wireContacts in wiresContactsList)
+            {
+                for (int numContact = 0; numContact < wireContacts.Count - 1; numContact++)
+                {
+                    var pair = new List<Contact>();
+                    pair.Add(wireContacts[numContact]);
+                    pair.Add(wireContacts[numContact + 1]);
+                    wiresPairs.Add(pair);
+                }
+            }
+
+            wiresContactsList = wiresPairs;
+
             return true;
         }
 

@@ -65,9 +65,6 @@ namespace RevolutionCAD.Pages
                 case 3:
                     steps = IterMultigraph.Compose(out err_msg);
                     break;
-                case 4:
-                    steps = TestComposition.Compose();
-                    break;
             }
             
             // если не было ошибки - сериализуем результат

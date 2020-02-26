@@ -32,7 +32,7 @@ namespace RevolutionCAD
                 TextBlock_NameOpenedFile.Text = $"Файл: {wnd.Text}";
                 TabControl_Main.Visibility = Visibility.Visible;
                 // при создании файла откроется пример заполнения
-                TextBox_Code.Text = "dip14\r\ndip14\r\ndip14\r\ndip18\r\n#\r\nX-D1.1-D2.1\r\nD1.1-D2.1-D3.2-X\r\nD4.1-D2.1\r\nD3.1-D1.1";
+                TextBox_Code.Text = "dip14\r\ndip14\r\ndip14\r\ndip18\r\n#\r\nX-D1.1-D2.1\r\nD1.2-D2.2-D3.2-X\r\nD4.1-D2.1\r\nD3.1-D1.1";
                 TextBox_Code.SelectionStart = TextBox_Code.Text.Length;
             }
             

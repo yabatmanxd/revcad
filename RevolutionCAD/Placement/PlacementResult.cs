@@ -14,7 +14,7 @@ namespace RevolutionCAD.Placement
         public List<Matrix<int>> BoardsMatrices { get; set; } // список плат с номерами элементов, которые расположены в определённой позиции на плате
         public List<Matrix<Cell>> BoardsDRPs { get; set; } // список дрп плат, на которых размещены элементы с контактами
         public List<Dictionary<int,List<Position>>> BoardsElementsContactsPos { get; set; } // список словарей плат, в словаре по ключу (номеру элемента) можно получить список координат  определённого контакта
-        public List<List<List<Wire>>> BoardsWiresPositions { get; set; } // список плат, в котором хранится список проводов для каждой платы. в списке проводов хранится список проводников, которые соединяют всего 2 контакта.
+        public List<List<Wire>> BoardsWiresPositions { get; set; } // список плат, в котором хранится список проводов по 2 контакта для каждой платы
 
         public void CreateBoardsDRPs(CompositionResult cmp, List<int> dips, out string err)
         {
@@ -219,59 +219,39 @@ namespace RevolutionCAD.Placement
 
         public void CreateWires(List<List<List<Contact>>> BoardsWires)
         {
-            BoardsWiresPositions = new List<List<List<Wire>>>();
-
-            for (int boardNum = 0; boardNum < BoardsWires.Count; boardNum++)
+            BoardsWiresPositions = new List<List<Wire>>();
+            
+            for(int boardNum = 0; boardNum < BoardsWires.Count; boardNum++)
             {
-                var wiresContacts = BoardsWires[boardNum];
-
-                var pos_wires = new List<List<Wire>>();
-
                 int countConnectorPins = 0;
-                for (int wireNum = 0; wireNum < wiresContacts.Count; wireNum++)
+                var boardWires = new List<Wire>();
+
+                foreach(var contactsPair in BoardsWires[boardNum])
                 {
-                    var wire = wiresContacts[wireNum];
-
-                    for (int contactNum = 0; contactNum < wire.Count; contactNum++)
+                    var wire = new Wire();
+                    var contactA = contactsPair[0];
+                    if (contactA.ElementNumber == 0)
                     {
-                        var contact = wire[contactNum];
-                        
-                        if (contact.ElementNumber != 0)
-                        {
-                            int drpRowContact = BoardsElementsContactsPos[boardNum][contact.ElementNumber][contact.ElementContact].Row;
-                            int drpColumnContact = BoardsElementsContactsPos[boardNum][contact.ElementNumber][contact.ElementContact].Column;
-                            contact.PositionContact = new Position(drpRowContact, drpColumnContact);
-                        } else
-                        {
-                            int drpRowContact = BoardsElementsContactsPos[boardNum][contact.ElementNumber][countConnectorPins].Row;
-                            int drpColumnContact = BoardsElementsContactsPos[boardNum][contact.ElementNumber][countConnectorPins].Column;
-                            contact.PositionContact = new Position(drpRowContact, drpColumnContact);
-                            countConnectorPins++;
-                        }
+                        contactA.ElementContact = countConnectorPins++;
                     }
-
-                    // формируем на базе контактов проводники по 2 контакта
-                    var pos_wire = new List<Wire>();
-                    for (int contactNum = 0; contactNum < wire.Count - 1; contactNum++)
+                    var contactB = contactsPair[1];
+                    if (contactB.ElementNumber == 0)
                     {
-                        var wr = new Wire();
-                        wr.A = wire[contactNum].Clone();
-                        wr.B = wire[contactNum+1].Clone();
-                        pos_wire.Add(wr);
+                        contactB.ElementContact = countConnectorPins++;
                     }
+                    int drpRowContact = BoardsElementsContactsPos[boardNum][contactA.ElementNumber][contactA.ElementContact].Row;
+                    int drpColumnContact = BoardsElementsContactsPos[boardNum][contactA.ElementNumber][contactA.ElementContact].Column;
+                    wire.A.PositionContact = new Position(drpRowContact, drpColumnContact);
 
-                    pos_wires.Add(pos_wire);
+                    drpRowContact = BoardsElementsContactsPos[boardNum][contactB.ElementNumber][contactB.ElementContact].Row;
+                    drpColumnContact = BoardsElementsContactsPos[boardNum][contactB.ElementNumber][contactB.ElementContact].Column;
+                    wire.B.PositionContact = new Position(drpRowContact, drpColumnContact);
+
+                    boardWires.Add(wire);
                 }
 
-
-                BoardsWiresPositions.Add(pos_wires);
-
+                BoardsWiresPositions.Add(boardWires);
             }
-
-
-
-
-
         }
     }
 }
