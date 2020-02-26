@@ -94,7 +94,7 @@ namespace RevolutionCAD.Composition
                 int kol_elements = boards[i].Count;
                 for (int j = 0; j < kol_elements; j++)
                 {
-                    el_position[k] = boards[i][j];
+                    el_position[k] = boards[i][j]-1;
                     k++;
                 }
             }
@@ -105,13 +105,38 @@ namespace RevolutionCAD.Composition
             el_position[2] = 3;
             el_position[3] = 1;
 
-            for (int m=0;m<k;m++)
+            R[0,0]= R[1, 1] = R[2, 2]=R[3, 3] = R[2, 3] = R[3, 2] = 0;
+            R[0, 1] = R[0, 2] = R[1, 0] = R[2, 0] = 2;
+            R[1, 2] = R[1, 3] = R[2, 1] = R[3, 1] = 1;
+
+
+            int [,] R_buf = new int [sn,sn];// буфферная матрица для хранения порядка элементов в порядке расположения по платам
+
+
+            for (int i=0;i<el_position.Length;i++) //строки располагает в нужном порядке
+                {
+                for (int j = 0; j < el_position.Length; j++)
+                {
+                    R_buf[i, j] = R[i, el_position[j]];
+                }
+                }
+
+            for (int i = 0; i < sn; i++) //перезаписываем матрицу с расположенными в нужном порядке строками
+                for (int j = 0; j < sn; j++)
+                    R[i,j] = R_buf[i, j];
+
+            for (int i = 0; i < el_position.Length; i++) //столбцы располагает в нужном порядке 
             {
-                int a = el_position[m];
-                if (a != m) 
-                R = ReplaceMatrix(m,a,R);
+                for (int j = 0; j < el_position.Length; j++)
+                {
+                    R_buf[i, j] = R[el_position[j],i];
+                }
             }
-            
+
+            for (int i = 0; i < sn; i++) //перезаписываем матрицу с расположенными в нужном порядке элементами
+                for (int j = 0; j < sn; j++)
+                    R[i, j] = R_buf[i, j];
+
             // добавление нулевых строк и столбцов
             while (sn < buf)
             {
