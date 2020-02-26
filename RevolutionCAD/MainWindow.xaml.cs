@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using Microsoft.Win32;
 
 
@@ -63,6 +64,8 @@ namespace RevolutionCAD
 
                 TextBox_Code.Text = sch.SchemeDefinition;
 
+                ShowWires(sch);
+
                 MatrControl.UpdateMatrices();
                 CompControl.Update();
                 PlaceControl.Update();
@@ -78,6 +81,14 @@ namespace RevolutionCAD
             ApplicationData.WriteScheme(TextBox_Code.Text, out error);
             if (error != "")
                 MessageBox.Show(error, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
+            else
+            {
+                string str;
+                var sch = ApplicationData.ReadScheme(out str);
+                if (str != "")
+                    return;
+                ShowWires(sch);
+            }
             
         }
 
@@ -91,15 +102,59 @@ namespace RevolutionCAD
                 MessageBox.Show(error, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-               
+            
             MatrControl.UpdateMatrices();
-            TabControl_Main.SelectedIndex = 1;
+            
+            string str;
+            var sch = ApplicationData.ReadScheme(out str);
+            if (str != "")
+                return;
+            ShowWires(sch);
+            
 
         }
 
         private void MenuItem_Info_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Все жалобы, вопросы, предложения по поводу работы приложения в деканат", "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void ShowWires(Scheme sch)
+        {
+            TreeViewItem_Wires.Items.Clear();
+            int wireIterator = 1;
+            foreach (var wire in sch.WiresContacts)
+            {
+                var itemWire = new TreeViewItem();
+                itemWire.Header = $"Провод {wireIterator}";
+                foreach (var contact in wire)
+                {
+                    var itemContact = new TreeViewItem();
+                    if (contact.ElementNumber != 0)
+                        itemContact.Header = $"D{contact.ElementNumber}.{contact.ElementContact}";
+                    else
+                        itemContact.Header = "X";
+                    itemWire.Items.Add(itemContact);
+                }
+                TreeViewItem_Wires.Items.Add(itemWire);
+                wireIterator++;
+            }
+            TreeViewItem_Wires.IsExpanded = true;
+
+
+            TreeViewItem_Dips.Items.Clear();
+            int dipIterator = 0;
+            foreach (var dip in sch.DIPNumbers)
+            {
+                if (dipIterator != 0)
+                {
+                    var dipItem = new TreeViewItem();
+                    dipItem.Header = $"D{dipIterator} - dip{dip}";
+                    TreeViewItem_Dips.Items.Add(dipItem);
+                }
+                dipIterator++;
+            }
+            TreeViewItem_Dips.IsExpanded = true;
         }
     }
 }

@@ -39,14 +39,36 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="8*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
                     <TextBox Name="TextBox_Code"
                              Grid.Row="0"
+                             Grid.Column="0"
                              AcceptsReturn="True" 
                              VerticalScrollBarVisibility="Auto"
                              HorizontalScrollBarVisibility="Auto"
                              Margin="5"></TextBox>
+                    <GridSplitter Width="3"
+                                  Grid.Column="1"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Stretch"/>
+                    <TreeView Grid.Column="2" 
+                              Margin="5">
+                        <TreeViewItem Header="Схема" IsExpanded="True">
+                            <TreeViewItem Name="TreeViewItem_Wires" Header="Проводники">
+
+                            </TreeViewItem>
+                            <TreeViewItem Name="TreeViewItem_Dips" Header="Типы корпусов">
+
+                            </TreeViewItem>
+                        </TreeViewItem>
+                    </TreeView>
                     <StackPanel Grid.Row="1"
+                                Grid.ColumnSpan="3"
                                 Orientation="Horizontal">
                         <Button Name="Button_CreateMatrices"
                                 Grid.Row="1"
