@@ -128,7 +128,12 @@ namespace RevolutionCAD.Pages
             }
             TextBox_Log.ScrollToEnd();
             ShowStep(StepsLog.Count - 1); // отображаем только последний шаг графически, т.к. он будет результатом компоновки
-            
+
+            string str;
+            var cmp = ApplicationData.ReadComposition(out str);
+            if (str != "")
+                return;
+            ShowWires(cmp);
         }
 
         private void Button_StartStepComposition_Click(object sender, RoutedEventArgs e)
@@ -164,6 +169,12 @@ namespace RevolutionCAD.Pages
             {
                 TextBox_Log.Text += "\n === Компоновка закончена ===\n";
                 DropStepMode();
+
+                string str;
+                var cmp = ApplicationData.ReadComposition(out str);
+                if (str != "")
+                    return;
+                ShowWires(cmp);
             }
             else
             {
@@ -227,6 +238,60 @@ namespace RevolutionCAD.Pages
                 var boardsElements = cmp.BoardsElements;
                 Draw(boardsElements);
             } 
+        }
+
+        private void ShowWires(CompositionResult cmp)
+        {
+            TreeViewItem_Nodes.Items.Clear();
+
+            for (int boardNum = 0; boardNum<cmp.BoardsElements.Count; boardNum++)
+            {
+                var boardItem = new TreeViewItem();
+                boardItem.Header = $"Узел {boardNum + 1}";
+
+                var boardElements = new TreeViewItem();
+                boardElements.Header = "Элементы";
+                foreach(var element in cmp.BoardsElements[boardNum])
+                {
+                    var boardElement = new TreeViewItem();
+                    if (element != 0)
+                        boardElement.Header = $"D{element}";
+                    else
+                        boardElement.Header = "X";
+                    boardElements.Items.Add(boardElement);
+                }
+
+                boardElements.IsExpanded = true;
+                boardItem.Items.Add(boardElements);
+
+
+                var boardWires = new TreeViewItem();
+                boardWires.Header = "Провода";
+                int wireIterator = 1;
+                foreach (var wire in cmp.BoardsWires[boardNum])
+                {
+                    var itemWire = new TreeViewItem();
+                    itemWire.Header = $"Провод {wireIterator}";
+                    foreach (var contact in wire)
+                    {
+                        var itemContact = new TreeViewItem();
+                        if (contact.ElementNumber != 0)
+                            itemContact.Header = $"D{contact.ElementNumber}.{contact.ElementContact}";
+                        else
+                            itemContact.Header = "X";
+                        itemWire.Items.Add(itemContact);
+                    }
+                    boardWires.Items.Add(itemWire);
+                    wireIterator++;
+                }
+
+                boardWires.IsExpanded = true;
+                boardItem.Items.Add(boardWires);
+
+
+                TreeViewItem_Nodes.Items.Add(boardItem);
+            }
+
         }
     }
 }

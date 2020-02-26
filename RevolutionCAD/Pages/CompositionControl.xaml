@@ -13,8 +13,14 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="8*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
         <StackPanel Orientation="Horizontal"
-                    Margin="10">
+                    Margin="10"
+                    Grid.ColumnSpan="3">
             <TextBlock Padding="10 3" VerticalAlignment="Center">Метод компоновки:</TextBlock>
             <ComboBox Name="ComboBox_Method" VerticalAlignment="Center" SelectedIndex="0">
                 <ComboBoxItem Content="Последовательная по гиперграфу"></ComboBoxItem>
@@ -37,16 +43,30 @@
 
         <TextBox Name="TextBox_Log"
                  Grid.Row="2"
+                 Grid.ColumnSpan="1"
                  AcceptsReturn="True" 
                  VerticalScrollBarVisibility="Auto"
                  HorizontalScrollBarVisibility="Auto"
                  Margin="5"
                  IsReadOnly="True"></TextBox>
 
-
+        <GridSplitter Width="3"
+                      Grid.Column="1"
+                      Grid.Row="1"
+                      Grid.RowSpan="2"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Stretch"/>
+        <TreeView Grid.Column="2" 
+                  Grid.Row="1"
+                  Grid.RowSpan="2"
+                  Margin="5">
+            <TreeViewItem Header="Узлы" Name="TreeViewItem_Nodes" IsExpanded="True">
+            </TreeViewItem>
+        </TreeView>
 
         <StackPanel Grid.Row="3"
                     Margin="10"
+                    Grid.ColumnSpan="3"
                     Orientation="Horizontal">
             <Button Name="Button_FullComposition" 
                     Margin="5" 
