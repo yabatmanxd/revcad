@@ -52,7 +52,7 @@ namespace RevolutionCAD.Composition
             // TODO
             // для теста
             // -------------------------------------------------------------
-   /*         Matrix<int> M = new Matrix<int>(3, 3);
+            Matrix<int> M = new Matrix<int>(3, 3);
 
             for (int i = 0; i < M.ColsCount; i++)
                 for (int j = 0; j < M.ColsCount; j++)
@@ -72,8 +72,11 @@ namespace RevolutionCAD.Composition
             M[2, 0] = 1;
             M[2, 1] = 3;
             M[2, 2] = 0;
-            */
-                       
+
+
+            var MM = AddZero(M, 1);
+
+
             var X = ReplaceMatrix(0, 1, R); // пример замены строк и столбцов (строка/столбец 1, строка/столбец 2, изменяемая матрица )
             // -------------------------------------------------------------
 
@@ -237,6 +240,81 @@ namespace RevolutionCAD.Composition
             }
 
             return Result;
+        }
+
+        private static Matrix<int> AddZero(Matrix<int> M, int position)
+        {
+            Matrix<int> NewM = new Matrix<int>(M.RowsCount + 1, M.ColsCount + 1);
+            bool fl = false;
+
+            for (int i = 0; i < M.ColsCount+1; i++) //строки располагает в нужном порядке
+            {
+                for (int j = 0; j < M.ColsCount + 1; j++)
+                {
+                    if (j < position)
+                    { 
+                        NewM[i, j] = M[i, j];
+                        fl = false;
+                    }
+
+                    if (position == j)
+                    { 
+                        NewM[i, j] = 0;
+                        fl = true;
+                        break;
+                    }
+
+                    if (fl == true)
+                    {
+                        NewM[i, j] = M[i, j - 1];
+                        fl = false;
+                    }
+                }
+            }
+
+
+
+           /* for (int i = 0; i < sn; i++) //перезаписываем матрицу с расположенными в нужном порядке строками
+                for (int j = 0; j < sn; j++)
+                    R[i, j] = R_buf[i, j];
+
+            for (int i = 0; i < el_position.Length; i++) //столбцы располагает в нужном порядке 
+            {
+                for (int j = 0; j < el_position.Length; j++)
+                {
+                    R_buf[i, j] = R[el_position[j], i];
+                }
+            }*/
+
+
+
+            /*for(int i = 0; i < NewM.ColsCount - 1; i++)
+                for(int j = 0; j < NewM.ColsCount; j++)
+                {
+                    if (j < position)
+                        NewM[i, j] = M[i, j];
+                    if (j == position)
+                        NewM[i, j] = 0;
+                    if (j > position)
+                        NewM[i, j] = M[i - 1, j];
+
+                }
+
+            for (int i = 0; i < NewM.ColsCount; i++)
+                for (int j = 0; j < NewM.ColsCount; j++)
+                {
+                    if (j < position)
+                        NewM[i, j] = M[i, j];
+                    if (j == position)
+                        NewM[i, j] = 0;
+                    if (j > position)
+                        NewM[i, j] = M[i, j + 1];
+
+                }*/
+
+
+
+            return NewM;
         }
     }
 }
