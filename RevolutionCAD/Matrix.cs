@@ -27,14 +27,19 @@ namespace RevolutionCAD
 
         public T getValueByPlatePos(int pos)
         {
-            if (pos < 1 || pos > ColsCount * RowsCount)
+            if (pos < 0 || pos > ColsCount * RowsCount)
             {
                 throw new IndexOutOfRangeException();
-            } else
+            }
+            else
             {
-                int j = pos % RowsCount;
+                int j = pos / RowsCount;
                 int i = pos % ColsCount;
-                return _matrix[i,j];
+                if (j % 2 == 1)
+                {
+                    i = ColsCount - i - 1;
+                }
+                return _matrix[i, j];
             }
         }
 
@@ -48,6 +53,10 @@ namespace RevolutionCAD
             {
                 int j = pos / RowsCount;
                 int i = pos % ColsCount;
+                if (j%2 == 1)
+                {
+                    i = ColsCount - i - 1;
+                }
                 _matrix[i, j] = element;
             }
         }
