@@ -144,6 +144,26 @@ namespace RevolutionCAD
             
         }
 
+        public static void WriteScheme(Scheme sch, out string errWrite)
+        {
+            errWrite = "";
+            if (FileName != "")
+            {
+                try
+                {
+                    using (StreamWriter file = File.CreateText(FileName + ".sch"))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        serializer.Serialize(file, sch);
+                    }
+                }
+                catch (Exception exc)
+                {
+                    errWrite = $"При записи в файл схемы произошла ошибка: {exc.Message}";
+                }
+            }
+        }
+
         /// <summary>
         /// Метод для чтения результатов размещения в файла (десериализация)
         /// </summary>
@@ -384,6 +404,24 @@ namespace RevolutionCAD
             wiresContactsList = wiresPairs;
 
             return true;
+        }
+
+        public static Matrix<int> CreateMatrixR(List<List<List<Contact>>> boardsWires, int rows, int cols)
+        {
+            var matrix = new Matrix<int>(rows,cols);
+            matrix.Fill(0);
+
+            foreach (var boardWires in boardsWires)
+            {
+                foreach(var wire in boardWires)
+                {
+                    int elementA = wire[0].ElementNumber;
+                    int elementB = wire[1].ElementNumber;
+                    matrix[elementA, elementB]++;
+                    matrix[elementB, elementA]++;
+                }
+            }
+            return matrix;
         }
 
         /// <summary>

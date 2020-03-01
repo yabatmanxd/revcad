@@ -79,7 +79,7 @@ namespace RevolutionCAD.Placement
                     }
                     msg += "\n";
                     msg += $"Максимальное количество связей у элемента D{elementNumberMaxRelations}\n";
-                    msg += $"Помещаем его в {pos} позицию";
+                    msg += $"Помещаем его в {pos} позицию на {boards.Count} плату";
                     var step = new StepPlacementLog(boards, msg);
                     log.Add(step);
                     // закончили логирование

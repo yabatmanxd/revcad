@@ -15,6 +15,7 @@ namespace RevolutionCAD
         public MainWindow()
         {
             InitializeComponent();
+            CompControl.mw = this;
         }
 
         private void MenuItem_Exit_Click(object sender, RoutedEventArgs e)
