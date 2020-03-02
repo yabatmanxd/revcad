@@ -23,6 +23,10 @@ namespace RevolutionCAD.Tracing
                     State == CellState.WireBottomRight ||
                     State == CellState.WireBottomLeft ||
                     State == CellState.WireCross ||
+                    State == CellState.ArrowDown ||
+                    State == CellState.ArrowUp ||
+                    State == CellState.ArrowLeft ||
+                    State == CellState.ArrowRight ||
                     State == CellState.Contact)
                     return true;
                 else
@@ -33,7 +37,7 @@ namespace RevolutionCAD.Tracing
         public Cell()
         {
             State = CellState.Empty;
-            Weight = 0;
+            Weight = -1;
         }
 
         public Cell Clone()

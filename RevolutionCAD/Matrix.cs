@@ -61,6 +61,19 @@ namespace RevolutionCAD
             }
         }
 
+        public int getRelativePosByAbsolute(Position pos)
+        {
+            int relPos;
+            if (pos.Column %2 == 0)
+            {
+                relPos = pos.Column * RowsCount + pos.Row;
+            } else
+            {
+                relPos = pos.Column * RowsCount + (ColsCount - pos.Row) - 1;
+            }
+            return relPos;
+        }
+
         public Matrix<T> RemoveRow(int row)
         {
             var newMatr = new Matrix<T>(RowsCount-1, ColsCount);

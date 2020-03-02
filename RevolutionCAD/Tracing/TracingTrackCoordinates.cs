@@ -34,7 +34,73 @@ namespace RevolutionCAD.Tracing
             // пример логирования в классе TestTracing
 
 
+
+            for(int boardNum = 0; boardNum < boardsWiresPositions.Count; boardNum++)
+            {
+                var boardWiresPositions = boardsWiresPositions[boardNum];
+
+                var boardDRPs = new List<Matrix<Cell>>();
+                
+                foreach (var wire in boardWiresPositions)
+                {
+                    var currentDRP = new Matrix<Cell>(plc.BoardsDRPs[boardNum].RowsCount, plc.BoardsDRPs[boardNum].ColsCount);
+
+                    for(int i = 0; i < currentDRP.RowsCount; i++)
+                    {
+                        for (int j = 0; j < currentDRP.ColsCount; j++)
+                        {
+                            currentDRP[i, j] = new Cell();
+                        }
+                    }
+
+                    boardDRPs.Add(currentDRP);
+
+                    var fullDrp = ApplicationData.MergeLayersDRPs(boardDRPs);
+
+                    var startPos = wire.A;
+                    var endPos = wire.B;
+
+
+
+                }
+            }
+
+
+
             return log;
+        }
+
+        public static List<Position> getNeighbors(Matrix<Cell> drp, Position pos)
+        {
+            var neighbors = new List<Position>();
+            var aplicants = new List<Position>();
+
+            for (int i = 0; i<4; i++)
+            {
+                aplicants.Add(pos.Clone());
+            }
+
+            aplicants[0].Column += 1;
+            aplicants[1].Column -= 1;
+            aplicants[2].Row -= 1;
+            aplicants[3].Row += 1;
+
+            foreach(var aplicant in aplicants)
+            {
+                if (aplicant.Row >= 0 && aplicant.Row < drp.RowsCount)
+                {
+                    if (aplicant.Column >= 0 && aplicant.Column < drp.ColsCount)
+                    {
+                        if (drp[aplicant.Row, aplicant.Column].isBusy == false)
+                        {
+                            neighbors.Add(aplicant);
+                        }
+                    }
+                }
+            }
+
+            return neighbors;
+
         }
     }
 }

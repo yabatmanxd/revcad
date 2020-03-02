@@ -43,9 +43,8 @@ namespace RevolutionCAD.Placement
                 
                 // изначально размещён был разъём
                 int lastPlacedElementNumber = 0;
-                
-                // стартовая позиция будет 0
-                int pos = 0;
+
+                var pos = new Position(-1, -1);
 
                 // таким способом копируем список всех элементов в список неразмещённых
                 List<int> unplacedElements = boardElements.Select(x => x).ToList();
@@ -67,19 +66,60 @@ namespace RevolutionCAD.Placement
                     // получаем номер элемента по позиции в списке
                     var elementNumberMaxRelations = unplacedElements[elementPosMaxRelations];
 
-                    // устанавливаем элемент в позицию
-                    boards.Last().setValueByPlatePos(pos, elementNumberMaxRelations);
-                    
-                    // начинаем логирование действия
                     string msg = $"Элемент размещённый на предыдущем шаге: D{lastPlacedElementNumber}\n";
                     msg += "Количество связей неразмещённых элементов с ним: ";
-                    for (int i = 0; i< unplacedElements.Count; i++)
+                    for (int i = 0; i < unplacedElements.Count; i++)
                     {
                         msg += $"D{unplacedElements[i]}={countRelations[i]}; ";
                     }
                     msg += "\n";
                     msg += $"Максимальное количество связей у элемента D{elementNumberMaxRelations}\n";
-                    msg += $"Помещаем его в {pos} позицию на {boards.Count} плату";
+                    msg += $"Найдём оптимальную позицию:\n";
+
+                    var neighbors = getNeigbors(boardMatr, pos);
+
+
+                    Position minLpos = null;
+                    int minL = int.MaxValue;
+                    foreach(var neighbor in neighbors)
+                    {
+                        msg += $"D{elementNumberMaxRelations} -> {boardMatr.getRelativePosByAbsolute(neighbor)}; L=";
+                        List<string> operations = new List<string>(0);
+                        int L = 0;
+                        for (int j=0; j<matrR.ColsCount; j++)
+                        {
+                            if (!unplacedElements.Contains(j))
+                            {
+                                if (matrR[elementNumberMaxRelations, j] != 0)
+                                {
+                                    int countRelationsWithElement = matrR[elementNumberMaxRelations, j];
+                                    int length = getLength(neighbor, getPosByElementNumber(boardMatr, j));
+                                    operations.Add($"{countRelationsWithElement}*{length}");
+                                    L += countRelationsWithElement * length;
+                                }
+                            }
+                            
+                            
+                        }
+                        msg += String.Join("+", operations);
+                        msg += $"={L}\n";
+                        if (L<minL)
+                        {
+                            minL = L;
+                            minLpos = neighbor.Clone();
+                        }
+
+                    }
+                    int minLposRelative = boardMatr.getRelativePosByAbsolute(minLpos);
+                    msg += $"Минимальное значение L в {minLposRelative} позиции\n";
+                    pos = minLpos.Clone();
+
+                    // устанавливаем элемент в позицию
+                    boards.Last().setValueByPlatePos(minLposRelative, elementNumberMaxRelations);
+                    
+                    // начинаем логирование действия
+                    
+                    msg += $"Помещаем его в {minLposRelative} позицию на {boards.Count} плату";
                     var step = new StepPlacementLog(boards, msg);
                     log.Add(step);
                     // закончили логирование
@@ -88,7 +128,7 @@ namespace RevolutionCAD.Placement
                     unplacedElements.Remove(elementNumberMaxRelations);
 
                     // перемещаемся на следующую позицию
-                    pos++;
+                    //pos++;
 
                     // запоминаем для следующего шага номер размещённого элемента
                     lastPlacedElementNumber = elementNumberMaxRelations;
@@ -114,6 +154,77 @@ namespace RevolutionCAD.Placement
             }
 
             return relationsCount;
+        }
+
+        private static Position getPosByElementNumber(Matrix<int> boardMatr, int elementNumber)
+        {
+            Position pos = new Position(-1,-1);
+            if (elementNumber == 0)
+            {
+                pos.Row = -1;
+                pos.Column = -1;
+                return pos;
+            }
+            for (int i = 0; i< boardMatr.RowsCount; i++)
+            {
+                for (int j = 0; j < boardMatr.ColsCount; j++)
+                {
+                    if (boardMatr[i, j] == elementNumber)
+                    {
+                        pos.Row = i;
+                        pos.Column = j;
+                    }
+                }
+            }
+            return pos;
+        }
+
+        private static List<Position> getNeigbors(Matrix<int> boardMatr, Position pos)
+        {
+            var neigborsPos = new List<Position>();
+            if (pos.Column == -1 && pos.Row == -1)
+            {
+                for(int row = 0; row < boardMatr.RowsCount; row++)
+                    neigborsPos.Add(new Position(row, 0));
+            } else
+            {
+                var aplicants = new List<Position>();
+
+                for (int i = 0; i < 4; i++)
+                {
+                    aplicants.Add(pos.Clone());
+                }
+
+                aplicants[0].Column += 1;
+                aplicants[1].Column -= 1;
+                aplicants[2].Row -= 1;
+                aplicants[3].Row += 1;
+
+                foreach (var aplicant in aplicants)
+                {
+                    if (aplicant.Row >= 0 && aplicant.Row < boardMatr.RowsCount)
+                    {
+                        if (aplicant.Column >= 0 && aplicant.Column < boardMatr.ColsCount)
+                        {
+                            if (boardMatr[aplicant.Row,aplicant.Column] == -1)
+                                neigborsPos.Add(aplicant);
+                        }
+                    }
+                }
+            }
+            return neigborsPos;
+        }
+        
+        private static int getLength(Position A, Position B)
+        {
+            if (B.Row == -1 && B.Column == -1)
+            {
+                return A.Column + 1;
+            } else
+            {
+                int length = Math.Abs(B.Column - A.Column) + Math.Abs(B.Row - A.Row);
+                return length;
+            }
         }
     }
 }

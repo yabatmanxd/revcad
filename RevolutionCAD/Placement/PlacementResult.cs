@@ -91,10 +91,10 @@ namespace RevolutionCAD.Placement
                 }
 
                 // подсчитываем необходимую ширину платы
-                for (int j = 0; j < brdMatr.ColsCount; j++)
+                for (int i = 0; i < brdMatr.RowsCount; i++)
                 {
                     int currentRowWidth = 0;
-                    for (int i = 0; i < brdMatr.RowsCount; i++)
+                    for (int j = 0; j < brdMatr.ColsCount; j++)
                     {
                         int elementNumber = brdMatr[i, j];
                         if (elementNumber != -1) // пропускаем пустые места
