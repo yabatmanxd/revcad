@@ -191,15 +191,30 @@ namespace RevolutionCAD.Placement
             {
                 var aplicants = new List<Position>();
 
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < 8; i++)
                 {
                     aplicants.Add(pos.Clone());
                 }
 
                 aplicants[0].Column += 1;
+
                 aplicants[1].Column -= 1;
+
                 aplicants[2].Row -= 1;
+
                 aplicants[3].Row += 1;
+
+                aplicants[4].Row += 1;
+                aplicants[4].Column += 1;
+
+                aplicants[5].Row += 1;
+                aplicants[5].Column -= 1;
+
+                aplicants[6].Row -= 1;
+                aplicants[6].Column += 1;
+
+                aplicants[7].Row -= 1;
+                aplicants[7].Column -= 1;
 
                 foreach (var aplicant in aplicants)
                 {
