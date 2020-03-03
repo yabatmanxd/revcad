@@ -44,6 +44,7 @@ namespace RevolutionCAD.Placement
                 // изначально размещён был разъём
                 int lastPlacedElementNumber = 0;
 
+                // начальная позиция - условные координаты разъема
                 var pos = new Position(-1, -1);
 
                 // таким способом копируем список всех элементов в список неразмещённых
