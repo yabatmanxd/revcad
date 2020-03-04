@@ -61,10 +61,12 @@ namespace RevolutionCAD.Tracing
                     var startPos = wire.A.PositionContact;
                     var endPos = wire.B.PositionContact;
 
-                    List<Position> neighbors;
+                    var neighbors = new List<Position>();
+                    neighbors.Add(startPos);
+
                     do
                     {
-                        neighbors = getNeighbors(fullDrp, startPos);
+                        neighbors = getNeighbors(fullDrp, neighbors);
                         foreach(var neighbor in neighbors)
                         {
                             currentDRP[neighbor.Row, neighbor.Column].State = CellState.WireCross;
@@ -83,6 +85,24 @@ namespace RevolutionCAD.Tracing
 
 
             return log;
+        }
+
+        public static List<Position> getNeighbors(Matrix<Cell> drp, List<Position> positions)
+        {
+            var allNeighbors = new List<Position>();
+
+            foreach (var pos in positions)
+            {
+                var neighbors = getNeighbors(drp, pos);
+                foreach (var neighbor in neighbors)
+                {
+                    if (!allNeighbors.Contains(neighbor)) {
+                        allNeighbors.Add(neighbor);
+                    }
+                }
+            }
+
+            return allNeighbors;
         }
 
         public static List<Position> getNeighbors(Matrix<Cell> drp, Position pos)

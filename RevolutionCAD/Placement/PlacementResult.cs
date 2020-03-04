@@ -169,7 +169,7 @@ namespace RevolutionCAD.Placement
                             {
                                 boardDRP[currentPos.Row + offsetRow, currentPos.Column].State = CellState.Contact;
                                 // записываем текущую координату в список координат контактов
-                                ElementContactsPos.Add(new Position(currentPos.Row + offsetRow, j));
+                                ElementContactsPos.Add(new Position(currentPos.Row + offsetRow, currentPos.Column));
                                 offsetRow += 1 + ApplicationData.PinDistance;
                             }
                             offsetRow -= 1 + ApplicationData.PinDistance; ;
