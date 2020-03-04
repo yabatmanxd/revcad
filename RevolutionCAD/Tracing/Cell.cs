@@ -12,6 +12,9 @@ namespace RevolutionCAD.Tracing
         /// Поле в котором будет хранится состояние ячейки
         /// </summary>
         public CellState State { get; set; }
+        /// <summary>
+        /// Вес ячейки, по умолчанию -1 - ячейка без веса
+        /// </summary>
         public int Weight { get; set; }
 
         public bool isBusy

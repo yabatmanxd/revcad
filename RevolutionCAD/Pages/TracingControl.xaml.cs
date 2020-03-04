@@ -151,80 +151,104 @@ namespace RevolutionCAD.Pages
                 for (int i = 0; i < drp.RowsCount; i++)
                 {
                     var spRow = new StackPanel();
+                    TextBlock weightElem = new TextBlock();
                     spRow.Orientation = Orientation.Horizontal;
                     // добавление строки элементов
                     for (int c = 0; c < drp.ColsCount; c++)
                     {
-                        Image elem = new Image
+                        Grid elem = new Grid();
+                        if (drp[i, c].Weight != -1)
                         {
-                            Height = 12,
-                            Width = 12,
-                            Stretch = Stretch.Fill
+                            weightElem = new TextBlock
+                            {
+                                HorizontalAlignment = HorizontalAlignment.Right,
+                                VerticalAlignment = VerticalAlignment.Bottom,
+                                Text = drp[i, c].Weight.ToString(),
+                                FontSize = 12
+                            };
+                            Canvas.SetZIndex(weightElem, 3);
+                            
+                        }
+                        Image picElem = new Image
+                        {
+                            Height = 26,
+                            Width = 26
+                            //Stretch = Stretch.Fill
                         };
                         switch (drp[i, c].State)
                         {
                             case CellState.ArrowDown:
-                                elem.Source = new BitmapImage(
+                                picElem.Source = new BitmapImage(
                                     new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imArrowDown.png"));
                                 break;
                             case CellState.ArrowUp:
-                                elem.Source = new BitmapImage(
+                                picElem.Source = new BitmapImage(
                                     new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imArrowUp.png"));
                                 break;
                             case CellState.ArrowLeft:
-                                elem.Source = new BitmapImage(
+                                picElem.Source = new BitmapImage(
                                     new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imArrowLeft.png"));
                                 break;
                             case CellState.ArrowRight:
-                                elem.Source = new BitmapImage(
+                                picElem.Source = new BitmapImage(
                                     new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imArrowRight.png"));
                                 break;
                             case CellState.Contact:
-                                elem.Source = new BitmapImage(
+                                picElem.Source = new BitmapImage(
                                     new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imContact.png"));
                                 break;
                             case CellState.WireBottomLeft:
-                                elem.Source = new BitmapImage(
+                                picElem.Source = new BitmapImage(
                                     new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireBottomLeft.png"));
                                 break;
                             case CellState.WireBottomRight:
-                                elem.Source = new BitmapImage(
+                                picElem.Source = new BitmapImage(
                                     new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireBottomRight.png"));
                                 break;
                             case CellState.WireCross:
-                                elem.Source = new BitmapImage(
+                                picElem.Source = new BitmapImage(
                                     new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireCross.png"));
                                 break;
                             case CellState.WireHorizontal:
-                                elem.Source = new BitmapImage(
+                                picElem.Source = new BitmapImage(
                                     new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireHorizontal.png"));
                                 break;
                             case CellState.WireTopLeft:
-                                elem.Source = new BitmapImage(
+                                picElem.Source = new BitmapImage(
                                     new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireTopLeft.png"));
                                 break;
                             case CellState.WireTopRight:
-                                elem.Source = new BitmapImage(
+                                picElem.Source = new BitmapImage(
                                     new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireTopRight.png"));
                                 break;
                             case CellState.WireVertical:
-                                elem.Source = new BitmapImage(
+                                picElem.Source = new BitmapImage(
                                     new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireVertical.png"));
                                 break;
                             case CellState.PointA:
-                                elem.Source = new BitmapImage(
+                                picElem.Source = new BitmapImage(
                                     new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imContactA.png"));
                                 break;
                             case CellState.PointB:
-                                elem.Source = new BitmapImage(
+                                picElem.Source = new BitmapImage(
                                     new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imContactB.png"));
                                 break;
                             default:
-                                elem.Source = new BitmapImage(
+                                picElem.Source = new BitmapImage(
                                     new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imEmpty.png"));
                                 break;
                         }
-                        spRow.Children.Add(elem);
+                        if (drp[i, c].Weight != -1)
+                        {
+                            Canvas.SetZIndex(picElem, 3);
+                            elem.Children.Add(picElem);
+                            elem.Children.Add(weightElem);
+                            spRow.Children.Add(elem);
+                        }
+                        else
+                        {
+                            spRow.Children.Add(picElem);
+                        }
                     }
                     sp_Board.Children.Add(spRow);
                 }

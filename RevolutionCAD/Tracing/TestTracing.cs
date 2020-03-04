@@ -34,6 +34,11 @@ namespace RevolutionCAD.Tracing
                 log.Add(new StepTracingLog(boards,"Здесь могла быть ваша реклама..."));
             }
 
+
+            // тестировка отображения веса
+            log.Last().BoardsDRPs.Last().Last()[2, 4].Weight = 3;
+            log.Last().BoardsDRPs.Last().Last()[3, 4].Weight = 3;
+            log.Last().BoardsDRPs.Last().Last()[4, 4].Weight = 3;
             return log;
             
         }
