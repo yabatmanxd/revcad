@@ -56,26 +56,30 @@ namespace RevolutionCAD.Tracing
                         }
                     }
 
-                    var fullDrp = ApplicationData.MergeLayersDRPs(boardDRPs);
+                    Matrix<Cell> fullDrp;
 
                     var startPos = wire.A.PositionContact;
                     var endPos = wire.B.PositionContact;
+
+                    currentDRP[startPos.Row, startPos.Column].State = CellState.PointA; 
+                    currentDRP[endPos.Row, endPos.Column].State = CellState.PointB; 
 
                     var neighbors = new List<Position>();
                     neighbors.Add(startPos);
 
                     do
                     {
+                        fullDrp = ApplicationData.MergeLayersDRPs(boardDRPs);
+
                         neighbors = getNeighbors(fullDrp, neighbors);
                         foreach(var neighbor in neighbors)
                         {
                             currentDRP[neighbor.Row, neighbor.Column].State = CellState.WireCross;
-                            fullDrp[neighbor.Row, neighbor.Column].State = CellState.WireCross;
                             
                         }
                         log.Add(new StepTracingLog(boards, "Здесь мог быть ваш Погорелов..."));
 
-                    } while (neighbors.Count > 0 || neighbors.Contains(endPos));
+                    } while (neighbors.Count > 0 && !neighbors.Any(x => x.Column == endPos.Column && x.Row == endPos.Row));
 
                     break;
 
@@ -98,7 +102,7 @@ namespace RevolutionCAD.Tracing
                 var neighbors = getNeighbors(drp, pos);
                 foreach (var neighbor in neighbors)
                 {
-                    if (!allNeighbors.Contains(neighbor)) {
+                    if (!allNeighbors.Any(x=>x.Column == neighbor.Column && x.Row == neighbor.Row)) { 
                         allNeighbors.Add(neighbor);
                     }
                 }

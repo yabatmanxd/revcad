@@ -500,6 +500,14 @@ namespace RevolutionCAD
 
             var resDRP = new Matrix<Cell>(heightDRP, widthDRP);
 
+            for(int i = 0; i< resDRP.RowsCount; i++)
+            {
+                for (int j = 0; j < resDRP.ColsCount; j++)
+                {
+                    resDRP[i, j] = new Cell();
+                }
+            }
+
             foreach (var layerDRP in LayersDRPs)
             {
                 for (int i = 0; i < layerDRP.RowsCount; i++)
@@ -508,8 +516,6 @@ namespace RevolutionCAD
                     {
                         if (layerDRP[i, j].State != CellState.Empty)
                             resDRP[i, j] = layerDRP[i, j].Clone();
-                        else
-                            resDRP[i, j] = new Cell();
                     }
                 }
             }
