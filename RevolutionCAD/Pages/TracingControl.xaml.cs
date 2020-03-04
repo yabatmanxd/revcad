@@ -164,7 +164,8 @@ namespace RevolutionCAD.Pages
                                 HorizontalAlignment = HorizontalAlignment.Right,
                                 VerticalAlignment = VerticalAlignment.Bottom,
                                 Text = drp[i, c].Weight.ToString(),
-                                FontSize = 12
+                                FontSize = 12,
+                                Foreground = new SolidColorBrush(Colors.Red)
                             };
                             Canvas.SetZIndex(weightElem, 3);
                             

@@ -36,9 +36,12 @@ namespace RevolutionCAD.Tracing
 
 
             // тестировка отображения веса
-            log.Last().BoardsDRPs.Last().Last()[2, 4].Weight = 3;
-            log.Last().BoardsDRPs.Last().Last()[3, 4].Weight = 3;
+            log.Last().BoardsDRPs.Last().Last()[2, 2].Weight = 3;
+            log.Last().BoardsDRPs.Last().Last()[3, 3].Weight = 3;
             log.Last().BoardsDRPs.Last().Last()[4, 4].Weight = 3;
+            log.Last().BoardsDRPs.Last().Last()[4, 4].State = CellState.ArrowRight;
+            log.Last().BoardsDRPs.Last().Last()[3, 3].State = CellState.ArrowUp;
+            log.Last().BoardsDRPs.Last().Last()[2, 2].State = CellState.ArrowDown;
             return log;
             
         }
