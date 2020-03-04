@@ -172,7 +172,7 @@ namespace RevolutionCAD.Placement
                                 ElementContactsPos.Add(new Position(currentPos.Row + offsetRow, currentPos.Column));
                                 offsetRow += 1 + ApplicationData.PinDistance;
                             }
-                            offsetRow -= 1 + ApplicationData.PinDistance; ;
+                            offsetRow -= 1 + ApplicationData.PinDistance;
                             // сдвигаемся вправо на расстояние в клетках от первого ряда контактов
                             currentPos.Column += ApplicationData.RowDistance;
                             // теперь идём обратно вверх
