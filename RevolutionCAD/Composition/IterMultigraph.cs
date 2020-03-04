@@ -54,13 +54,7 @@ namespace RevolutionCAD.Composition
             // -------------------------------------------------------------
             Matrix<int> M = new Matrix<int>(3, 3);
 
-            for (int i = 0; i < M.ColsCount; i++)
-                for (int j = 0; j < M.ColsCount; j++)
-                {
-                    if (i == 0) M[i, j] = 0;
-                    if (i == 1) M[i, j] = 1;
-                    if (i == 2) M[i, j] = 2;
-                }
+
             M[0, 0] = 0;
             M[0, 1] = 2;
             M[0, 2] = 1;
@@ -72,9 +66,6 @@ namespace RevolutionCAD.Composition
             M[2, 0] = 1;
             M[2, 1] = 3;
             M[2, 2] = 0;
-
-
-            var MM = AddZero(M, 1);
 
 
             var X = ReplaceMatrix(0, 1, R); // пример замены строк и столбцов (строка/столбец 1, строка/столбец 2, изменяемая матрица )
@@ -105,6 +96,40 @@ namespace RevolutionCAD.Composition
             }
 
                 int Max_kol_elem_for_plata = kol_elem_for_plata.Max(); // Максимальное кол-во микросхем на платах 
+
+            R[0, 0] = R[1, 1] = R[2, 2] = R[3, 3] = R[2, 3] = R[3, 2] = 0;
+            R[0, 1] = R[0, 2] = R[1, 0] = R[2, 0] = 2;
+            R[1, 2] = R[1, 3] = R[2, 1] = R[3, 1] = 1;
+            
+            // 0 2 2 0
+            // 2 0 1 1
+            // 2 1 0 0
+            // 0 1 0 0
+
+            //Алгоритм, который создаёт матрицу с равным количеством элементов т.е. добавляет где необходимо 0 столбцы и строки
+            // Необходим, чтоб на каждой плате условно было одинаковое кол-во эл-ов 
+
+            int position = 0; // позиция, в которую необходимо добавить нулевую строку/столбец            
+            for (int i=0;i<kol_elem_for_plata.Length;i++)
+            {
+                 position++;
+                if (kol_elem_for_plata[i] < Max_kol_elem_for_plata)
+                {
+                    kol_elem_for_plata[i]++;
+                    //R.AddColumn();
+                    //R.AddRow();
+                    R=AddZero(R, position);
+                    i--;
+                }
+            }
+
+            //     v   v     результат работы алгоритма
+            // 0 2 0 2 0 0
+            // 2 0 0 1 0 1
+            // 0 0 0 0 0 0 v
+            // 2 1 0 0 0 0
+            // 0 0 0 0 0 0 v
+            // 0 1 0 0 0 0
 
             //****************************************************************************************************************************
             /*el_position[0] = 2; //Значения для теста
@@ -154,6 +179,9 @@ namespace RevolutionCAD.Composition
             }
 
             //Надо доработать алгоритм, который позволит добавлять пустые (нулевые строки/столбцы) в нужную плату
+            Matrix<int> test = new Matrix<int>(5, 5);
+            test.Fill(1);
+            test = AddZero(test, 2);
 
 
             // в зависимости от кол-ва плат выполняем итерации
@@ -242,79 +270,39 @@ namespace RevolutionCAD.Composition
             return Result;
         }
 
-        private static Matrix<int> AddZero(Matrix<int> M, int position)
+        /// <summary>
+        /// Вставка нулевой строки и нулевого столбца в матрицу matrix в позицию position
+        /// </summary>
+        private static Matrix<int> AddZero(Matrix<int> matrix, int position)
         {
-            Matrix<int> NewM = new Matrix<int>(M.RowsCount + 1, M.ColsCount + 1);
-            bool fl = false;
-
-            for (int i = 0; i < M.ColsCount+1; i++) //строки располагает в нужном порядке
-            {
-                for (int j = 0; j < M.ColsCount + 1; j++)
+            Matrix<int> test = new Matrix<int>(matrix.RowsCount + 1, matrix.ColsCount + 1);
+            for (int i = 0; i < test.ColsCount; i++)
+                for (int j = 0; j < test.ColsCount; j++)
                 {
-                    if (j < position)
-                    { 
-                        NewM[i, j] = M[i, j];
-                        fl = false;
-                    }
-
-                    if (position == j)
-                    { 
-                        NewM[i, j] = 0;
-                        fl = true;
-                        break;
-                    }
-
-                    if (fl == true)
+                    if (i < position && j < position)
+                        test[i, j] = matrix[i, j];
+                    if (i == position || j == position)
+                        test[i, j] = 0;
+                    else
                     {
-                        NewM[i, j] = M[i, j - 1];
-                        fl = false;
+                        if (i > position || j > position)
+                        {
+                            if (i > position && j > position)
+                                test[i, j] = matrix[i - 1, j - 1];
+                            else
+                            {
+                                if (i > position)
+                                    test[i, j] = matrix[i - 1, j];
+                                if (j > position)
+                                    test[i, j] = matrix[i, j - 1];
+                            }
+                        }
                     }
                 }
-            }
-
-
-
-           /* for (int i = 0; i < sn; i++) //перезаписываем матрицу с расположенными в нужном порядке строками
-                for (int j = 0; j < sn; j++)
-                    R[i, j] = R_buf[i, j];
-
-            for (int i = 0; i < el_position.Length; i++) //столбцы располагает в нужном порядке 
-            {
-                for (int j = 0; j < el_position.Length; j++)
-                {
-                    R_buf[i, j] = R[el_position[j], i];
-                }
-            }*/
-
-
-
-            /*for(int i = 0; i < NewM.ColsCount - 1; i++)
-                for(int j = 0; j < NewM.ColsCount; j++)
-                {
-                    if (j < position)
-                        NewM[i, j] = M[i, j];
-                    if (j == position)
-                        NewM[i, j] = 0;
-                    if (j > position)
-                        NewM[i, j] = M[i - 1, j];
-
-                }
-
-            for (int i = 0; i < NewM.ColsCount; i++)
-                for (int j = 0; j < NewM.ColsCount; j++)
-                {
-                    if (j < position)
-                        NewM[i, j] = M[i, j];
-                    if (j == position)
-                        NewM[i, j] = 0;
-                    if (j > position)
-                        NewM[i, j] = M[i, j + 1];
-
-                }*/
-
-
-
-            return NewM;
+            return test;
         }
+        ////
+
+
     }
 }
