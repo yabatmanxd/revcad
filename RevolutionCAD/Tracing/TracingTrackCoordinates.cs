@@ -40,12 +40,15 @@ namespace RevolutionCAD.Tracing
                 var boardWiresPositions = boardsWiresPositions[boardNum];
 
                 var boardDRPs = new List<Matrix<Cell>>();
-                
+                boards.Add(boardDRPs);
+
                 foreach (var wire in boardWiresPositions)
                 {
+                    boardDRPs.Add(plc.BoardsDRPs[boardNum]);
                     var currentDRP = new Matrix<Cell>(plc.BoardsDRPs[boardNum].RowsCount, plc.BoardsDRPs[boardNum].ColsCount);
+                    boardDRPs.Add(currentDRP);
 
-                    for(int i = 0; i < currentDRP.RowsCount; i++)
+                    for (int i = 0; i < currentDRP.RowsCount; i++)
                     {
                         for (int j = 0; j < currentDRP.ColsCount; j++)
                         {
@@ -53,16 +56,28 @@ namespace RevolutionCAD.Tracing
                         }
                     }
 
-                    boardDRPs.Add(currentDRP);
-
                     var fullDrp = ApplicationData.MergeLayersDRPs(boardDRPs);
 
-                    var startPos = wire.A;
-                    var endPos = wire.B;
+                    var startPos = wire.A.PositionContact;
+                    var endPos = wire.B.PositionContact;
 
+                    List<Position> neighbors;
+                    do
+                    {
+                        neighbors = getNeighbors(fullDrp, startPos);
+                        foreach(var neighbor in neighbors)
+                        {
+                            currentDRP[neighbor.Row, neighbor.Column].State = CellState.WireCross;
+                            log.Add(new StepTracingLog(boards, "Здесь мог быть ваш Погорелов..."));
+                        }
 
+                    } while (neighbors.Count < 1 || neighbors.Contains(endPos));
+
+                    break;
 
                 }
+
+                
             }
 
 
