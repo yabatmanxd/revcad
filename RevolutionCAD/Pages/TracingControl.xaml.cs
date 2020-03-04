@@ -171,6 +171,14 @@ namespace RevolutionCAD.Pages
                                 elem.Source = new BitmapImage(
                                     new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imArrowUp.png"));
                                 break;
+                            case CellState.ArrowLeft:
+                                elem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imArrowLeft.png"));
+                                break;
+                            case CellState.ArrowRight:
+                                elem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imArrowRight.png"));
+                                break;
                             case CellState.Contact:
                                 elem.Source = new BitmapImage(
                                     new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imContact.png"));
@@ -202,6 +210,14 @@ namespace RevolutionCAD.Pages
                             case CellState.WireVertical:
                                 elem.Source = new BitmapImage(
                                     new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireVertical.png"));
+                                break;
+                            case CellState.PointA:
+                                elem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imContactA.png"));
+                                break;
+                            case CellState.PointB:
+                                elem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imContactB.png"));
                                 break;
                             default:
                                 elem.Source = new BitmapImage(
