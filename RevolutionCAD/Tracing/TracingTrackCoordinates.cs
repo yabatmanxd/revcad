@@ -74,8 +74,16 @@ namespace RevolutionCAD.Tracing
                         neighbors = getNeighbors(fullDrp, neighbors);
                         foreach(var neighbor in neighbors)
                         {
-                            currentDRP[neighbor.Row, neighbor.Column].State = CellState.WireCross;
-                            
+                            int rowNeighbor = neighbor.Row;
+                            int columnNeighbor = neighbor.Column;
+
+
+
+
+
+                            if (currentDRP[neighbor.Row, neighbor.Column].State == CellState.Empty) {
+                                currentDRP[neighbor.Row, neighbor.Column].State = CellState.WireCross;
+                            }                            
                         }
                         log.Add(new StepTracingLog(boards, "Здесь мог быть ваш Погорелов..."));
 
