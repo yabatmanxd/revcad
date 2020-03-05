@@ -43,42 +43,39 @@ namespace RevolutionCAD.Pages
             switch (ComboBox_Method.SelectedIndex)
             {
                 case 0:
-                    steps = TestTracing.Trace(sch, plc, out err_msg);
-                    break;
-                case 1:
                     steps = TracingLi.Trace(sch, plc, out err_msg);
                     break;
-                case 2:
+                case 1:
                     steps = TracingAkers.Trace(sch, plc, out err_msg);
                     break;
-                case 3:
+                case 2:
                     steps = TracingLiMod.Trace(sch, plc, out err_msg);
                     break;
-                case 4:
+                case 3:
                     steps = TracingOncomingWave.Trace(sch, plc, out err_msg);
                     break;
-                case 5:
+                case 4:
                     steps = TracingConnectComplexes.Trace(sch, plc, out err_msg);
                     break;
-                case 6:
+                case 5:
                     steps = TracingTrackCoordinates.Trace(sch, plc, out err_msg);
                     break;
-                case 7:
+                case 6:
                     steps = TracingMinCrossing.Trace(sch, plc, out err_msg);
                     break;
-                case 8:
+                case 7:
                     steps = TracingUniformDistribution.Trace(sch, plc, out err_msg);
                     break;
-                case 9:
+                case 8:
                     steps = TracingTwoBeam.Trace(sch, plc, out err_msg);
                     break;
-                case 10:
+                case 9:
                     steps = TracingFourBeam.Trace(sch, plc, out err_msg);
                     break;
-                case 11:
+                case 10:
                     steps = TracingOptimized.Trace(sch, plc, out err_msg);
                     break;
-                case 12:
+                case 11:
                     steps = TracingHayes.Trace(sch, plc, out err_msg);
                     break;
             }
@@ -233,6 +230,10 @@ namespace RevolutionCAD.Pages
                             case CellState.PointB:
                                 picElem.Source = new BitmapImage(
                                     new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imContactB.png"));
+                                break;
+                            case CellState.Wire:
+                                picElem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWire.png"));
                                 break;
                             default:
                                 picElem.Source = new BitmapImage(

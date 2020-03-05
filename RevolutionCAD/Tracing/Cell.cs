@@ -21,20 +21,45 @@ namespace RevolutionCAD.Tracing
         {
             get
             {
-                if (State == CellState.WireTopRight ||
+                if (State == CellState.Wave ||
+                    State == CellState.Wire ||
+                    State == CellState.WireTopRight ||
                     State == CellState.WireTopLeft ||
                     State == CellState.WireBottomRight ||
                     State == CellState.WireBottomLeft ||
                     State == CellState.WireCross ||
+                    State == CellState.WireHorizontal ||
+                    State == CellState.WireVertical ||
                     State == CellState.ArrowDown ||
                     State == CellState.ArrowUp ||
                     State == CellState.ArrowLeft ||
                     State == CellState.ArrowRight ||
+                    State == CellState.PointA ||
                     State == CellState.Contact)
                     return true;
                 else
                     return false;
             }   
+        }
+
+        public bool isConnectible
+        {
+            get
+            {
+                if (State == CellState.PointA ||
+                    State == CellState.PointB ||
+                    State == CellState.Wire ||
+                    State == CellState.WireTopRight ||
+                    State == CellState.WireTopLeft ||
+                    State == CellState.WireBottomRight ||
+                    State == CellState.WireBottomLeft ||
+                    State == CellState.WireCross ||
+                    State == CellState.WireHorizontal ||
+                    State == CellState.WireVertical)
+                    return true;
+                else
+                    return false;
+            }
         }
 
         public Cell()
@@ -71,6 +96,8 @@ namespace RevolutionCAD.Tracing
         WireCross,
         Contact,
         PointA,
-        PointB
+        PointB,
+        Wire,
+        Wave
     }
 }

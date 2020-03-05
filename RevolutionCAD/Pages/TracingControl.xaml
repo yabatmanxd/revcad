@@ -21,7 +21,6 @@
                     Margin="10">
             <TextBlock Padding="10 3" VerticalAlignment="Center">Метод трассировки:</TextBlock>
             <ComboBox Padding="10 3" Name="ComboBox_Method"  SelectedIndex="0" Margin="10 0" MinWidth="200">
-                <ComboBoxItem Content="Тестовая трассировка"></ComboBoxItem>
                 <ComboBoxItem Content="Метод Ли"></ComboBoxItem>
                 <ComboBoxItem Content="Метод Акерса"></ComboBoxItem>
                 <ComboBoxItem Content="Метод Ли по модулю 3"></ComboBoxItem>
