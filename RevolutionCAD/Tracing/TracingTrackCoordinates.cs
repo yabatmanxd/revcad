@@ -61,6 +61,8 @@ namespace RevolutionCAD.Tracing
                     var startPos = wire.A.PositionContact;
                     var endPos = wire.B.PositionContact;
 
+                    List<Position> prioritets;
+
                     currentDRP[startPos.Row, startPos.Column].State = CellState.PointA; 
                     currentDRP[endPos.Row, endPos.Column].State = CellState.PointB; 
 
@@ -71,23 +73,22 @@ namespace RevolutionCAD.Tracing
                     {
                         fullDrp = ApplicationData.MergeLayersDRPs(boardDRPs);
 
-                        neighbors = getNeighbors(fullDrp, neighbors);
-                        foreach(var neighbor in neighbors)
+                        foreach (var neighbor in neighbors)
                         {
-                            int rowNeighbor = neighbor.Row;
-                            int columnNeighbor = neighbor.Column;
 
 
 
 
-
-                            if (currentDRP[neighbor.Row, neighbor.Column].State == CellState.Empty) {
-                                currentDRP[neighbor.Row, neighbor.Column].State = CellState.WireCross;
-                            }                            
+                            if (currentDRP[neighbor.Row, neighbor.Column].State != CellState.Contact && currentDRP[neighbor.Row, neighbor.Column].State != CellState.PointA)
+                                currentDRP[neighbor.Row, neighbor.Column].State = CellState.Wave;
                         }
-                        log.Add(new StepTracingLog(boards, "Здесь мог быть ваш Погорелов..."));
+                        log.Add(new StepTracingLog(boards, $"Распроcтраняем волну для {boardDRPs.Count - 1}-го проводника в {boardNum + 1} узле"));
+
+                        
+                        neighbors = getNeighbors(fullDrp, neighbors);
 
                     } while (neighbors.Count > 0 && !neighbors.Any(x => x.Column == endPos.Column && x.Row == endPos.Row));
+
 
                     break;
 
