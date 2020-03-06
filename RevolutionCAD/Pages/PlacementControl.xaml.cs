@@ -51,25 +51,25 @@ namespace RevolutionCAD.Pages
             switch (ComboBox_Method.SelectedIndex)
             {
                 case 0:
-                    steps = TestPlacement.Place(cmp, matrR, out err_msg);
-                    break;
-                case 1:
                     steps = PosledMaxLastStepPlaced.Place(cmp, matrR, out err_msg);
                     break;
-                case 2:
+                case 1:
                     steps = PosledMaxLastAllStepPlaced.Place(cmp, matrR, out err_msg);
                     break;
-                case 3:
+                case 2:
                     steps = PosledMaxPlacedMinUnplaced.Place(cmp, matrR, out err_msg);
                     break;
-                case 4:
+                case 3:
                     steps = IterFull.Place(matrR, out err_msg);
                     break;
-                case 5:
+                case 4:
                     steps = IterPair.Place(matrR, out err_msg);
                     break;
-                case 6:
+                case 5:
                     steps = IterShaffer.Place(matrR, out err_msg);
+                    break;
+                case 6:
+                    steps = TestPlacement.Place(cmp, matrR, out err_msg);
                     break;
             }
 

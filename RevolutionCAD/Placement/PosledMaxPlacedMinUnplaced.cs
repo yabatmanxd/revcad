@@ -41,9 +41,6 @@ namespace RevolutionCAD.Placement
                 // добавляем в общий список плат новую матрицу платы, в которую будем на этом шаге заносить элементы
                 boards.Add(boardMatr);
 
-                // изначально размещён был разъём
-                int lastPlacedElementNumber = 0;
-
                 // начальная позиция - условные координаты разъема
                 var pos = new Position(-1, -1);
 
