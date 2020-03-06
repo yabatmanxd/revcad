@@ -62,6 +62,20 @@ namespace RevolutionCAD.Tracing
             }
         }
 
+        public bool isArrow
+        {
+            get
+            {
+                if (State == CellState.ArrowDown ||
+                    State == CellState.ArrowUp ||
+                    State == CellState.ArrowLeft ||
+                    State == CellState.ArrowRight)
+                    return true;
+                else
+                    return false;
+            }
+        }
+
         public Cell()
         {
             State = CellState.Empty;

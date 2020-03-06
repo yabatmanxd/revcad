@@ -61,13 +61,93 @@ namespace RevolutionCAD.Tracing
                     var startPos = wire.A.PositionContact;
                     var endPos = wire.B.PositionContact;
 
-                    List<Position> prioritets;
+                    List<Position> prioritetsPos = new List<Position>();
 
+
+                    int rowsDiff = endPos.Row - startPos.Row;
+                    int colsDiff = endPos.Column - startPos.Column;
+                    int rowsDiffModul = Math.Abs(rowsDiff);
+                    int colsDiffModul = Math.Abs(colsDiff);
+
+                    Position top = new Position(-1, 0);
+                    Position bottom = new Position(1, 0);
+                    Position left = new Position(0, -1);
+                    Position right = new Position(0, 1);
+
+                    if (colsDiff > rowsDiff)
+                    {
+                        if (colsDiffModul > rowsDiffModul)
+                        {
+                            prioritetsPos.Add(left); // влево
+                            if (rowsDiff < 0)
+                            {
+                                prioritetsPos.Add(bottom);
+                                prioritetsPos.Add(right);
+                                prioritetsPos.Add(top);
+                            } else
+                            {
+                                prioritetsPos.Add(top);
+                                prioritetsPos.Add(right);
+                                prioritetsPos.Add(bottom);
+                            }
+                        } else
+                        {
+                            prioritetsPos.Add(bottom); // вниз
+                            if (colsDiff > 0)
+                            {
+                                prioritetsPos.Add(left);
+                                prioritetsPos.Add(top);
+                                prioritetsPos.Add(right);
+                            }
+                            else
+                            {
+                                prioritetsPos.Add(right);
+                                prioritetsPos.Add(top);
+                                prioritetsPos.Add(left);
+                            }
+                        }
+                    } else
+                    {
+                        if (colsDiffModul > rowsDiffModul)
+                        {
+                            prioritetsPos.Add(right); // вправо
+                            if (rowsDiff > 0)
+                            {
+                                prioritetsPos.Add(top);
+                                prioritetsPos.Add(left);
+                                prioritetsPos.Add(bottom);
+                            } else
+                            {
+                                prioritetsPos.Add(bottom);
+                                prioritetsPos.Add(left);
+                                prioritetsPos.Add(top);
+                            }
+                        }
+                        else
+                        {
+                            prioritetsPos.Add(top); // вверх
+                            if (colsDiff < 0)
+                            {
+                                prioritetsPos.Add(left);
+                                prioritetsPos.Add(bottom);
+                                prioritetsPos.Add(right);
+                            } else
+                            {
+                                prioritetsPos.Add(right);
+                                prioritetsPos.Add(bottom);
+                                prioritetsPos.Add(left);
+                            }
+                        }
+                    }
+                    
                     currentDRP[startPos.Row, startPos.Column].State = CellState.PointA; 
                     currentDRP[endPos.Row, endPos.Column].State = CellState.PointB; 
 
                     var neighbors = new List<Position>();
                     neighbors.Add(startPos);
+
+                    fullDrp = ApplicationData.MergeLayersDRPs(boardDRPs);
+                    neighbors = getNeighbors(fullDrp, neighbors);
 
                     do
                     {
@@ -75,12 +155,23 @@ namespace RevolutionCAD.Tracing
 
                         foreach (var neighbor in neighbors)
                         {
+                            foreach(var prioritet in prioritetsPos)
+                            {
+                                Position checkingPos = new Position(neighbor.Row + prioritet.Row, neighbor.Column + prioritet.Column);
+                                if (checkingPos.Row >= 0 && checkingPos.Row < currentDRP.RowsCount)
+                                {
+                                    if (checkingPos.Column >= 0 && checkingPos.Column < currentDRP.ColsCount)
+                                    {
+                                        if (fullDrp[checkingPos.Row,checkingPos.Column].isArrow || fullDrp[checkingPos.Row, checkingPos.Column].State == CellState.PointA)
+                                        {
+                                            currentDRP[neighbor.Row, neighbor.Column].State = getArrowByPrioritet(prioritet.Row, prioritet.Column);
+                                            break;
+                                        }                                       
+                                    }
+                                }
+                            }
 
-
-
-
-                            if (currentDRP[neighbor.Row, neighbor.Column].State != CellState.Contact && currentDRP[neighbor.Row, neighbor.Column].State != CellState.PointA)
-                                currentDRP[neighbor.Row, neighbor.Column].State = CellState.Wave;
+                            
                         }
                         log.Add(new StepTracingLog(boards, $"Распроcтраняем волну для {boardDRPs.Count - 1}-го проводника в {boardNum + 1} узле"));
 
@@ -100,6 +191,20 @@ namespace RevolutionCAD.Tracing
 
 
             return log;
+        }
+
+        public static CellState getArrowByPrioritet(int row, int col)
+        {
+            if (row == -1)
+                return CellState.ArrowUp;
+            if (row == 1)
+                return CellState.ArrowDown;
+            if (col == -1)
+                return CellState.ArrowLeft;
+            if (col == 1)
+                return CellState.ArrowRight;
+            else
+                return CellState.Empty;
         }
 
         public static List<Position> getNeighbors(Matrix<Cell> drp, List<Position> positions)
