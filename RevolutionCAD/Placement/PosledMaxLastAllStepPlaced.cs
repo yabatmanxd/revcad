@@ -47,17 +47,18 @@ namespace RevolutionCAD.Placement
                 // таким способом копируем список всех элементов в список неразмещённых
                 List<int> unplacedElements = boardElements.Select(x => x).ToList();
 
+                // в списке размещённых по умолчанию только разъём
                 List<int> placedElements = new List<int>();
                 placedElements.Add(0);
 
                 // запускаем цикл, пока не разместим все элементы
                 while (unplacedElements.Count > 0)
                 {
-                    // с помощью метода получаем список количества связей для каждого неразмещённого элемента
-                    // позциция элемента в списке неразмещённых соотвествует позиции в сформированном списке
-                    // в метод передаётся список неразмещённых элементов и элемент с которым нужно посчитать связи
+                    // список с количеством связей с ранее размещёнными элементами ещё неразмещённых
+                    // позиция в списке совпадает с позицией в списке неразмещённых номеров элементов
                     var countRelationWithPlaced = new List<int>();
 
+                    // с помощью метода получаем список количества связей для каждого неразмещённого элемента
                     countRelationWithPlaced = countRelations(unplacedElements, placedElements);
 
                     // определяем максимальное число связей
@@ -69,7 +70,7 @@ namespace RevolutionCAD.Placement
                     // получаем номер элемента по позиции в списке
                     var elementNumberMaxRelations = unplacedElements[elementPosMaxRelations];
 
-                    string msg = "Количество связей с размещёнными элементами: ";
+                    string msg = "Количество связей с размещёнными элементами неразмещённых: ";
                     for (int i = 0; i < unplacedElements.Count; i++)
                     {
                         msg += $"D{unplacedElements[i]}={countRelationWithPlaced[i]}; ";
@@ -78,36 +79,44 @@ namespace RevolutionCAD.Placement
                     msg += $"Максимальное количество c размещёнными элементами у элемента D{elementNumberMaxRelations}\n";
                     msg += $"Найдём оптимальную позицию:\n";
 
+                    // получаем список незанятых соседних ячеек на основе позиции элемента размещённого на предыдущем шаге
                     var neighbors = getNeigbors(boardMatr, pos);
 
-
+                    // начинаем определение оптимальной позиции для размещения элемента
                     Position minLpos = null;
                     int minL = int.MaxValue;
+                    // запускаем цикл по всем соседям
                     foreach (var neighbor in neighbors)
                     {
                         msg += $"D{elementNumberMaxRelations} -> {boardMatr.getRelativePosByAbsolute(neighbor)}; L=";
-                        List<string> operations = new List<string>(0);
+                        List<string> operations = new List<string>();
                         int L = 0;
+                        // запускаем цикл по всем элементам
                         for (int j = 0; j < matrR.ColsCount; j++)
                         {
-                            if (!unplacedElements.Contains(j))
+                            // если этот элемент был размещён
+                            if (placedElements.Contains(j))
                             {
+                                // если у размещаемого элемента есть связи с текущим рассматриваемым
                                 if (matrR[elementNumberMaxRelations, j] != 0)
                                 {
+                                    // количество связей определяем по матрице R
                                     int countRelationsWithElement = matrR[elementNumberMaxRelations, j];
+                                    // получаем расстояние между элементами
                                     int length = getLength(neighbor, getPosByElementNumber(boardMatr, j));
                                     operations.Add($"{countRelationsWithElement}*{length}");
+                                    // суммируем длину умноженную на количество связей в L
                                     L += countRelationsWithElement * length;
                                 }
                             }
-
-
                         }
                         msg += String.Join("+", operations);
                         msg += $"={L}\n";
+                        // если подсчитанное L меньше просчитанного на предыдущих шагах
                         if (L < minL)
                         {
                             minL = L;
+                            // принимаем эту позицию как оптимальную
                             minLpos = neighbor.Clone();
                         }
 
@@ -116,7 +125,7 @@ namespace RevolutionCAD.Placement
                     msg += $"Минимальное значение L в {minLposRelative} позиции\n";
                     pos = minLpos.Clone();
 
-                    // устанавливаем элемент в позицию
+                    // устанавливаем элемент в оптимальную позицию
                     boards.Last().setValueByPlatePos(minLposRelative, elementNumberMaxRelations);
 
                     // начинаем логирование действия
@@ -128,6 +137,7 @@ namespace RevolutionCAD.Placement
 
                     // убираем из списка неразмещённых элемент, который только что разместили
                     unplacedElements.Remove(elementNumberMaxRelations);
+                    // и добавляем в список размещённых
                     placedElements.Add(elementNumberMaxRelations);
                 }
             }
