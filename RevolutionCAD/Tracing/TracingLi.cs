@@ -127,7 +127,7 @@ namespace RevolutionCAD.Tracing
                     }
                     
                     currentDRP[endPos.Row, endPos.Column].Weight = currentWeight;
-
+                    
                     // теперь начинаем обратный крестовый поход от точки Б
                     neighbors = new List<Position>();
                     neighbors.Add(endPos);

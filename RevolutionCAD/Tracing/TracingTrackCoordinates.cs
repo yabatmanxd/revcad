@@ -29,12 +29,7 @@ namespace RevolutionCAD.Tracing
 
             // считываем список плат, в каждой плате хранится список проводников (Wire) соединяют всего 2 контакта
             List<List<Wire>> boardsWiresPositions = plc.BoardsWiresPositions;
-
-            // тут выполняете действия по алгоритму используя список проводков и обязательно логируете действия
-            // пример логирования в классе TestTracing
-
-
-
+            
             for(int boardNum = 0; boardNum < boardsWiresPositions.Count; boardNum++)
             {
                 var boardWiresPositions = boardsWiresPositions[boardNum];
@@ -180,9 +175,120 @@ namespace RevolutionCAD.Tracing
 
                     } while (neighbors.Count > 0 && !neighbors.Any(x => x.Column == endPos.Column && x.Row == endPos.Row));
 
+                    // если незанятых соседей не оказалось, значит трассировка невозможна
+                    if (neighbors.Count == 0)
+                    {
+                        // очищаем текущее дрп
+                        for (int i = 0; i < currentDRP.RowsCount; i++)
+                        {
+                            for (int j = 0; j < currentDRP.ColsCount; j++)
+                            {
+                                currentDRP[i, j] = new Cell();
+                            }
+                        }
+                        // оставляем только 2 контакта, которые должны быть соеденены
+                        currentDRP[startPos.Row, startPos.Column].State = CellState.Contact;
+                        currentDRP[endPos.Row, endPos.Column].State = CellState.Contact;
+                        log.Add(new StepTracingLog(boards, $"Невозможно выполнить трассировку {boardDRPs.Count - 1}-го проводника в {boardNum + 1} узле"));
+                        continue;
+                    }
 
-                    break;
+                    var currentPos = getNeighborsOnlyArrow(currentDRP, endPos)[0];
 
+                    do
+                    {
+                        var bufCellState = currentDRP[currentPos.Row, currentPos.Column].State;
+                        currentDRP[currentPos.Row, currentPos.Column].State = CellState.Wire;
+                        currentPos = getNextPosByCurrentArrow(currentPos, bufCellState);
+
+                    } while (currentDRP[currentPos.Row,currentPos.Column].State != CellState.PointA);
+
+                    // очищаем всё дрп от веса и ячеек с волной
+                    for (int i = 0; i < currentDRP.RowsCount; i++)
+                    {
+                        for (int j = 0; j < currentDRP.ColsCount; j++)
+                        {
+                            if (currentDRP[i, j].isArrow)
+                            {
+                                currentDRP[i, j].State = CellState.Empty;
+                            }
+
+                        }
+                    }
+
+                    log.Add(new StepTracingLog(boards, $"Волна достигла точки Б. Определяем точки, где будет проходить проводник №{boardDRPs.Count - 1} в {boardNum + 1} узле"));
+
+                    // начинаем долгую и мучительную спец операцию по определению какой формы проводник должен стоять в ячейке
+                    // запускаем цикл по всем ячейкам дрп
+                    for (int i = 0; i < currentDRP.RowsCount; i++)
+                    {
+                        for (int j = 0; j < currentDRP.ColsCount; j++)
+                        {
+                            // объявляем соседей, от них нам нужно будет только состояние
+                            Cell leftCell = new Cell();
+                            Cell rightCell = new Cell();
+                            Cell topCell = new Cell();
+                            Cell bottomCell = new Cell();
+
+                            // блок, который присвоит пустое состояние ячейке, если она находится вне дрп
+                            if (j > 0)
+                                leftCell = currentDRP[i, j - 1];
+                            else
+                                leftCell.State = CellState.Empty;
+
+                            if (j < currentDRP.ColsCount - 1)
+                                rightCell = currentDRP[i, j + 1];
+                            else
+                                rightCell.State = CellState.Empty;
+
+                            if (i > 0)
+                                topCell = currentDRP[i - 1, j];
+                            else
+                                topCell.State = CellState.Empty;
+
+                            if (i < currentDRP.RowsCount - 1)
+                                bottomCell = currentDRP[i + 1, j];
+                            else
+                                bottomCell.State = CellState.Empty;
+                            // конец блока
+
+                            var currentCell = currentDRP[i, j];
+
+                            if (currentCell.State == CellState.Wire)
+                            {
+                                if (topCell.isConnectible && bottomCell.isConnectible)
+                                {
+                                    currentDRP[i, j].State = CellState.WireVertical;
+                                }
+                                else if (leftCell.isConnectible && rightCell.isConnectible)
+                                {
+                                    currentDRP[i, j].State = CellState.WireHorizontal;
+                                }
+                                else if (topCell.isConnectible && leftCell.isConnectible)
+                                {
+                                    currentDRP[i, j].State = CellState.WireTopLeft;
+                                }
+                                else if (topCell.isConnectible && rightCell.isConnectible)
+                                {
+                                    currentDRP[i, j].State = CellState.WireTopRight;
+                                }
+                                else if (bottomCell.isConnectible && leftCell.isConnectible)
+                                {
+                                    currentDRP[i, j].State = CellState.WireBottomLeft;
+                                }
+                                else if (bottomCell.isConnectible && rightCell.isConnectible)
+                                {
+                                    currentDRP[i, j].State = CellState.WireBottomRight;
+                                }
+                            }
+
+                        }
+                    }
+
+                    // заменяем буквы просто контактами
+                    currentDRP[startPos.Row, startPos.Column].State = CellState.Contact;
+                    currentDRP[endPos.Row, endPos.Column].State = CellState.Contact;
+                    log.Add(new StepTracingLog(boards, $"Построили на базе точек проводник №{boardDRPs.Count - 1} в {boardNum + 1} узле"));
                 }
 
                 
@@ -205,6 +311,23 @@ namespace RevolutionCAD.Tracing
                 return CellState.ArrowRight;
             else
                 return CellState.Empty;
+        }
+
+        public static Position getNextPosByCurrentArrow(Position currentPos, CellState currentArrow)
+        {
+            switch(currentArrow)
+            {
+                case CellState.ArrowDown:
+                    return new Position(currentPos.Row + 1, currentPos.Column);
+                case CellState.ArrowUp:
+                    return new Position(currentPos.Row - 1, currentPos.Column);
+                case CellState.ArrowLeft:
+                    return new Position(currentPos.Row, currentPos.Column - 1);
+                case CellState.ArrowRight:
+                    return new Position(currentPos.Row, currentPos.Column + 1);
+                default:
+                    return new Position(-1, -1);
+            }
         }
 
         public static List<Position> getNeighbors(Matrix<Cell> drp, List<Position> positions)
@@ -247,6 +370,39 @@ namespace RevolutionCAD.Tracing
                     if (aplicant.Column >= 0 && aplicant.Column < drp.ColsCount)
                     {
                         if (drp[aplicant.Row, aplicant.Column].isBusy == false)
+                        {
+                            neighbors.Add(aplicant);
+                        }
+                    }
+                }
+            }
+
+            return neighbors;
+
+        }
+
+        public static List<Position> getNeighborsOnlyArrow(Matrix<Cell> drp, Position pos)
+        {
+            var neighbors = new List<Position>();
+            var aplicants = new List<Position>();
+
+            for (int i = 0; i < 4; i++)
+            {
+                aplicants.Add(pos.Clone());
+            }
+
+            aplicants[0].Column += 1;
+            aplicants[1].Column -= 1;
+            aplicants[2].Row -= 1;
+            aplicants[3].Row += 1;
+
+            foreach (var aplicant in aplicants)
+            {
+                if (aplicant.Row >= 0 && aplicant.Row < drp.RowsCount)
+                {
+                    if (aplicant.Column >= 0 && aplicant.Column < drp.ColsCount)
+                    {
+                        if (drp[aplicant.Row, aplicant.Column].isArrow)
                         {
                             neighbors.Add(aplicant);
                         }
