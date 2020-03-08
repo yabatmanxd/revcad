@@ -139,7 +139,25 @@ namespace RevolutionCAD
                 catch(Exception exc)
                 {
                     errWrite = $"При записи в файл схемы произошла ошибка: {exc.Message}";
+                    return;
                 }
+            }
+
+            // удаляем все сформированные файлы компоновки, размещения и трассировки т.к. была изменена схема
+            string msg;
+            if (IsFileExists(".cmp", out msg))
+            {
+                File.Delete($"{FileName}.cmp");
+            }
+
+            if (IsFileExists(".plc", out msg))
+            {
+                File.Delete($"{FileName}.plc");
+            }
+
+            if (IsFileExists(".trs", out msg))
+            {
+                File.Delete($"{FileName}.trs");
             }
             
         }

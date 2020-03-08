@@ -74,8 +74,6 @@ namespace RevolutionCAD.Pages
             {
                 if (steps.Count != 0)
                 {
-                    //var result = steps.Last().BoardsList;
-
                     var result = new CompositionResult();
                     result.BoardsElements = steps.Last().BoardsList;
 
@@ -234,6 +232,21 @@ namespace RevolutionCAD.Pages
 
         private void DropStepMode()
         {
+            TextBox_Log.Text = "";
+            for (int step = 0; step < StepsLog.Count; step++)
+            {
+                TextBox_Log.Text += $"Шаг №{step + 1}:" + "\n";
+                TextBox_Log.Text += StepsLog[step].Message + "\n";
+            }
+            TextBox_Log.ScrollToEnd();
+            ShowStep(StepsLog.Count - 1); // отображаем только последний шаг графически, т.к. он будет результатом компоновки
+
+            string str;
+            var cmp = ApplicationData.ReadComposition(out str);
+            if (str != "")
+                return;
+            ShowWires(cmp);
+
             CurrentStep = 0;
             Button_FullComposition.IsEnabled = true;
             Button_StartStepComposition.IsEnabled = true;
@@ -249,7 +262,17 @@ namespace RevolutionCAD.Pages
             {
                 var boardsElements = cmp.BoardsElements;
                 Draw(boardsElements);
-            } 
+            } else
+            {
+                TextBox_Log.Text = "";
+
+                Button_FullComposition.IsEnabled = true;
+                Button_StartStepComposition.IsEnabled = true;
+                Button_NextStep.IsEnabled = false;
+                Button_DropStepMode.IsEnabled = false;
+
+                StackPanel_Boards.Children.Clear();
+            }
         }
 
         private void ShowWires(CompositionResult cmp)

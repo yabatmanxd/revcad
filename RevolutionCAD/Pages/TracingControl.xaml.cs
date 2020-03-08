@@ -313,6 +313,15 @@ namespace RevolutionCAD.Pages
 
         private void DropStepMode()
         {
+            TextBox_Log.Text = "";
+            for (int step = 0; step < StepsLog.Count; step++)
+            {
+                TextBox_Log.Text += $"Шаг №{step + 1}:" + "\n";
+                TextBox_Log.Text += StepsLog[step].Message + "\n";
+            }
+            TextBox_Log.ScrollToEnd();
+            ShowStep(StepsLog.Count - 1); // отображаем только последний шаг графически, т.к. он будет результатом трассировки
+            
             Button_FullTracing.IsEnabled = true;
             Button_StartStepTracing.IsEnabled = true;
             Button_NextStep.IsEnabled = false;
@@ -327,6 +336,17 @@ namespace RevolutionCAD.Pages
             var boardsDRPs = ApplicationData.ReadTracing(out t);
             if (t == "")
                 Draw(boardsDRPs);
+            else
+            {
+                TextBox_Log.Text = "";
+
+                Button_FullTracing.IsEnabled = true;
+                Button_StartStepTracing.IsEnabled = true;
+                Button_NextStep.IsEnabled = false;
+                Button_DropStepMode.IsEnabled = false;
+
+                Grid_Parent.Children.Clear();
+            }
         }
     }
 }

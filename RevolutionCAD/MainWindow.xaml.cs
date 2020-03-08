@@ -67,10 +67,7 @@ namespace RevolutionCAD
 
                 ShowWires(sch);
 
-                MatrControl.UpdateMatrices();
-                CompControl.Update();
-                PlaceControl.Update();
-                TraceControl.Update();
+                UpdatePages();
 
                 TextBox_Code.SelectionStart = TextBox_Code.Text.Length;
             }
@@ -81,7 +78,10 @@ namespace RevolutionCAD
             string error = "";
             ApplicationData.WriteScheme(TextBox_Code.Text, out error);
             if (error != "")
+            {
                 MessageBox.Show(error, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             else
             {
                 string str;
@@ -90,6 +90,7 @@ namespace RevolutionCAD
                     return;
                 ShowWires(sch);
             }
+            UpdatePages();
             
         }
 
@@ -111,13 +112,21 @@ namespace RevolutionCAD
             if (str != "")
                 return;
             ShowWires(sch);
-            
+            UpdatePages();
 
         }
 
         private void MenuItem_Info_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Все жалобы, вопросы, предложения по поводу работы приложения в деканат", "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        public void UpdatePages()
+        {
+            MatrControl.UpdateMatrices();
+            CompControl.Update();
+            PlaceControl.Update();
+            TraceControl.Update();
         }
 
         private void ShowWires(Scheme sch)

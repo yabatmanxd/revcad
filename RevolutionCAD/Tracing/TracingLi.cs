@@ -182,8 +182,8 @@ namespace RevolutionCAD.Tracing
                             Cell rightCell = new Cell();
                             Cell topCell = new Cell();
                             Cell bottomCell = new Cell();
-                            
-                            // блок, который присвоит пустое состояние ячейке, если она находится вне дрп
+
+                            // блок, который присвоит пустое состояние ячейке, если она находится вне дрп, если находится в дрп, то присвоит нужную позицию
                             if (j > 0)
                                 leftCell = currentDRP[i, j - 1];
                             else
@@ -207,8 +207,12 @@ namespace RevolutionCAD.Tracing
 
                             var currentCell = currentDRP[i, j];
 
+                            // если текущая ячейка должна быть каким-то кабелем
+                            // определяем значения ячеек вокруг и на основе этих данных узнаём какой имеено должен быть кабель
+                            // идущим вертикально или слева вверх или горизонтальным и т.д.
                             if (currentCell.State == CellState.Wire)
                             {
+                                // если есть кабель сверху и кабель в ячейке снизу, то в текущей ячейке должен стоять вертикальный проводник
                                 if (topCell.isConnectible && bottomCell.isConnectible)
                                 {
                                     currentDRP[i, j].State = CellState.WireVertical;
