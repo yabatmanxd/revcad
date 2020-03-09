@@ -118,7 +118,7 @@ namespace RevolutionCAD
 
         private void MenuItem_Info_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Все жалобы, вопросы, предложения по поводу работы приложения в деканат", "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("Революционная система автоматического проектирования\nРазработана студентами группы КС-16 ФКНТ ГОУВПО \"ДонНТУ\" 2020г.\nРуководитель проекта: Николаев Дмитрий\nВедущий разработчик: Стамбула Дмитрий\nДизайн страниц: Стамбула Дмитрий, Алутин Евгений\nВсе права защищены единым арестантским уставом (АУЕ)\nОсновные положения устава изложены в Жёлтой Книге (или Оранжевой Dostlev Edition)", "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         public void UpdatePages()

@@ -83,86 +83,39 @@ namespace RevolutionCAD.Tracing
                     // а это модули этих значений, тоже понадобятся
                     int rowsDiffModul = Math.Abs(rowsDiff);
                     int colsDiffModul = Math.Abs(colsDiff);
-
-                    // определяем как раз таки позиции приоритетов, логику которых я чуть выше описывал
-                    Position top = new Position(-1, 0);
-                    Position bottom = new Position(1, 0);
-                    Position left = new Position(0, -1);
-                    Position right = new Position(0, 1);
-
+                    
                     // далее идёт задание приоритетов на основе подсчитанных разниц позиций
                     // логическому объяснению не поддаётся, только по результату моделирования на бумаге
                     if (colsDiff > rowsDiff)
                     {
                         if (colsDiffModul > rowsDiffModul)
                         {
-                            prioritetsPos.Add(left); // первый приоритет - стрелочка влево
                             if (rowsDiff < 0)
-                            {
-                                // остальные против часовой стрелки назначаем
-                                prioritetsPos.Add(bottom);
-                                prioritetsPos.Add(right);
-                                prioritetsPos.Add(top);
-                            } else
-                            {
-                                // остальные по часовой стрелке назначаем
-                                prioritetsPos.Add(top);
-                                prioritetsPos.Add(right);
-                                prioritetsPos.Add(bottom);
-                            }
+                                prioritetsPos = getPrioritets(0, false); // первый приоритет - стрелочка влево, остальные против часовой стрелки назначаем
+                            else
+                                prioritetsPos = getPrioritets(0, true); // первый приоритет - стрелочка влево, остальные по часовой стрелке назначаем
                         } else
                         {
-                            prioritetsPos.Add(bottom); // первый приоритет - стрелочка вниз
                             if (colsDiff > 0)
-                            {
-                                // остальные по часовой стрелке назначаем
-                                prioritetsPos.Add(left);
-                                prioritetsPos.Add(top);
-                                prioritetsPos.Add(right);
-                            }
+                                prioritetsPos = getPrioritets(90, true); // первый приоритет - стрелочка вниз, остальные по часовой стрелке назначаем
                             else
-                            {
-                                // остальные против часовой стрелки назначаем
-                                prioritetsPos.Add(right);
-                                prioritetsPos.Add(top);
-                                prioritetsPos.Add(left);
-                            }
+                                prioritetsPos = getPrioritets(90, false); // первый приоритет - стрелочка вниз, остальные против часовой стрелки назначаем
                         }
                     } else
                     {
                         if (colsDiffModul > rowsDiffModul)
                         {
-                            prioritetsPos.Add(right); // первый приоритет - стрелочка вправо
                             if (rowsDiff > 0)
-                            {
-                                // остальные против часовой стрелки назначаем
-                                prioritetsPos.Add(top);
-                                prioritetsPos.Add(left);
-                                prioritetsPos.Add(bottom);
-                            } else
-                            {
-                                // остальные по часовой стрелке назначаем
-                                prioritetsPos.Add(bottom);
-                                prioritetsPos.Add(left);
-                                prioritetsPos.Add(top);
-                            }
+                                prioritetsPos = getPrioritets(180, false); // первый приоритет - стрелочка вправо, остальные против часовой стрелки назначаем
+                            else
+                                prioritetsPos = getPrioritets(180, true); // первый приоритет - стрелочка вправо, остальные по часовой стрелке назначаем
                         }
                         else
                         {
-                            prioritetsPos.Add(top); // первый приоритет - стрелочка вверх
                             if (colsDiff < 0)
-                            {
-                                // остальные по часовой стрелке назначаем
-                                prioritetsPos.Add(left);
-                                prioritetsPos.Add(bottom);
-                                prioritetsPos.Add(right);
-                            } else
-                            {
-                                // остальные против часовой стрелки назначаем
-                                prioritetsPos.Add(right);
-                                prioritetsPos.Add(bottom);
-                                prioritetsPos.Add(left);
-                            }
+                                prioritetsPos = getPrioritets(270, true); // первый приоритет - стрелочка вверх, остальные по часовой стрелке назначаем
+                            else
+                                prioritetsPos = getPrioritets(270, false); // первый приоритет - стрелочка вверх, остальные против часовой стрелки назначаем
                         }
                     }
 
@@ -353,6 +306,26 @@ namespace RevolutionCAD.Tracing
 
 
             return log;
+        }
+
+        /// <summary>
+        /// Формирует список позиций приоритетов на основе стартового угла и флага по часовой стрелке назначать следующие или против
+        /// </summary>
+        public static List<Position> getPrioritets(int startAngle, bool isClockwise)
+        {
+            int currentAngle = startAngle;
+            
+            var priors = new List<Position>();
+            for (int i = 0; i < 4; i++)
+            {
+                double angle = Math.PI * currentAngle / 180.0;
+                int row = (int)Math.Sin(angle);
+                int col = (int)-Math.Cos(angle);
+                var pos = new Position(row, col);
+                priors.Add(pos);
+                currentAngle += isClockwise ? -90 : 90;
+            }
+            return priors;
         }
 
         /// <summary>
