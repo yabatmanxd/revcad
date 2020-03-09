@@ -94,9 +94,9 @@ namespace RevolutionCAD.Pages
                     }
 
                     // формируем новую матрицу R на основе сформированных проводов, которые были разделены по платам
-                    sch.MatrixR = ApplicationData.CreateMatrixR(result.BoardsWires, sch.MatrixR.RowsCount, sch.MatrixR.ColsCount);
-
-                    ApplicationData.WriteScheme(sch, out err_msg);
+                    result.MatrixR_AfterComposition = ApplicationData.CreateMatrixR(result.BoardsWires, sch.MatrixR.RowsCount, sch.MatrixR.ColsCount);
+                    
+                    ApplicationData.WriteComposition(result, out err_msg);
 
                     if (err_msg != "")
                     {
@@ -105,14 +105,6 @@ namespace RevolutionCAD.Pages
                     }
 
                     mw.MatrControl.UpdateMatrices();
-
-                    ApplicationData.WriteComposition(result, out err_msg);
-
-                    if (err_msg != "")
-                    {
-                        MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return null;
-                    }
 
                 }
             }

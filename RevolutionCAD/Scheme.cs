@@ -14,7 +14,7 @@ namespace RevolutionCAD
         public string SchemeDefinition { get; set; } // текстовое описание схемы
         public List<int> DIPNumbers { get; set; } // номера DIP элементов
         public List<List<Contact>> WiresContacts { get; set; } // список Проводов, в котором хранится список контактов, которые они соединяют
-        public Matrix<int> MatrixR { get; set; } // матрица R (количество связей между элементами)
+        public Matrix<int> MatrixR { get; set; } // матрица R (количество связей между элементами).
         public Matrix<int> MatrixQ { get; set; } // матрица Q (какие провода какие элементы связывают)
     }
 }

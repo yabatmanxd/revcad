@@ -46,7 +46,7 @@ namespace RevolutionCAD.Pages
                 return steps;
             }
 
-            var matrR = sch.MatrixR;
+            var matrR = cmp.MatrixR_AfterComposition;
 
             switch (ComboBox_Method.SelectedIndex)
             {
@@ -81,7 +81,6 @@ namespace RevolutionCAD.Pages
                     var result = new PlacementResult();
                     result.BoardsMatrices = steps.Last().BoardsList;
                     
-                    var matrQ = sch.MatrixQ;
                     var dips = sch.DIPNumbers;
 
                     result.CreateBoardsDRPs(cmp, dips, out err_msg);

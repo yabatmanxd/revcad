@@ -10,6 +10,8 @@ namespace RevolutionCAD.Composition
     {
         public List<List<int>> BoardsElements { get; set; } // список узлов с элементами входящими в узлы
         public List<List<List<Contact>>> BoardsWires { get; set; } // список контактов, соединяющих провода в узлах
+        public Matrix<int> MatrixR_AfterComposition { get; set; } // изменённая матрица R после компоновки элементов в узлы и изменения связей между элементами в разных узлах
+
 
         public void CreateBoardsWires(Scheme sch, out string err_msg)
         {
