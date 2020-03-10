@@ -21,5 +21,13 @@ namespace RevolutionCAD
         {
             return (Position)this.MemberwiseClone();
         }
+
+        public bool Equals(Position p)
+        {
+            if (p.Column == this.Column && p.Row == this.Row)
+                return true;
+            else
+                return false;
+        }
     }
 }
