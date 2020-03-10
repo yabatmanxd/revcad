@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
@@ -165,6 +167,27 @@ namespace RevolutionCAD
                 dipIterator++;
             }
             TreeViewItem_Dips.IsExpanded = true;
+        }
+
+        private async void MenuItem_Complete_Click(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                await Task.Run(() =>
+                {
+                    System.Media.SystemSounds.Asterisk.Play();
+                    Thread.Sleep(100);
+                    System.Media.SystemSounds.Beep.Play();
+                    Thread.Sleep(100);
+                    System.Media.SystemSounds.Exclamation.Play();
+                    Thread.Sleep(100);
+                    System.Media.SystemSounds.Hand.Play();
+                    Thread.Sleep(100);
+                    System.Media.SystemSounds.Question.Play();
+                    Thread.Sleep(100);
+                });
+            }
+            MessageBox.Show("НЕВОЗМОЖНО ПОСТАВИТЬ ЗАЧЁТ!!!!!\nВОЗМОЖНО ВЫ ЖЕЛАЕТЕ ДАТЬ ВСЕЙ ГРУППЕ КОНТРОЛЬНУЮ?","ОШИБКА!!!!!!!!", MessageBoxButton.OK,MessageBoxImage.Error);
         }
     }
 }
