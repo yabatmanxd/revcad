@@ -45,23 +45,6 @@ namespace RevolutionCAD.Placement
 
                 countContactsConnector = boardsWires[numBoard].Count(x => x.Any(y => y.ElementNumber == 0));
 
-                //for (int j = 0; j < matrQ.ColsCount; j++)
-                //{
-                //    if (matrQ[0, j] == 1)
-                //    {
-                //        bool isConnectedToElementOnBoard = false;
-                //        foreach (var num_element in elInBoards[boardNumber])
-                //        {
-                //            if (matrQ[num_element, j] == 1)
-                //            {
-                //                isConnectedToElementOnBoard = true;
-                //            }
-                //        }
-                //        if (isConnectedToElementOnBoard)
-                //            countContactsConnector++;
-                //    }
-                //}
-
                 BoardsCountContactsConnector.Add(countContactsConnector);
 
                 
@@ -159,6 +142,12 @@ namespace RevolutionCAD.Placement
                         {
                             // список координат каждого контакта
                             var ElementContactsPos = new List<Position>();
+
+                            int elementNumberLabelRow = currentPos.Row;
+                            int elementNumberLabelColumn = currentPos.Column + (int)(ApplicationData.RowDistance / 2);
+
+                            boardDRP[elementNumberLabelRow, elementNumberLabelColumn].Description = $"D{elementNumber}";
+
                             // узнаём номер дипа
                             int elementDip = dips[elementNumber];
                             // количество контактов в столбце = номер дипа / 2

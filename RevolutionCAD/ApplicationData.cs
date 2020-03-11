@@ -383,24 +383,12 @@ namespace RevolutionCAD
                 }
                 // добавляем список контактов только что сформированного проводника в общий список проводников
                 wiresContactsList.Add(contacts);
-
                 
-
                 // получаем список номеров элементов
-                var elementNumbers = contacts.Select(x => x.ElementNumber).ToList();
+                var elementNumbers = contacts.Select(x => x.ElementNumber).Distinct().ToList(); // при помощи distinct избавляемся от повторений номеров элементов
                 
-                // так как у элемента могут быть внутренние связи, а в матрице мы их не учитываем
-                elementNumbers = elementNumbers.Distinct().ToList(); // избавляемся от повторений номеров элементов
-
                 for (int i = 0; i < elementNumbers.Count; i++)
                 {
-                    for (int j = 0; j < elementNumbers.Count; j++)
-                    {
-                        if (i != j)
-                        {
-                            R[elementNumbers[i], elementNumbers[j]]++;
-                        }
-                    }
                     Q[elementNumbers[i], numberOfContact] = 1;
                 }
 
@@ -421,9 +409,17 @@ namespace RevolutionCAD
 
             wiresContactsList = wiresPairs;
 
+            var boardsWires = new List<List<List<Contact>>>();
+            boardsWires.Add(wiresContactsList);
+
+            R = CreateMatrixR(boardsWires, N, N);
+
             return true;
         }
 
+        /// <summary>
+        /// Метод формирует матрицу R на базе списка плат со списком проводов, со списком контактов, которые соединяет провод
+        /// </summary>
         public static Matrix<int> CreateMatrixR(List<List<List<Contact>>> boardsWires, int rows, int cols)
         {
             var matrix = new Matrix<int>(rows,cols);
@@ -534,6 +530,9 @@ namespace RevolutionCAD
                     {
                         if (layerDRP[i, j].State != CellState.Empty)
                             resDRP[i, j] = layerDRP[i, j].Clone();
+
+                        if (layerDRP[i, j].Description != "")
+                            resDRP[i, j].Description = layerDRP[i, j].Description;
                     }
                 }
             }

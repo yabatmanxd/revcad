@@ -62,30 +62,35 @@ namespace RevolutionCAD.Placement
                     countRelationWithUnplaced = countRelations(unplacedElements, unplacedElements);
                     countRelationWithPlaced = countRelations(unplacedElements, placedElements);
 
-                    // формируем список позиций в массиве с макимальным количеством связей с размещёнными
-                    List<int> posOfMaxPlaced = new List<int>();
-                    for (int i = 0; i < countRelationWithPlaced.Count; i++)
+                    for(int i = 0; i< unplacedElements.Count; i++)
                     {
-                        if (countRelationWithPlaced[i] == countRelationWithPlaced.Max())
+                        countRelationWithUnplaced[i] = i;
+                        countRelationWithPlaced[i] = 1;
+                    }
+
+                    int posMaxPlacedMinUnplaced = -1;
+                    int maxPlaced = int.MinValue;
+                    int minUnplaced = int.MaxValue;
+                    for (int currPos = 0; currPos < unplacedElements.Count; currPos++)
+                    {
+                        if (countRelationWithPlaced[currPos] > maxPlaced)
                         {
-                            posOfMaxPlaced.Add(i);
+                            posMaxPlacedMinUnplaced = currPos;
+                            maxPlaced = countRelationWithPlaced[currPos];
+                            minUnplaced = countRelationWithUnplaced[currPos];
+                        } else if (countRelationWithPlaced[currPos] == maxPlaced)
+                        {
+                            if (countRelationWithUnplaced[currPos] < minUnplaced)
+                            {
+                                posMaxPlacedMinUnplaced = currPos;
+                                maxPlaced = countRelationWithPlaced[currPos];
+                                minUnplaced = countRelationWithUnplaced[currPos];
+                            }
                         }
                     }
                     
-                    // ищем элемент с минимальный количеством связей среди элементов с максимальным
-                    int posInMas = 0;
-                    int minValue = int.MaxValue;
-                    for (int i = 0; i < posOfMaxPlaced.Count; i++)
-                    {
-                        if (countRelationWithUnplaced[i] < minValue)
-                        {
-                            minValue = countRelationWithUnplaced[i];
-                            posInMas = posOfMaxPlaced[i];
-                        }
-                    }
-
                     // получаем номер элемента по позиции в списке
-                    var elementNumber = unplacedElements[posInMas];
+                    var elementNumber = unplacedElements[posMaxPlacedMinUnplaced];
 
                     string msg = "Количество связей с размещёнными элементами: ";
                     for (int i = 0; i < unplacedElements.Count; i++)

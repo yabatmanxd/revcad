@@ -19,6 +19,12 @@ namespace RevolutionCAD.Composition
             var log = new List<StepCompositionLog>();
 
             var sch = ApplicationData.ReadScheme(out error_msg);
+
+            if (error_msg != "")
+            {
+                return log;
+            }
+
             // считываем матрицу R
             Matrix<int> R = sch.MatrixR;
 

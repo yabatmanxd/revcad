@@ -41,6 +41,7 @@ namespace RevolutionCAD.Pages
             // запись матрицы R
             var dt1 = new DataTable();
 
+            dt1.Columns.Add(new DataColumn("#", typeof(string)));
             dt1.Columns.Add(new DataColumn("X", typeof(string)));
             for (var i = 1; i < R.ColsCount; i++)
             {
@@ -50,9 +51,9 @@ namespace RevolutionCAD.Pages
             for (var i = 0; i < R.RowsCount; i++)
             {
                 var r = dt1.NewRow();
-
+                r[0] = i == 0 ? "X" : $"D{i}";
                 for (var j = 0; j < R.ColsCount; j++)
-                    r[j] = R[i, j];
+                    r[j+1] = R[i, j].ToString();
                 dt1.Rows.Add(r);
             }
             Matrix_R.ItemsSource = dt1.DefaultView;
@@ -60,6 +61,7 @@ namespace RevolutionCAD.Pages
             // запись матрицы Q
             var dt2 = new DataTable();
 
+            dt2.Columns.Add(new DataColumn("#", typeof(string)));
             for (var i = 0; i < Q.ColsCount; i++)
             {
                 dt2.Columns.Add(new DataColumn($"V{i + 1}", typeof(string)));
@@ -68,9 +70,9 @@ namespace RevolutionCAD.Pages
             for (var i = 0; i < Q.RowsCount; i++)
             {
                 var r = dt2.NewRow();
-
+                r[0] = i == 0 ? "X" : $"D{i}";
                 for (var j = 0; j < Q.ColsCount; j++)
-                    r[j] = Q[i, j];
+                    r[j+1] = Q[i, j].ToString();
                 dt2.Rows.Add(r);
             }
             Matrix_Q.ItemsSource = dt2.DefaultView;
@@ -80,6 +82,7 @@ namespace RevolutionCAD.Pages
             {
                 var dt3 = new DataTable();
 
+                dt3.Columns.Add(new DataColumn("#", typeof(string)));
                 dt3.Columns.Add(new DataColumn("X", typeof(string)));
                 for (var i = 1; i < cmpR.ColsCount; i++)
                 {
@@ -89,12 +92,15 @@ namespace RevolutionCAD.Pages
                 for (var i = 0; i < cmpR.RowsCount; i++)
                 {
                     var r = dt3.NewRow();
-
+                    r[0] = i == 0 ? "X" : $"D{i}";
                     for (var j = 0; j < cmpR.ColsCount; j++)
-                        r[j] = cmpR[i, j];
+                        r[j+1] = cmpR[i, j].ToString();
                     dt3.Rows.Add(r);
                 }
                 Matrix_R_Cmp.ItemsSource = dt3.DefaultView;
+            } else
+            {
+                Matrix_R_Cmp.ItemsSource = null;
             }
         }
 

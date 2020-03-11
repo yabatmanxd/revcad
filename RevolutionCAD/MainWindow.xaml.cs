@@ -35,7 +35,7 @@ namespace RevolutionCAD
                 TextBlock_NameOpenedFile.Text = $"Файл: {wnd.Text}";
                 TabControl_Main.Visibility = Visibility.Visible;
                 // при создании файла откроется пример заполнения
-                TextBox_Code.Text = "dip14\r\ndip14\r\ndip14\r\ndip18\r\n#\r\nX-D1.1-D2.1\r\nD1.2-D2.2-D3.2-X\r\nD4.1-D2.1\r\nD3.1-D1.1";
+                TextBox_Code.Text = "dip14\r\ndip14\r\ndip14\r\ndip18\r\n#\r\nX-D1.1\r\nD1.1-D2.1\r\nD1.2-D2.2\r\nD2.2-D3.2\r\nD3.2-X\r\nD4.1-D2.1\r\nD3.1-D1.1\r\n";
                 TextBox_Code.SelectionStart = TextBox_Code.Text.Length;
             }
             
@@ -169,25 +169,5 @@ namespace RevolutionCAD
             TreeViewItem_Dips.IsExpanded = true;
         }
 
-        private async void MenuItem_Complete_Click(object sender, RoutedEventArgs e)
-        {
-            for (int i = 0; i < 2; i++)
-            {
-                await Task.Run(() =>
-                {
-                    System.Media.SystemSounds.Asterisk.Play();
-                    Thread.Sleep(100);
-                    System.Media.SystemSounds.Beep.Play();
-                    Thread.Sleep(100);
-                    System.Media.SystemSounds.Exclamation.Play();
-                    Thread.Sleep(100);
-                    System.Media.SystemSounds.Hand.Play();
-                    Thread.Sleep(100);
-                    System.Media.SystemSounds.Question.Play();
-                    Thread.Sleep(100);
-                });
-            }
-            MessageBox.Show("НЕВОЗМОЖНО ПОСТАВИТЬ ЗАЧЁТ!!!!!\nВОЗМОЖНО ВЫ ЖЕЛАЕТЕ ДАТЬ ВСЕЙ ГРУППЕ КОНТРОЛЬНУЮ?","ОШИБКА!!!!!!!!", MessageBoxButton.OK,MessageBoxImage.Error);
-        }
     }
 }

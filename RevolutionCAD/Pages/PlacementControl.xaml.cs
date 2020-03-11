@@ -38,6 +38,12 @@ namespace RevolutionCAD.Pages
             
             var cmp = ApplicationData.ReadComposition(out err_msg);
 
+            if (err_msg != "")
+            {
+                MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
+                return steps;
+            }
+
             var sch = ApplicationData.ReadScheme(out err_msg);
 
             if (err_msg != "")
