@@ -10,20 +10,21 @@ namespace RevolutionCAD.Composition
 {
     class IterMultigraph
     {
-        // метод должен возвратить целый лог действий
         //Скударнов С.А.
         /// <summary>
-        /// 
+        /// Итерационная компоновка по мультиграфу
         /// </summary>
-        /// <param name="error_msg"></param>
-        /// <returns></returns>
         public static List<StepCompositionLog> Compose(out string error_msg)
         {
-            error_msg = "";
-            //с этого обязательно должен начинаться метод
             var log = new List<StepCompositionLog>();
+
+        START:
+            error_msg = "";
+            string msg = "";
+            //с этого обязательно должен начинаться метод
             int sn, kol_plat;
             double buf;
+
 
             // считываем файл схемы
             var sch = ApplicationData.ReadScheme(out error_msg);
@@ -39,48 +40,25 @@ namespace RevolutionCAD.Composition
             }
 
             var boards = ApplicationData.ReadComposition(out error_msg).BoardsElements;
-
+            var step = new StepCompositionLog(boards, msg);
 
             R = R.RemoveCol(0); 
-            R= R.RemoveRow(0); // удаляем разъём
-
-
-            var Result = new Matrix<int>(R.ColsCount, R.ColsCount);
+            R = R.RemoveRow(0); // удаляем разъём
 
             // формируем матрицу таким образом, чтобы строки и столбцы скомпонованных плат оказались рядом
             
-            // TODO
-            // для теста
-            // -------------------------------------------------------------
-            Matrix<int> M = new Matrix<int>(3, 3);
-
-
-            M[0, 0] = 0;
-            M[0, 1] = 2;
-            M[0, 2] = 1;
-
-            M[1, 0] = 2;
-            M[1, 1] = 0;
-            M[1, 2] = 3;
-
-            M[2, 0] = 1;
-            M[2, 1] = 3;
-            M[2, 2] = 0;
-
-
-            var X = ReplaceMatrix(0, 1, R); // пример замены строк и столбцов (строка/столбец 1, строка/столбец 2, изменяемая матрица )
-            // -------------------------------------------------------------
-
-
             sn = R.ColsCount; // размерность матрицы
             kol_plat = boards.Count; // кол-во плат
             buf = Math.Ceiling((double)sn / kol_plat);
             buf *= kol_plat; // необходимая размерность матрицы R  
                              // поскольку у нас матрица должна разбиваться на равные части - 
                              // необходимо добавить нулевые строки и столбцы
-           
+
             //***************************************************************************************************************************
-            int[] el_position = new int[sn]; //массив, который хранит порядок расположения элементов в преобразоваанной матрице R
+
+            List<int> el_position = new List<int>(); // хранит порядок расположения элементов в преобразоваанной матрице R
+            for (int i = 0; i < sn; i++)
+                el_position.Add(0);
             int k = 0;
             int[] kol_elem_for_plata = new int[kol_plat];//массив, который хранит кол-во микросхем на каждой плате. Нужен для поиска макс кол-ва эл-ов и в дальнейшем добавления 0 строк и столбцов в матрицы на которых меньше эл-ов
 
@@ -95,26 +73,13 @@ namespace RevolutionCAD.Composition
                 }
             }
 
-                int Max_kol_elem_for_plata = kol_elem_for_plata.Max(); // Максимальное кол-во микросхем на платах 
-
-           
-            //****************************************************************************************************************************
-            /*el_position[0] = 2; //Значения для теста
-            el_position[1] = 0;
-            el_position[2] = 3;
-            el_position[3] = 1;
-
-            R[0,0]= R[1, 1] = R[2, 2]=R[3, 3] = R[2, 3] = R[3, 2] = 0;
-            R[0, 1] = R[0, 2] = R[1, 0] = R[2, 0] = 2;
-            R[1, 2] = R[1, 3] = R[2, 1] = R[3, 1] = 1;*/
-
+            int Max_kol_elem_for_plata = kol_elem_for_plata.Max(); // Максимальное кол-во микросхем на платах 
 
             int [,] R_buf = new int [sn,sn];// буфферная матрица для хранения порядка элементов в порядке расположения по платам
 
-
-            for (int i=0;i<el_position.Length;i++) //строки располагает в нужном порядке
+            for (int i=0;i<el_position.Count;i++) //строки располагает в нужном порядке
                 {
-                for (int j = 0; j < el_position.Length; j++)
+                for (int j = 0; j < el_position.Count; j++)
                 {
                     R_buf[i, j] = R[i, el_position[j]];
                 }
@@ -124,9 +89,9 @@ namespace RevolutionCAD.Composition
                 for (int j = 0; j < sn; j++)
                     R[i,j] = R_buf[i, j];
 
-            for (int i = 0; i < el_position.Length; i++) //столбцы располагает в нужном порядке 
+            for (int i = 0; i < el_position.Count; i++) //столбцы располагает в нужном порядке 
             {
-                for (int j = 0; j < el_position.Length; j++)
+                for (int j = 0; j < el_position.Count; j++)
                 {
                     R_buf[i, j] = R[el_position[j],i];
                 }
@@ -136,16 +101,7 @@ namespace RevolutionCAD.Composition
                 for (int j = 0; j < sn; j++)
                     R[i, j] = R_buf[i, j];
 
-            R[0, 0] = R[1, 1] = R[2, 2] = R[3, 3] = R[2, 3] = R[3, 2] = 0;
-            R[0, 1] = R[0, 2] = R[1, 0] = R[2, 0] = 2;
-            R[1, 2] = R[1, 3] = R[2, 1] = R[3, 1] = 1;
-
-            // 0 2 2 0
-            // 2 0 1 1
-            // 2 1 0 0
-            // 0 1 0 0
-
-            //Алгоритм, который создаёт матрицу с равным количеством элементов т.е. добавляет где необходимо 0 столбцы и строки
+            // Алгоритм, который создаёт матрицу с равным количеством элементов т.е. добавляет где необходимо 0 столбцы и строки
             // Необходим, чтоб на каждой плате условно было одинаковое кол-во эл-ов 
 
             int position = 0; // позиция, в которую необходимо добавить нулевую строку/столбец            
@@ -157,17 +113,10 @@ namespace RevolutionCAD.Composition
                     kol_elem_for_plata[i]++;
                     R = AddZero(R, position);
                     i--;
+                    el_position.Insert(position, -1); // дополнение массива -1 - признак фиктивного элемента
                 }
             }
-
-            //     v   v     результат работы алгоритма
-            // 0 2 0 2 0 0
-            // 2 0 0 1 0 1
-            // 0 0 0 0 0 0 v
-            // 2 1 0 0 0 0
-            // 0 0 0 0 0 0 v
-            // 0 1 0 0 0 0
-
+            
 
             // в зависимости от кол-ва плат выполняем итерации
             switch (kol_plat)
@@ -176,32 +125,77 @@ namespace RevolutionCAD.Composition
                     error_msg = "...отец сына. А тот ему и говорит - плохо нам без мамы;";
                     break;
                 case 1:
-                    error_msg = "Это бесполезно";
+                    error_msg = "Это бесполезно - все элементы распологаются на одной плате";
                     break;
                 case 2:
                     // варианты перестановок - между 1 и 2 платой
-                    List<int> delta = new List<int>(sn); //список для хранения результатов расчёта.
+
+                    List<int> delta = new List<int>(sn); // список для хранения результатов расчёта.
                     int delta1 = 0, delta2 = 0;
                     for (int index_delta = 0; index_delta < sn; index_delta++)
                     {
-                        for (int i1 = 0; i1 < (buf / kol_plat); i1++)//сумма связей на 1 плате
+                        delta.Add(0);
+                        for (int i1 = 0; i1 < (buf / kol_plat); i1++)// сумма связей на 1 плате
                             delta1 += R[index_delta, i1];
-                        for (int i2 = (int)(buf / kol_plat) + 1; i2 < sn; i2++)//сумма связей на 2 плате
+                        for (int i2 = (int)(buf / kol_plat) + 1; i2 < sn; i2++)// сумма связей на 2 плате
                             delta2 += R[index_delta, i2];
 
                         if (index_delta < (buf / kol_plat))
-                            delta[index_delta] = delta2 - delta1;//итерация в 1 части плат
-                        else //дошли по строкам до 2 платы и делаем обратное
+                            delta[index_delta] = delta2 - delta1;// итерация в 1 части плат
+                        else // дошли по строкам до 2 платы и делаем обратное
                             delta[index_delta] = delta1 - delta2;
                     }
-                    List<int> listMax1 = delta.GetRange(0, (int)(buf / kol_plat));
-                    List<int> listMax2 = delta.GetRange((int)(buf / kol_plat), sn);
+                    int index = (int)(buf / kol_plat);
+                    List<int> listMax1 = delta.GetRange(0, index);
+                    List<int> listMax2 = delta.GetRange(index, index);
 
                     int max1 = listMax1.Max();
                     int max2 = listMax2.Max();
 
                     int count = R[listMax1.IndexOf(listMax1.Max()), listMax2.IndexOf(listMax2.Max()) + (int)(buf / kol_plat)];
                     int deltaR = max1 + max2 - 2 * count;
+
+                    if (deltaR > 0)
+                    {
+                        // имеет смысл менять местами элементы
+                        // индексы элементов с нуля
+                        int elem1 = el_position[listMax1.IndexOf(max1)];
+                        int elem2 = el_position[listMax2.IndexOf(max2) + index];
+
+                        // поменять строки и столбцы на платах
+                        //R = ReplaceMatrix(elem1, elem2, R);
+                        // обновляем el_position
+                        int yy = el_position[listMax1.IndexOf(max1)];
+                        el_position[listMax1.IndexOf(max1)] = el_position[listMax2.IndexOf(max2) + index];
+                        el_position[listMax2.IndexOf(max2) + index] = yy;
+
+                        // поменять файл компоновки
+                        boards[0].Remove(elem1 + 1);
+                        boards[1].Remove(elem2 + 1);
+                        boards[0].Add(elem2 + 1);
+                        boards[1].Add(elem1 + 1);
+                        
+                        // возвращаем лог
+                        msg = "Меняем местами элементы " + (elem1 + 1) + " и " + (elem2 + 1) +
+                            " - они имеют максимальное приращение delta = " + max1 + " + " + max2 +
+                            " - 2*" + count + " = " + deltaR + "\n";
+                        step = new StepCompositionLog(boards, msg);
+                        log.Add(step);
+
+                        // сериализация результата
+                        var result = new CompositionResult();
+                        result.BoardsElements = log.Last().BoardsList;
+                        ApplicationData.WriteComposition(result, out msg);
+                        
+                        goto START;
+                    }
+                    else
+                    {
+                        msg = "Не существует приращений delta > 0, итерационная компоновка завершена\n";
+                        step = new StepCompositionLog(boards, msg);
+                        log.Add(step);
+                        return log;
+                    }
 
                     break;
                 case 3:
@@ -224,8 +218,7 @@ namespace RevolutionCAD.Composition
 
 
             // в конце каждого шага должно присутствовать это
-            string msg = "тут результаты выполнения шага";
-            var step = new StepCompositionLog(boards, msg);
+
 
             // этим метод должен обязательно закончиться
             return log;
@@ -286,7 +279,8 @@ namespace RevolutionCAD.Composition
                 }
             return test;
         }
-        ////
+        
+
 
 
     }
