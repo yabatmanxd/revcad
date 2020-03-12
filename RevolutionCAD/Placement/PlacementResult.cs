@@ -157,7 +157,7 @@ namespace RevolutionCAD.Placement
                             int pinsInColumn = elementDip / 2;
                             int offsetRow = 0;
                             // сначала формируем первый ряд контактов элемента сверху вниз
-                            while( offsetRow < elementDip - ApplicationData.PinDistance)
+                            while( offsetRow < (pinsInColumn * (ApplicationData.PinDistance+1)) - ApplicationData.PinDistance)
                             {
                                 boardDRP[currentPos.Row + offsetRow, currentPos.Column].State = CellState.Contact;
                                 // записываем текущую координату в список координат контактов
@@ -166,7 +166,7 @@ namespace RevolutionCAD.Placement
                             }
                             offsetRow -= 1 + ApplicationData.PinDistance;
                             // сдвигаемся вправо на расстояние в клетках от первого ряда контактов
-                            currentPos.Column += ApplicationData.RowDistance;
+                            currentPos.Column += ApplicationData.RowDistance + 1;
                             // теперь идём обратно вверх
                             while (offsetRow >= 0)
                             {
@@ -181,7 +181,7 @@ namespace RevolutionCAD.Placement
                             // возвращаемся опять в позицию для печати первого ряда контактов, но уже следующего элемента
                             currentPos.Column -= ApplicationData.RowDistance;
                             // пропускаем ячейки с уже размещённым элементом
-                            currentPos.Row += elementDip - ApplicationData.PinDistance;
+                            currentPos.Row += (pinsInColumn * (ApplicationData.PinDistance + 1)) - ApplicationData.PinDistance;
 
                             currentPos.Row += ApplicationData.ElementsDistance;
                         } else

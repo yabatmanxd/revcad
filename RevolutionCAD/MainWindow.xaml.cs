@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
-
+using Newtonsoft.Json;
 
 namespace RevolutionCAD
 {
@@ -18,6 +18,8 @@ namespace RevolutionCAD
         {
             InitializeComponent();
             CompControl.mw = this;
+
+            
         }
 
         private void MenuItem_Exit_Click(object sender, RoutedEventArgs e)
@@ -169,5 +171,31 @@ namespace RevolutionCAD
             TreeViewItem_Dips.IsExpanded = true;
         }
 
+        private void MenuItem_Settings_Click(object sender, RoutedEventArgs e)
+        {
+            var wnd = new SettingsWindow();
+            wnd.ShowDialog();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                using (StreamReader file = File.OpenText("app.settings"))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+                    Settings settings = (Settings)serializer.Deserialize(file, typeof(Settings));
+                    ApplicationData.PinDistance = settings.ContactsDist;
+                    ApplicationData.RowDistance = settings.RowsDist;
+                    ApplicationData.ElementsDistance = settings.ElementsDist;
+                }
+            }
+            catch
+            {
+                ApplicationData.PinDistance = 1;
+                ApplicationData.RowDistance = 3;
+                ApplicationData.ElementsDistance = 4;
+            }
+        }
     }
 }
