@@ -61,13 +61,7 @@ namespace RevolutionCAD.Placement
                     
                     countRelationWithUnplaced = countRelations(unplacedElements, unplacedElements);
                     countRelationWithPlaced = countRelations(unplacedElements, placedElements);
-
-                    for(int i = 0; i< unplacedElements.Count; i++)
-                    {
-                        countRelationWithUnplaced[i] = i;
-                        countRelationWithPlaced[i] = 1;
-                    }
-
+                    
                     int posMaxPlacedMinUnplaced = -1;
                     int maxPlaced = int.MinValue;
                     int minUnplaced = int.MaxValue;

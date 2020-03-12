@@ -187,7 +187,10 @@ namespace RevolutionCAD.Pages
             if (CurrentStep + 1 >= StepsLog.Count)
             {
                 TextBox_Log.Text += "\n === Размещение закончено ===\n";
-                DropStepMode();
+                Button_FullPlacement.IsEnabled = true;
+                Button_StartStepPlacement.IsEnabled = true;
+                Button_NextStep.IsEnabled = false;
+                Button_DropStepMode.IsEnabled = false;
             }
             else
             {
@@ -239,11 +242,6 @@ namespace RevolutionCAD.Pages
 
         private void Button_DropStepMode_Click(object sender, RoutedEventArgs e)
         {
-            DropStepMode();
-        }
-
-        private void DropStepMode()
-        {
             TextBox_Log.Text = "";
             for (int step = 0; step < StepsLog.Count; step++)
             {
@@ -259,7 +257,7 @@ namespace RevolutionCAD.Pages
             Button_NextStep.IsEnabled = false;
             Button_DropStepMode.IsEnabled = false;
         }
-
+        
         public void Update()
         {
             string t = "";

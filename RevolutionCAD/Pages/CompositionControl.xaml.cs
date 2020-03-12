@@ -170,7 +170,11 @@ namespace RevolutionCAD.Pages
             if (CurrentStep + 1 >= StepsLog.Count)
             {
                 TextBox_Log.Text += "\n === Компоновка закончена ===\n";
-                DropStepMode();
+
+                Button_FullComposition.IsEnabled = true;
+                Button_StartStepComposition.IsEnabled = true;
+                Button_NextStep.IsEnabled = false;
+                Button_DropStepMode.IsEnabled = false;
 
                 string str;
                 var cmp = ApplicationData.ReadComposition(out str);
@@ -219,11 +223,6 @@ namespace RevolutionCAD.Pages
 
         private void Button_DropStepMode_Click(object sender, RoutedEventArgs e)
         {
-            DropStepMode();
-        }
-
-        private void DropStepMode()
-        {
             TextBox_Log.Text = "";
             for (int step = 0; step < StepsLog.Count; step++)
             {
@@ -245,7 +244,7 @@ namespace RevolutionCAD.Pages
             Button_NextStep.IsEnabled = false;
             Button_DropStepMode.IsEnabled = false;
         }
-
+        
         public void Update()
         {
             string t = "";

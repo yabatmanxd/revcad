@@ -286,7 +286,10 @@ namespace RevolutionCAD.Pages
             if (CurrentStep + 1 >= StepsLog.Count)
             {
                 TextBox_Log.Text += "\n === Трассировка окончена ===\n";
-                DropStepMode();
+                Button_FullTracing.IsEnabled = true;
+                Button_StartStepTracing.IsEnabled = true;
+                Button_NextStep.IsEnabled = false;
+                Button_DropStepMode.IsEnabled = false; ;
             }
             else
             {
@@ -296,7 +299,19 @@ namespace RevolutionCAD.Pages
 
         private void Button_DropStepMode_Click(object sender, RoutedEventArgs e)
         {
-            DropStepMode();
+            TextBox_Log.Text = "";
+            for (int step = 0; step < StepsLog.Count; step++)
+            {
+                TextBox_Log.Text += $"Шаг №{step + 1}:" + "\n";
+                TextBox_Log.Text += StepsLog[step].Message + "\n";
+            }
+            TextBox_Log.ScrollToEnd();
+            ShowStep(StepsLog.Count - 1); // отображаем только последний шаг графически, т.к. он будет результатом трассировки
+
+            Button_FullTracing.IsEnabled = true;
+            Button_StartStepTracing.IsEnabled = true;
+            Button_NextStep.IsEnabled = false;
+            Button_DropStepMode.IsEnabled = false;
         }
 
         private void Button_StartStepTracing_Click(object sender, RoutedEventArgs e)
@@ -321,26 +336,7 @@ namespace RevolutionCAD.Pages
 
             Button_NextStep_Click(null, null);
         }
-
-        private void DropStepMode()
-        {
-            TextBox_Log.Text = "";
-            for (int step = 0; step < StepsLog.Count; step++)
-            {
-                TextBox_Log.Text += $"Шаг №{step + 1}:" + "\n";
-                TextBox_Log.Text += StepsLog[step].Message + "\n";
-            }
-            TextBox_Log.ScrollToEnd();
-            ShowStep(StepsLog.Count - 1); // отображаем только последний шаг графически, т.к. он будет результатом трассировки
-            
-            Button_FullTracing.IsEnabled = true;
-            Button_StartStepTracing.IsEnabled = true;
-            Button_NextStep.IsEnabled = false;
-            Button_DropStepMode.IsEnabled = false;
-        }
-
         
-
         public void Update()
         {
             string t = "";

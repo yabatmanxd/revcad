@@ -19,6 +19,12 @@ namespace RevolutionCAD.Placement
             // так как итерационный метод должен основываться на резульатах последовательного размещения
             // считываем результаты размещения
             var plc = ApplicationData.ReadPlacement(out errMsg);
+
+            if (errMsg != "")
+            {
+                return log;
+            }
+
             var cmp = ApplicationData.ReadComposition(out errMsg);
 
             // если произошла ошибка при чтении результатов размещения - заканчиваем алгоритм
@@ -67,12 +73,6 @@ namespace RevolutionCAD.Placement
                         
                     }
                 }
-                //string msg = $"Список сформированных пар для узла №{boardNum+1}:\n";
-                //foreach(var pair in pairs)
-                //{
-                //    msg += $"{boardMatr.getRelativePosByAbsolute(pair.FirstPos)}-{boardMatr.getRelativePosByAbsolute(pair.SecondPos)}\n";
-                //}
-                //MessageBox.Show(msg);
 
                 int deltaLMax = 0;
                 PairPos pairMaxDeltaL = new PairPos();
@@ -89,21 +89,35 @@ namespace RevolutionCAD.Placement
                     {
                         int firstEl = boardMatr[pair.FirstPos.Row, pair.FirstPos.Column];
                         int secondEl = boardMatr[pair.SecondPos.Row, pair.SecondPos.Column];
-                        stepMsg += $"deltaL({firstEl}-{secondEl}) = ";
-                        var otherElements = cmp.BoardsElements[boardNum];
+                        stepMsg += $"\u0394L({firstEl}-{secondEl}) = ";
+                        var otherElements = cmp.BoardsElements[boardNum].Select(x=>x).ToList();
                         otherElements.Remove(firstEl);
                         otherElements.Remove(secondEl);
                         otherElements.Add(0);
+                        otherElements.Sort();
 
                         int L = 0;
+                        List<string> operationsDef = new List<string>();
+                        List<string> operationsValue = new List<string>();
                         foreach(var otherElement in otherElements)
                         {
                             Position currentElPos = getPosByElementNumber(boardMatr, otherElement);
+
+
+                            operationsDef.Add($"(r{otherElement}-{firstEl} - r{otherElement}-{secondEl})*" +
+                                $"(d{otherElement}-{firstEl} - d{otherElement}-{secondEl})");
+
+                            operationsValue.Add($"({R[otherElement, firstEl]}-{R[otherElement, secondEl]})*" +
+                                $"({getLength(currentElPos, pair.FirstPos)}-{getLength(currentElPos, pair.SecondPos)})");
 
                             L += (R[otherElement,firstEl] - R[otherElement, secondEl]) *
                                 (getLength(currentElPos, pair.FirstPos) - getLength(currentElPos, pair.SecondPos));
                             
                         }
+                        stepMsg += string.Join("+", operationsDef);
+                        stepMsg += "=";
+                        stepMsg += string.Join("+", operationsValue);
+                        stepMsg += "=";
                         stepMsg += L + "\n";
                         if (L > deltaLMax)
                         {
@@ -118,7 +132,7 @@ namespace RevolutionCAD.Placement
                         int firstElement = boardMatr[pairMaxDeltaL.FirstPos.Row, pairMaxDeltaL.FirstPos.Column];
                         int secondElement = boardMatr[pairMaxDeltaL.SecondPos.Row, pairMaxDeltaL.SecondPos.Column];
 
-                        stepMsg += $" -- Наибольшее deltaL у пары ({firstElement}-{secondElement}) = {deltaLMax}. Меняем их местами";
+                        stepMsg += $" -- Наибольшее \u0394L у пары ({firstElement}-{secondElement}) = {deltaLMax}. Меняем их местами";
 
                         boardMatr[pairMaxDeltaL.FirstPos.Row, pairMaxDeltaL.FirstPos.Column] = secondElement;
                         boardMatr[pairMaxDeltaL.SecondPos.Row, pairMaxDeltaL.SecondPos.Column] = firstElement;

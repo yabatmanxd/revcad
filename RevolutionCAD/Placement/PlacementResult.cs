@@ -143,6 +143,9 @@ namespace RevolutionCAD.Placement
                             // список координат каждого контакта
                             var ElementContactsPos = new List<Position>();
 
+                            // добавляем заглушку, т.к. нумерация ножек начинается с 1, а у нас список и 0 элемент должен существовать
+                            ElementContactsPos.Add(new Position(-1, -1));
+
                             int elementNumberLabelRow = currentPos.Row;
                             int elementNumberLabelColumn = currentPos.Column + (int)(ApplicationData.RowDistance / 2);
 
