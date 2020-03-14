@@ -158,13 +158,29 @@ namespace RevolutionCAD.Pages
 
                 for (int i = 0; i < drp.RowsCount; i++)
                 {
-                    var spRow = new StackPanel();
+                    // вью для отображения веса ячейки
                     TextBlock weightElem = new TextBlock();
+                    // вью для отображения id элемента
+                    TextBlock descriptionElem = new TextBlock();
+
+                    var spRow = new StackPanel();
                     spRow.Orientation = Orientation.Horizontal;
                     // добавление строки элементов
                     for (int c = 0; c < drp.ColsCount; c++)
                     {
                         Grid elem = new Grid();
+                        if (drp[i,c].Description != null)
+                        {
+                            descriptionElem = new TextBlock
+                            {
+                                Text = drp[i, c].Description,
+                                HorizontalAlignment = HorizontalAlignment.Center,
+                                VerticalAlignment = VerticalAlignment.Center,
+                                FontSize = 15,
+                                Foreground = new SolidColorBrush(Colors.DarkOrange)
+                            };
+                            Canvas.SetZIndex(descriptionElem, 4);
+                        }
                         if (drp[i, c].Weight != -1)
                         {
                             weightElem = new TextBlock
@@ -182,7 +198,6 @@ namespace RevolutionCAD.Pages
                         {
                             Height = 26,
                             Width = 26
-                            //Stretch = Stretch.Fill
                         };
                         switch (drp[i, c].State)
                         {
@@ -251,11 +266,14 @@ namespace RevolutionCAD.Pages
                                     new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imEmpty.png"));
                                 break;
                         }
-                        if (drp[i, c].Weight != -1)
+                        if (drp[i, c].Weight != -1 || drp[i, c].Description != null)
                         {
                             Canvas.SetZIndex(picElem, 3);
                             elem.Children.Add(picElem);
-                            elem.Children.Add(weightElem);
+                            if (drp[i, c].Weight != -1)
+                                elem.Children.Add(weightElem);
+                            if (drp[i, c].Description != null)
+                                elem.Children.Add(descriptionElem);
                             spRow.Children.Add(elem);
                         }
                         else

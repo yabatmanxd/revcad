@@ -16,6 +16,9 @@ namespace RevolutionCAD.Tracing
         /// Вес ячейки, по умолчанию -1 - ячейка без веса
         /// </summary>
         public int Weight { get; set; }
+        /// <summary>
+        /// Поле для хранения идентификатора элемента
+        /// </summary>
         public string Description { get; set; }
 
         public bool isBusy

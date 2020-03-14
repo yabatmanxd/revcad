@@ -42,6 +42,23 @@ namespace RevolutionCAD.Tracing
             log.Last().BoardsDRPs.Last().Last()[4, 4].State = CellState.ArrowRight;
             log.Last().BoardsDRPs.Last().Last()[3, 3].State = CellState.ArrowUp;
             log.Last().BoardsDRPs.Last().Last()[2, 2].State = CellState.ArrowDown;
+            // тестировка отображения св..номера элемента
+            log.Last().BoardsDRPs.Last().Last()[5, 5].State = CellState.WireCross;
+            log.Last().BoardsDRPs.Last().Last()[4, 5].State = CellState.WireVertical;
+            log.Last().BoardsDRPs.Last().Last()[6, 5].State = CellState.WireVertical;
+            log.Last().BoardsDRPs.Last().Last()[5, 4].State = CellState.WireHorizontal;
+            log.Last().BoardsDRPs.Last().Last()[5, 6].State = CellState.WireHorizontal;
+            log.Last().BoardsDRPs.Last().Last()[3, 5].State = CellState.WireBottomRight;
+            log.Last().BoardsDRPs.Last().Last()[7, 5].State = CellState.WireTopLeft;
+            log.Last().BoardsDRPs.Last().Last()[5, 3].State = CellState.WireTopRight;
+            log.Last().BoardsDRPs.Last().Last()[5, 7].State = CellState.WireBottomLeft;
+            log.Last().BoardsDRPs.Last().Last()[3, 6].State = CellState.WireHorizontal;
+            log.Last().BoardsDRPs.Last().Last()[7, 4].State = CellState.WireHorizontal;
+            log.Last().BoardsDRPs.Last().Last()[4, 3].State = CellState.WireVertical;
+            log.Last().BoardsDRPs.Last().Last()[6, 7].State = CellState.WireVertical;
+            log.Last().BoardsDRPs.Last().Last()[5, 5].Description = "D1";
+            log.Last().BoardsDRPs.Last().Last()[5, 7].Description = "D3";
+            log.Last().BoardsDRPs.Last().Last()[5, 7].Weight = 3;
             return log;
             
         }
