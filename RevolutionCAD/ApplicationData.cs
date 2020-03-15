@@ -528,11 +528,15 @@ namespace RevolutionCAD
                 {
                     for (int j = 0; j < layerDRP.ColsCount; j++)
                     {
+                        string description = resDRP[i, j].Description;
+
                         if (layerDRP[i, j].State != CellState.Empty)
                             resDRP[i, j] = layerDRP[i, j].Clone();
 
-                        if (layerDRP[i, j].Description != "")
+                        if (layerDRP[i, j].Description != null)
                             resDRP[i, j].Description = layerDRP[i, j].Description;
+                        else
+                            resDRP[i, j].Description = description;
                     }
                 }
             }

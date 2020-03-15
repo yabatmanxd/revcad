@@ -91,6 +91,7 @@ namespace RevolutionCAD.Tracing
             var cell = new Cell();
             cell.State = this.State;
             cell.Weight = this.Weight;
+            cell.Description = this.Description;
             
             return cell;
         }

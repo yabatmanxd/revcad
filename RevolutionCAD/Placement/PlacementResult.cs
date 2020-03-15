@@ -147,7 +147,7 @@ namespace RevolutionCAD.Placement
                             ElementContactsPos.Add(new Position(-1, -1));
 
                             int elementNumberLabelRow = currentPos.Row;
-                            int elementNumberLabelColumn = currentPos.Column + (int)(ApplicationData.RowDistance / 2);
+                            int elementNumberLabelColumn = currentPos.Column + (int)Math.Ceiling((double)ApplicationData.RowDistance / 2);
 
                             boardDRP[elementNumberLabelRow, elementNumberLabelColumn].Description = $"D{elementNumber}";
 
@@ -157,7 +157,8 @@ namespace RevolutionCAD.Placement
                             int pinsInColumn = elementDip / 2;
                             int offsetRow = 0;
                             // сначала формируем первый ряд контактов элемента сверху вниз
-                            while( offsetRow < (pinsInColumn * (ApplicationData.PinDistance+1)) - ApplicationData.PinDistance)
+                            boardDRP[currentPos.Row + offsetRow, currentPos.Column].Description = "(X)";
+                            while ( offsetRow < (pinsInColumn * (ApplicationData.PinDistance+1)) - ApplicationData.PinDistance)
                             {
                                 boardDRP[currentPos.Row + offsetRow, currentPos.Column].State = CellState.Contact;
                                 // записываем текущую координату в список координат контактов
@@ -179,7 +180,7 @@ namespace RevolutionCAD.Placement
                             ElementsContactsPos.Add(elementNumber, ElementContactsPos);
 
                             // возвращаемся опять в позицию для печати первого ряда контактов, но уже следующего элемента
-                            currentPos.Column -= ApplicationData.RowDistance;
+                            currentPos.Column -= ApplicationData.RowDistance + 1;
                             // пропускаем ячейки с уже размещённым элементом
                             currentPos.Row += (pinsInColumn * (ApplicationData.PinDistance + 1)) - ApplicationData.PinDistance;
 
