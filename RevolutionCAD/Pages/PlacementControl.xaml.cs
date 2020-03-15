@@ -1,6 +1,7 @@
 ﻿using RevolutionCAD.Placement;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,8 @@ namespace RevolutionCAD.Pages
         List<StepPlacementLog> StepsLog;
 
         public int CurrentStep { get; set; }
+
+        public MainWindow mw;
 
         public PlacementControl()
         {
@@ -105,6 +108,14 @@ namespace RevolutionCAD.Pages
                         MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
                         return null;
                     }
+
+                    string msg;
+                    if (ApplicationData.IsFileExists(".trs", out msg))
+                    {
+                        File.Delete($"{ApplicationData.FileName}.trs");
+                    }
+
+                    mw.TraceControl.Update();
 
                 }
             } else

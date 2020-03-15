@@ -197,7 +197,7 @@ namespace RevolutionCAD.Placement
                     currentPos.Row = startPos.Row;
                     currentPos.Column = startPos.Column;
                     // пропускаем определённое количество столбцов, которое определяется по количеству уже размещённых умноженное на отступы
-                    currentPos.Column += ((j + 1) * ApplicationData.RowDistance) + ((j + 1) * ApplicationData.ElementsDistance);
+                    currentPos.Column += ((j + 1) * (ApplicationData.RowDistance + 2)) + ((j + 1) * ApplicationData.ElementsDistance);
 
                 }
                 

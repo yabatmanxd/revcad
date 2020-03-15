@@ -22,6 +22,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -62,16 +63,20 @@
                    Grid.Column="2">(ячеек)</TextBlock>
         <TextBlock Grid.Row="3" 
                    Grid.Column="2">(ячеек)</TextBlock>
+        <TextBlock Grid.Row="4"
+                   Grid.ColumnSpan="3"
+                   HorizontalAlignment="Right"
+                   Foreground="PaleVioletRed">* Изменения вступят в силу после выполнения этапа РАЗМЕЩЕНИЯ</TextBlock>
         <Button Name="Button_Save"
                 Click="Button_Save_Click"
-                Grid.Row="4" 
+                Grid.Row="5" 
                 Grid.Column="1" 
                 Margin="5" 
                 Padding="10 5" 
                 VerticalAlignment="Center" 
                 HorizontalAlignment="Center">Сохранить</Button>
         <Button IsCancel="True"
-                Grid.Row="4" 
+                Grid.Row="5" 
                 Grid.Column="2" 
                 Margin="5" 
                 Padding="10 5" 

@@ -104,7 +104,20 @@ namespace RevolutionCAD.Pages
                         return null;
                     }
 
+                    string msg;
+                    if (ApplicationData.IsFileExists(".plc", out msg))
+                    {
+                        File.Delete($"{ApplicationData.FileName}.plc");
+                    }
+
+                    if (ApplicationData.IsFileExists(".trs", out msg))
+                    {
+                        File.Delete($"{ApplicationData.FileName}.trs");
+                    }
+
                     mw.MatrControl.UpdateMatrices();
+                    mw.PlaceControl.Update();
+                    mw.TraceControl.Update();
 
                 }
             }

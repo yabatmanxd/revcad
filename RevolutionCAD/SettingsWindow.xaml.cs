@@ -48,7 +48,7 @@ namespace RevolutionCAD
                 MessageBox.Show("При сохранении произошла ошибка", "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            MessageBox.Show("Значения успешно сохранены, необходимо выполнить этап РАЗМЕЩЕНИЯ для переформирования ДРП", "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Information);
+            DialogResult = true;
         }
 
 

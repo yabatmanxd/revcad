@@ -18,6 +18,7 @@ namespace RevolutionCAD
         {
             InitializeComponent();
             CompControl.mw = this;
+            PlaceControl.mw = this;
 
             
         }
