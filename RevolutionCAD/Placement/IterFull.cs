@@ -38,56 +38,84 @@ namespace RevolutionCAD.Placement
             var st = new StepPlacementLog(boardsMatrices, "Начинаем итерационное разщмещение...");
             log.Add(st);
 
+            // запускаем цикл по всем платам
             for (int boardNum = 0; boardNum < boardsMatrices.Count; boardNum++)
             {
+                // получаем матрицу, в котором хранятся номера элементов текущей платы
                 var boardMatr = boardsMatrices[boardNum];
 
+                // создаем список для пар позиций, элементы в которых нужно попробовать поменять местами
                 List<PairPos> pairs = new List<PairPos>();
 
+                // получаем список элементов размещённых в текущей плате
                 List<int> boardElements = cmp.BoardsElements[boardNum];
 
+                // далее нам необходимо сформировать все возможные варианты перестановок (пары)
+                // для этого мы запускаем цикл по номерам всех элементов которые размещены на платы
                 for (int i = 0; i < boardElements.Count - 1; i++)
                 {
                     int firstElNum = boardElements[i];
+                    // так как из списка элементов мы можем вытянуть только номер элемента, а нам нужна позиция с Х и Y
+                    // вызываем специально написанный метод
                     Position firstElPos = getPosByElementNumber(boardMatr, firstElNum);
+                    
+                    // этот цикл проходит по всем остальным элементам после i-го
                     for (int j = i + 1; j < boardElements.Count; j++)
                     {
                         int secondElNum = boardElements[j];
+                        // получаем вторую позицию пары
                         Position secondElPos = getPosByElementNumber(boardMatr, secondElNum);
+                        // формируем пару
                         var currentPair = new PairPos();
                         currentPair.FirstPos = firstElPos.Clone();
                         currentPair.SecondPos = secondElPos.Clone();
+                        // добавляем её в общий список
                         pairs.Add(currentPair);
                     }
                 }
 
-                int deltaLMax = 0;
+                // максимальное приращение
+                int deltaLMax;
+                // пара с этим максимальным приращением
                 PairPos pairMaxDeltaL = new PairPos();
 
                 string stepMsg = "";
 
+                // запускаем цикл, пока будут положительные приращения
                 do
                 {
                     deltaLMax = 0;
                     pairMaxDeltaL = null;
                     stepMsg = "";
 
+                    // запускаем цикл по всем парам
                     foreach (var pair in pairs)
                     {
                         int firstEl = boardMatr[pair.FirstPos.Row, pair.FirstPos.Column];
                         int secondEl = boardMatr[pair.SecondPos.Row, pair.SecondPos.Column];
+                        // формируем по кусочкам сообщение
                         stepMsg += $"\u0394L({firstEl}-{secondEl}) = ";
+
+                        // формируем список остальных элементов на плате, кроме элоементов текущей пары
                         var otherElements = cmp.BoardsElements[boardNum].Select(x => x).ToList();
                         otherElements.Remove(firstEl);
                         otherElements.Remove(secondEl);
+                        // добавляем элемент разъёма
                         otherElements.Add(0);
                         otherElements.Sort();
 
+                        // текущее приращение
                         int L = 0;
-                        List<string> operationsDef = new List<string>();
-                        List<string> operationsValue = new List<string>();
+
+                        // это просто 2 списка для формирования сообщения шага
+                        List<string> operationsDef = new List<string>(); // в этом хранится буквенное обозначение операции, например: (r1 - r2)*(d1 - d2)
+                        List<string> operationsValue = new List<string>(); // а тут именно числовое (5 - 8)*(1 - 3)
+
+                        // начинаем считать приращение для текущей пары
+                        // для этого запускаем цикл по всем остальным элементам
                         foreach (var otherElement in otherElements)
                         {
+                            // получаем позицию рассматриваемого элемента
                             Position currentElPos = getPosByElementNumber(boardMatr, otherElement);
 
 
@@ -97,30 +125,43 @@ namespace RevolutionCAD.Placement
                             operationsValue.Add($"({R[otherElement, firstEl]}-{R[otherElement, secondEl]})*" +
                                 $"({getLength(currentElPos, pair.FirstPos)}-{getLength(currentElPos, pair.SecondPos)})");
 
+
+                            // прибавляем к общему приращению 
+                            // (количество связей между текущим и первым из пары + количество связей между текущим и вторым из пары) *
+                            // (длинна между позицией текущего и первого из пары - длинна между позицией текущего и второго из пары)
                             L += (R[otherElement, firstEl] - R[otherElement, secondEl]) *
                                 (getLength(currentElPos, pair.FirstPos) - getLength(currentElPos, pair.SecondPos));
 
                         }
+                        // добавляем к сообщению шага сразу все описания операций
                         stepMsg += string.Join("+", operationsDef);
                         stepMsg += "=";
+                        // потом все подставленные значения
                         stepMsg += string.Join("+", operationsValue);
                         stepMsg += "=";
                         stepMsg += L + "\n";
+                        // если у текущей пары L больше чем у уже найденной ранее
                         if (L > deltaLMax)
                         {
-                            deltaLMax = L;
-                            pairMaxDeltaL = pair;
+                            deltaLMax = L; // запоминаем максимальное приращение
+                            pairMaxDeltaL = pair; // и текущую пару
                         }
                     }
-
-
+                    
+                    // нашли пару с максимальным приращением
+                    
+                    // только если это приращение больше 0, нужно поменять элементы на позициях платы местами
                     if (deltaLMax > 0)
                     {
+                        // т.к. у нас есть только позиции на плате, элементы к оторых нужно поменять местами
+                        // достаём номера элементов по этим позиция из матрицы платы
                         int firstElement = boardMatr[pairMaxDeltaL.FirstPos.Row, pairMaxDeltaL.FirstPos.Column];
                         int secondElement = boardMatr[pairMaxDeltaL.SecondPos.Row, pairMaxDeltaL.SecondPos.Column];
 
+                        // добавляем описание
                         stepMsg += $" -- Наибольшее \u0394L у пары ({firstElement}-{secondElement}) = {deltaLMax}. Меняем их местами";
-
+                        
+                        // и наконец меняем местами
                         boardMatr[pairMaxDeltaL.FirstPos.Row, pairMaxDeltaL.FirstPos.Column] = secondElement;
                         boardMatr[pairMaxDeltaL.SecondPos.Row, pairMaxDeltaL.SecondPos.Column] = firstElement;
 
@@ -130,9 +171,12 @@ namespace RevolutionCAD.Placement
                         stepMsg += " -- Положительных приращений нет";
                     }
 
+                    // логируем изменения
                     var step = new StepPlacementLog(boardsMatrices, stepMsg);
                     log.Add(step);
 
+                    // цикл будет менять местами элементы с максимальным положительным приращением, пока не найдёт
+                    // ни одного положительного приращения между парами
                 } while (deltaLMax > 0);
 
             }
@@ -140,11 +184,15 @@ namespace RevolutionCAD.Placement
             return log;
         }
 
+        /// <summary>
+        /// Класс пары позиций с методом, который позволдяет определить эквивалентна ли другая пара этой
+        /// </summary>
         private class PairPos
         {
             public Position FirstPos { get; set; }
             public Position SecondPos { get; set; }
 
+            // вернёт true если оба свойства позиции текущего объекта равны таким же свойствам анализируемого
             public bool Equals(PairPos pair)
             {
                 if (pair.FirstPos.Equals(this.FirstPos) && pair.SecondPos.Equals(this.SecondPos) ||
@@ -155,6 +203,9 @@ namespace RevolutionCAD.Placement
             }
         }
 
+        /// <summary>
+        /// Метод возвращает объект позиции (в котором хранятся координаты Х и Y на плате) элемента с указанным номером
+        /// </summary>
         private static Position getPosByElementNumber(Matrix<int> boardMatr, int elementNumber)
         {
             Position pos = new Position(-1, -1);
@@ -178,6 +229,9 @@ namespace RevolutionCAD.Placement
             return pos;
         }
 
+        /// <summary>
+        /// Метод возвращает длинну в условных единицах между 2 позициями
+        /// </summary>
         private static int getLength(Position A, Position B)
         {
             if (B.Row == -1 && B.Column == -1)
@@ -189,39 +243,6 @@ namespace RevolutionCAD.Placement
                 int length = Math.Abs(B.Column - A.Column) + Math.Abs(B.Row - A.Row);
                 return length;
             }
-        }
-
-        private static List<Position> getNeighbors(Matrix<int> board, Position pos)
-        {
-            var neighbors = new List<Position>();
-            var aplicants = new List<Position>();
-
-            for (int i = 0; i < 4; i++)
-            {
-                aplicants.Add(pos.Clone());
-            }
-
-            aplicants[0].Column += 1; // правый сосед
-            aplicants[1].Column -= 1; // левый сосед
-            aplicants[2].Row -= 1; // верхний сосед
-            aplicants[3].Row += 1; // нижний сосед
-
-            foreach (var aplicant in aplicants)
-            {
-                // проверка на то, находится ли сосед в пределах дрп
-                if (aplicant.Row >= 0 && aplicant.Row < board.RowsCount)
-                {
-                    if (aplicant.Column >= 0 && aplicant.Column < board.ColsCount)
-                    {
-                        if (board[aplicant.Row, aplicant.Column] != -1)
-                        {
-                            neighbors.Add(aplicant);
-                        }
-                    }
-                }
-            }
-
-            return neighbors;
         }
     }
 }
