@@ -136,15 +136,27 @@ namespace RevolutionCAD.Pages
             {
                 var matr = boardsMatrices[i];
 
-                var sp_BoardCard = new StackPanel();
-                sp_BoardCard.Orientation = Orientation.Vertical;
-                sp_BoardCard.Margin = new Thickness(5);
+                var dp_BoardCard = new DockPanel();
+                dp_BoardCard.VerticalAlignment = VerticalAlignment.Top;
+                dp_BoardCard.Margin = new Thickness(5);
 
                 var tb_HeaderBoard = new TextBlock();
+                DockPanel.SetDock(tb_HeaderBoard, Dock.Top);
                 tb_HeaderBoard.Margin = new Thickness(5);
                 tb_HeaderBoard.Text = $"Узел №{i + 1}:";
 
-                sp_BoardCard.Children.Add(tb_HeaderBoard);
+                var connectorElement = new TextBlock();
+                connectorElement.Text = "X";
+                connectorElement.Margin = new Thickness(5);
+                connectorElement.VerticalAlignment = VerticalAlignment.Center;
+                var brd_connectorElement = new Border();
+                brd_connectorElement.BorderThickness = new Thickness(1, 1, 0, 1);
+                brd_connectorElement.BorderBrush = new SolidColorBrush(Colors.Black);
+                brd_connectorElement.Child = connectorElement;
+                DockPanel.SetDock(brd_connectorElement, Dock.Left);
+
+                dp_BoardCard.Children.Add(tb_HeaderBoard);
+                dp_BoardCard.Children.Add(brd_connectorElement);
 
                 var sp_Board = new StackPanel();
                 sp_Board.Orientation = Orientation.Vertical;
@@ -183,9 +195,10 @@ namespace RevolutionCAD.Pages
                 border_Board.Style = this.FindResource("BorderPlateTemplate") as Style;
                 border_Board.Child = sp_Board;
 
-                sp_BoardCard.Children.Add(border_Board);
+                DockPanel.SetDock(border_Board, Dock.Right);
+                dp_BoardCard.Children.Add(border_Board);
 
-                StackPanel_Boards.Children.Add(sp_BoardCard);
+                StackPanel_Boards.Children.Add(dp_BoardCard);
             }
         }
 

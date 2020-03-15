@@ -24,7 +24,7 @@
         </Style>
         <Style x:Key="BorderPlateTemplate" TargetType="{x:Type Border}">
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Margin" Value="5" />
+            <Setter Property="Margin" Value="0" />
             <Setter Property="Padding" Value="5" />
             <Setter Property="BorderBrush" Value="Black" />
         </Style>
@@ -55,6 +55,7 @@
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Auto">
             <StackPanel Name="StackPanel_Boards"
+                        VerticalAlignment="Top"
                         Orientation="Horizontal"></StackPanel>
         </ScrollViewer>
         
