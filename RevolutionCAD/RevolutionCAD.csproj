@@ -261,5 +261,11 @@
   <ItemGroup>
     <Resource Include="Resources\imWire.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\imArrowDownThroughHorizontalWire.png" />
+    <Resource Include="Resources\imArrowLeftThroughVerticalWire.png" />
+    <Resource Include="Resources\imArrowRightThroughVerticalWire.png" />
+    <Resource Include="Resources\imArrowUpThroughHorizontalWire.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
