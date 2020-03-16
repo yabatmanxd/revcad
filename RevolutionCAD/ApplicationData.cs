@@ -528,15 +528,36 @@ namespace RevolutionCAD
                 {
                     for (int j = 0; j < layerDRP.ColsCount; j++)
                     {
-                        string description = resDRP[i, j].Description;
-
-                        if (layerDRP[i, j].State != CellState.Empty)
-                            resDRP[i, j] = layerDRP[i, j].Clone();
-
                         if (layerDRP[i, j].Description != null)
                             resDRP[i, j].Description = layerDRP[i, j].Description;
+
+                        if (layerDRP[i,j].Weight != -1)
+                            resDRP[i, j].Weight = layerDRP[i, j].Weight;
+
+                        if ((layerDRP[i, j].State == CellState.WireHorizontal && resDRP[i, j].State == CellState.WireVertical) ||
+                            (layerDRP[i, j].State == CellState.WireVertical && resDRP[i, j].State == CellState.WireHorizontal))
+                            resDRP[i, j].State = CellState.WireCross;
                         else
-                            resDRP[i, j].Description = description;
+                        if ((layerDRP[i, j].State == CellState.WireHorizontal && resDRP[i, j].State == CellState.ArrowUp) ||
+                            (layerDRP[i, j].State == CellState.ArrowUp && resDRP[i, j].State == CellState.WireHorizontal))
+                            resDRP[i, j].State = CellState.ArrowUpThroughHorizontal;
+                        else
+                        if ((layerDRP[i, j].State == CellState.WireHorizontal && resDRP[i, j].State == CellState.ArrowDown) ||
+                            (layerDRP[i, j].State == CellState.ArrowDown && resDRP[i, j].State == CellState.WireHorizontal))
+                            resDRP[i, j].State = CellState.ArrowDownThroughHorizontal;
+                        else
+                        if ((layerDRP[i, j].State == CellState.WireVertical && resDRP[i, j].State == CellState.ArrowLeft) ||
+                            (layerDRP[i, j].State == CellState.ArrowLeft && resDRP[i, j].State == CellState.WireVertical))
+                            resDRP[i, j].State = CellState.ArrowLeftThroughVertical;
+                        else
+                        if ((layerDRP[i, j].State == CellState.WireVertical && resDRP[i, j].State == CellState.ArrowRight) ||
+                            (layerDRP[i, j].State == CellState.ArrowRight && resDRP[i, j].State == CellState.WireVertical))
+                            resDRP[i, j].State = CellState.ArrowRightThroughVertical;
+                        else
+
+                        if (layerDRP[i, j].State != CellState.Empty)
+                            resDRP[i, j].State = layerDRP[i, j].State;
+                        
                     }
                 }
             }

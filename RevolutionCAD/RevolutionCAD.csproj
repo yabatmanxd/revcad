@@ -218,6 +218,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Help\Metodicheskie_ukazania.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -234,38 +237,78 @@
     <Resource Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\imEmpty.png" />
+    <Resource Include="Resources\imEmpty.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\imContact.png" />
+    <Resource Include="Resources\imContact.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\imWireBottomLeft.png" />
-    <Resource Include="Resources\imWireBottomRight.png" />
-    <Resource Include="Resources\imWireCross.png" />
-    <Resource Include="Resources\imWireHorizontal.png" />
-    <Resource Include="Resources\imWireTopLeft.png" />
-    <Resource Include="Resources\imWireTopRight.png" />
-    <Resource Include="Resources\imWireVertical.png" />
+    <Resource Include="Resources\imWireBottomLeft.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\imWireBottomRight.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\imWireCross.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\imWireHorizontal.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\imWireTopLeft.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\imWireTopRight.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\imWireVertical.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\imArrowDown.png" />
-    <Resource Include="Resources\imArrowLeft.png" />
-    <Resource Include="Resources\imArrowRight.png" />
-    <Resource Include="Resources\imArrowUp.png" />
+    <Resource Include="Resources\imArrowDown.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\imArrowLeft.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\imArrowRight.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\imArrowUp.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\imContactA.png" />
-    <Resource Include="Resources\imContactB.png" />
+    <Resource Include="Resources\imContactA.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\imContactB.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\imWire.png" />
+    <Resource Include="Resources\imWire.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\imArrowDownThroughHorizontalWire.png" />
-    <Resource Include="Resources\imArrowLeftThroughVerticalWire.png" />
-    <Resource Include="Resources\imArrowRightThroughVerticalWire.png" />
-    <Resource Include="Resources\imArrowUpThroughHorizontalWire.png" />
+    <Resource Include="Resources\imArrowDownThroughHorizontalWire.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\imArrowLeftThroughVerticalWire.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\imArrowRightThroughVerticalWire.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\imArrowUpThroughHorizontalWire.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

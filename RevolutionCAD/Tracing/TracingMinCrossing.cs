@@ -152,6 +152,23 @@ namespace RevolutionCAD.Tracing
                             // для этого проходим по всем приоритетам
                             foreach (var prioritet in prioritetsPos)
                             {
+                                bool isThrough = false;
+                                if (fullDrp[neighbor.Row, neighbor.Column].State == CellState.WireHorizontal)
+                                {
+                                    isThrough = true;
+                                    if (prioritet.Equals(left) || prioritet.Equals(right))
+                                        continue;
+                                }
+
+
+                                if (fullDrp[neighbor.Row, neighbor.Column].State == CellState.WireVertical)
+                                {
+                                    isThrough = true;
+                                    if (prioritet.Equals(top) || prioritet.Equals(bottom))
+                                        continue;
+                                }
+                                    
+
                                 // определяем позицию, которую нужно проверить на основе текущего приоритета
                                 // если первый приоритет стрелочка вверх - значит мы сначала должна проверить верхнюю ячейку на наличие стрелочки
                                 // если она там обнаружится, то поставить в текущей ячейке стрелочку вверх, если нет, то перейти к следующему приоритету, проверить наличие стрелочки в ячейке по этому приоритету и т.д.
@@ -166,7 +183,7 @@ namespace RevolutionCAD.Tracing
                                         if (fullDrp[checkingPos.Row, checkingPos.Column].isArrow || fullDrp[checkingPos.Row, checkingPos.Column].State == CellState.PointA)
                                         {
                                             // устанавливаем необходимую стрелочку по значениям смещения этой стрелочки
-                                            int currentWeight = currentDRP[neighbor.Row + prioritet.Row, neighbor.Column + prioritet.Column].Weight + getCountWiresNear(fullDrp, neighbor);
+                                            int currentWeight = currentDRP[neighbor.Row + prioritet.Row, neighbor.Column + prioritet.Column].Weight + (isThrough == true ? 1 : 0);
                                             if (currentWeight < minWeight)
                                             {
                                                 minWeight = currentWeight;
@@ -208,7 +225,7 @@ namespace RevolutionCAD.Tracing
                     // теперь начинаем с точки Б
                     // находим соседние ячейки точки Б в которых есть стрелочка и берём первую попавшуюся (это не важно)
                     var currentPos = getNeighborWithMinWeight(currentDRP, endPos);
-
+                    
                     // запускаем цикл, пока мы по этим стрелочкам не дойдём то точки А
                     do
                     {
@@ -222,8 +239,11 @@ namespace RevolutionCAD.Tracing
                         // если вправо - то столбец на 1 больше, если стрелочка вверх, то на 1 строку выше
                         currentPos = getNextPosByCurrentArrow(currentPos, bufCellState);
 
-                    } while (currentDRP[currentPos.Row, currentPos.Column].State != CellState.PointA);
 
+                        if (currentPos.Equals(new Position(-1, -1)))
+                            break;
+                    } while (currentDRP[currentPos.Row, currentPos.Column].State != CellState.PointA);
+                    
                     // очищаем всё дрп от стрелочек и веса
                     for (int i = 0; i < currentDRP.RowsCount; i++)
                     {
@@ -239,7 +259,7 @@ namespace RevolutionCAD.Tracing
                     }
 
                     log.Add(new StepTracingLog(boards, $"Волна достигла точки Б. Определяем точки, где будет проходить проводник №{boardDRPs.Count - 1} в {boardNum + 1} узле"));
-
+                    
                     // начинаем долгую и мучительную спец операцию по определению какой формы проводник должен стоять в ячейке
                     // запускаем цикл по всем ячейкам дрп
                     for (int i = 0; i < currentDRP.RowsCount; i++)
@@ -314,7 +334,7 @@ namespace RevolutionCAD.Tracing
 
                         }
                     }
-
+                    
                     // заменяем буквы просто контактами
                     currentDRP[startPos.Row, startPos.Column].State = CellState.Contact;
                     currentDRP[endPos.Row, endPos.Column].State = CellState.Contact;
@@ -349,44 +369,7 @@ namespace RevolutionCAD.Tracing
             return priors;
         }
 
-        /// <summary>
-        /// Возвращает количество проводов в соседних ячейках
-        /// </summary>
-        private static int getCountWiresNear(Matrix<Cell> drp, Position pos)
-        {
-            // список позиций незанятых соседей
-            var neighbors = new List<Position>();
-            // список претендентов на незанятого соседа
-            var aplicants = new List<Position>();
-
-            for (int i = 0; i < 4; i++)
-            {
-                aplicants.Add(pos.Clone());
-            }
-
-            aplicants[0].Column += 1; // правый сосед
-            aplicants[1].Column -= 1; // левый сосед
-            aplicants[2].Row -= 1; // верхний сосед
-            aplicants[3].Row += 1; // нижний сосед
-
-            foreach (var aplicant in aplicants)
-            {
-                // проверка на то, находится ли сосед в пределах дрп
-                if (aplicant.Row >= 0 && aplicant.Row < drp.RowsCount)
-                {
-                    if (aplicant.Column >= 0 && aplicant.Column < drp.ColsCount)
-                    {
-                        // если находится в пределах дрп и в нём есть прводник
-                        if (drp[aplicant.Row, aplicant.Column].isConnectible && drp[aplicant.Row, aplicant.Column].State != CellState.PointA && drp[aplicant.Row, aplicant.Column].State != CellState.PointB)
-                        {
-                            neighbors.Add(aplicant);
-                        }
-                    }
-                }
-            }
-
-            return neighbors.Count;
-        }
+       
 
         /// <summary>
         /// Метод для определения по координатам в какую сторону должна смотреть стрелочка
@@ -440,7 +423,7 @@ namespace RevolutionCAD.Tracing
                 foreach (var neighbor in neighbors)
                 {
                     // если такого соседа ещё нет в списке соседей, то добавляем
-                    if (!allNeighbors.Any(x => x.Column == neighbor.Column && x.Row == neighbor.Row))
+                    if (!allNeighbors.Any(x => x.Equals(neighbor)))
                     {
                         allNeighbors.Add(neighbor);
                     }
@@ -478,7 +461,7 @@ namespace RevolutionCAD.Tracing
                     if (aplicant.Column >= 0 && aplicant.Column < drp.ColsCount)
                     {
                         // если находится и не занят, то этот предендент нам подходит
-                        if (drp[aplicant.Row, aplicant.Column].isBusy == false)
+                        if (drp[aplicant.Row, aplicant.Column].isBusy == false || drp[aplicant.Row, aplicant.Column].State == CellState.WireVertical || drp[aplicant.Row, aplicant.Column].State == CellState.WireHorizontal)
                         {
                             neighbors.Add(aplicant);
                         }

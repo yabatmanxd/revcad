@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -80,22 +81,26 @@ namespace RevolutionCAD
 
         private void MenuItem_Save_Click(object sender, RoutedEventArgs e)
         {
-            string error = "";
-            ApplicationData.WriteScheme(TextBox_Code.Text, out error);
-            if (error != "")
+            if (ApplicationData.FileName != "")
             {
-                MessageBox.Show(error, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-            else
-            {
-                string str;
-                var sch = ApplicationData.ReadScheme(out str);
-                if (str != "")
+                string error = "";
+                ApplicationData.WriteScheme(TextBox_Code.Text, out error);
+                if (error != "")
+                {
+                    MessageBox.Show(error, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
-                ShowWires(sch);
+                }
+                else
+                {
+                    string str;
+                    var sch = ApplicationData.ReadScheme(out str);
+                    if (str != "")
+                        return;
+                    ShowWires(sch);
+                }
+                UpdatePages();
             }
-            UpdatePages();
+            
             
         }
 
@@ -197,6 +202,11 @@ namespace RevolutionCAD
                 ApplicationData.RowDistance = 3;
                 ApplicationData.ElementsDistance = 4;
             }
+        }
+
+        private void MenuItem_AboutMethods_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(AppDomain.CurrentDomain.BaseDirectory + @"Help\Metodicheskie_ukazania.docx");
         }
     }
 }

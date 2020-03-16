@@ -7,49 +7,51 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid >
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="3*"/>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        
-        <GridSplitter Height="5" Grid.Row="2" ShowsPreview="False" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-        
-        <StackPanel Orientation="Horizontal"
+	<xctk:BusyIndicator Name="bi_Tracing" IsBusy="False" BusyContent="Трассировка..." >
+		<ContentControl>
+			<Grid >
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="3*"/>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="*"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+
+				<GridSplitter Height="5" Grid.Row="2" ShowsPreview="False" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+
+				<StackPanel Orientation="Horizontal"
                     Margin="10">
-            <TextBlock Padding="10 3" VerticalAlignment="Center">Метод трассировки:</TextBlock>
-            <ComboBox Padding="10 3" Name="ComboBox_Method"  SelectedIndex="0" Margin="10 0" MinWidth="200">
-                <ComboBoxItem Content="Метод Ли"></ComboBoxItem>
-                <ComboBoxItem Content="Метод Акерса"></ComboBoxItem>
-                <ComboBoxItem Content="Метод Ли по модулю 3"></ComboBoxItem>
-                <ComboBoxItem Content="Метод встречной волны"></ComboBoxItem>
-                <ComboBoxItem Content="Метод соединения комплекса"></ComboBoxItem>
-                <ComboBoxItem Content="Метод путевых координат"></ComboBoxItem>
-                <ComboBoxItem Content="Метод путевых с минимальным числом пересечений"></ComboBoxItem>
-                <ComboBoxItem Content="Метод равномерного распределения проводников"></ComboBoxItem>
-                <ComboBoxItem Content="Двухлучевой метод"></ComboBoxItem>
-                <ComboBoxItem Content="Четырёхлучевой метод"></ComboBoxItem>
-                <ComboBoxItem Content="Метод оптимизации длины и числа пересечений"></ComboBoxItem>
-                <ComboBoxItem Content="Метод Хейса"></ComboBoxItem>
-            </ComboBox>
-        </StackPanel>
-        
-        <!--<ScrollViewer Grid.Row="1"
+					<TextBlock Padding="10 3" VerticalAlignment="Center">Метод трассировки:</TextBlock>
+					<ComboBox Padding="10 3" Name="ComboBox_Method"  SelectedIndex="0" Margin="10 0" MinWidth="200">
+						<ComboBoxItem Content="Метод Ли"></ComboBoxItem>
+						<ComboBoxItem Content="Метод Акерса"></ComboBoxItem>
+						<ComboBoxItem Content="Метод Ли по модулю 3"></ComboBoxItem>
+						<ComboBoxItem Content="Метод встречной волны"></ComboBoxItem>
+						<ComboBoxItem Content="Метод соединения комплекса"></ComboBoxItem>
+						<ComboBoxItem Content="Метод путевых координат"></ComboBoxItem>
+						<ComboBoxItem Content="Метод путевых с минимальным числом пересечений"></ComboBoxItem>
+						<ComboBoxItem Content="Метод равномерного распределения проводников"></ComboBoxItem>
+						<ComboBoxItem Content="Двухлучевой метод"></ComboBoxItem>
+						<ComboBoxItem Content="Четырёхлучевой метод"></ComboBoxItem>
+						<ComboBoxItem Content="Метод оптимизации длины и числа пересечений"></ComboBoxItem>
+						<ComboBoxItem Content="Метод Хейса"></ComboBoxItem>
+					</ComboBox>
+				</StackPanel>
+
+				<!--<ScrollViewer Grid.Row="1"
                       HorizontalScrollBarVisibility="Auto" 
                       VerticalScrollBarVisibility="Auto">
            
         </ScrollViewer>-->
 
-        <xctk:Zoombox Grid.Row="1" DragModifiers="none" ZoomModifiers="none" MinScale="0.5" MaxScale="100" >
-            <StackPanel Orientation="Horizontal" Name="Grid_Parent" ToolTip="Колёсико мыши приблизить/отдалить. Перемещение ЛКМ.">
-            </StackPanel>
-        </xctk:Zoombox>
-        
+				<xctk:Zoombox AnimationDuration="0" Grid.Row="1" DragModifiers="none" ZoomModifiers="none" MinScale="0.5" MaxScale="100" >
+					<StackPanel Orientation="Horizontal" Name="Grid_Parent" ToolTip="Колёсико мыши приблизить/отдалить. Перемещение ЛКМ.">
+					</StackPanel>
+				</xctk:Zoombox>
 
-        <TextBox Name="TextBox_Log"
+
+				<TextBox Name="TextBox_Log"
                  Grid.Row="3"
                  AcceptsReturn="True" 
                  VerticalScrollBarVisibility="Auto"
@@ -57,26 +59,29 @@
                  Margin="5"
                  IsReadOnly="True"></TextBox>
 
-        <StackPanel Grid.Row="4"
+				<StackPanel Grid.Row="4"
                     Margin="10"
                     Orientation="Horizontal">
-            <Button Name="Button_FullTracing" 
+					<Button Name="Button_FullTracing" 
                     Padding="10 3"
                     Margin="5" Click="Button_FullTracing_Click" >Трассировать</Button>
-            <Button Name="Button_StartStepTracing" 
+					<Button Name="Button_StartStepTracing" 
                     Margin="5" 
                     Padding="10 3"
                     Click="Button_StartStepTracing_Click">Начать пошаговую трассировку</Button>
-            <Button Name="Button_NextStep" 
+					<Button Name="Button_NextStep" 
                     Margin="5" 
                     Padding="10 3"
                     IsEnabled="False"
                     Click="Button_NextStep_Click">Следующий шаг</Button>
-            <Button Name="Button_DropStepMode" 
+					<Button Name="Button_DropStepMode" 
                     Margin="5"  
                     Padding="10 3"
                     IsEnabled="False"
                     Click="Button_DropStepMode_Click">Прервать трассировку</Button>
-        </StackPanel>
-    </Grid>
+				</StackPanel>
+			</Grid>
+		</ContentControl>
+	</xctk:BusyIndicator>
+	
 </UserControl>

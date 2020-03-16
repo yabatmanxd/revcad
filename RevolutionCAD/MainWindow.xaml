@@ -22,10 +22,14 @@
                 <Separator/>
                 <MenuItem Name="MenuItem_Exit" Header="Выход" Click="MenuItem_Exit_Click"></MenuItem>
             </MenuItem>
-            <MenuItem Header="Справка" Name="MenuItem_Info" Click="MenuItem_Info_Click"></MenuItem>
+            
             <MenuItem Header="Параметры">
                 <MenuItem Name="MenuItem_Settings" Header="Параметры трассировки..." Click="MenuItem_Settings_Click"></MenuItem>
             </MenuItem>
+			<MenuItem Header="Справка">
+				<MenuItem Header="Просмотр справки по методам" Name="MenuItem_AboutMethods" Click="MenuItem_AboutMethods_Click"></MenuItem>
+				<MenuItem Header="О программе" Name="MenuItem_Info" Click="MenuItem_Info_Click"></MenuItem>
+			</MenuItem>
         </Menu>
         <TextBlock Name="TextBlock_NameOpenedFile"
                    Grid.Row="1"

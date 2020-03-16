@@ -50,7 +50,7 @@ namespace RevolutionCAD.Pages
                 MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
                 return steps;
             }
-
+            
             switch (ComboBox_Method.SelectedIndex)
             {
                 case 0:
@@ -98,21 +98,26 @@ namespace RevolutionCAD.Pages
                 {
                     var result = steps.Last().BoardsDRPs;
                     ApplicationData.WriteTracing(result, out err_msg);
+                    
                     if (err_msg != "")
                     {
                         MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
+                        bi_Tracing.IsBusy = false;
                         return null;
                     }
                 }
             } else 
                 MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
+            bi_Tracing.IsBusy = false;
             return steps;
         }
         
         private void Button_FullTracing_Click(object sender, RoutedEventArgs e)
         {
             TextBox_Log.Text = "";
+            
             StepsLog = DoTracing();
+            
             if (StepsLog.Count == 0)
             {
                 MessageBox.Show("Метод трассировки не сработал", "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -217,6 +222,22 @@ namespace RevolutionCAD.Pages
                             case CellState.ArrowRight:
                                 picElem.Source = new BitmapImage(
                                     new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imArrowRight.png"));
+                                break;
+                            case CellState.ArrowDownThroughHorizontal:
+                                picElem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imArrowDownThroughHorizontalWire.png"));
+                                break;
+                            case CellState.ArrowUpThroughHorizontal:
+                                picElem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imArrowUpThroughHorizontalWire.png"));
+                                break;
+                            case CellState.ArrowLeftThroughVertical:
+                                picElem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imArrowLeftThroughVerticalWire.png"));
+                                break;
+                            case CellState.ArrowRightThroughVertical:
+                                picElem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imArrowRightThroughVerticalWire.png"));
                                 break;
                             case CellState.Contact:
                                 picElem.Source = new BitmapImage(
