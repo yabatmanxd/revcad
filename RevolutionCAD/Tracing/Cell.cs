@@ -130,5 +130,6 @@ namespace RevolutionCAD.Tracing
         PointB,
         Wire,
         Wave
+
     }
 }

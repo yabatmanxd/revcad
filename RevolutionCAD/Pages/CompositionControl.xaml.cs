@@ -37,29 +37,15 @@ namespace RevolutionCAD.Pages
         private List<StepCompositionLog> DoComposition()
         {
             var steps = new List<StepCompositionLog>();
-
-            int countOfElements, limitsOfWires; // Николаев
             
             string err_msg = "";
             switch (ComboBox_Method.SelectedIndex)
             {
                 case 0:
-                    if (int.TryParse(tbCountOfElements.Text, out countOfElements) == false ||
-                    int.TryParse(tbLimitsOfWires.Text, out limitsOfWires) == false)
-                    {
-                        err_msg = "Поля ввода заполнены неверно";
-                        break;
-                    }
-                    steps = PosledGypergraph.Compose(countOfElements, limitsOfWires, out err_msg);
+                    steps = PosledGypergraph.Compose(tbCountOfElements.Value ?? 10, tbLimitsOfWires.Value ?? 100, out err_msg);
                     break;
                 case 1:
-                    if (int.TryParse(tbCountOfElements.Text, out countOfElements) == false ||
-                        int.TryParse(tbLimitsOfWires.Text, out limitsOfWires) == false)
-                    {
-                        err_msg = "Поля ввода заполнены неверно";
-                        break;
-                    }
-                    steps = PosledMultigraph.Compose(countOfElements, limitsOfWires, out err_msg);
+                    steps = PosledMultigraph.Compose(tbCountOfElements.Value ?? 10, tbLimitsOfWires.Value ?? 100, out err_msg);
                     break;
                 case 2:
                     steps = IterGypergraph.Compose(out err_msg);

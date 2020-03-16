@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:local="clr-namespace:RevolutionCAD.Pages"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -29,9 +30,15 @@
                 <ComboBoxItem Content="Итерационная по мультиграфу"></ComboBoxItem>
             </ComboBox>
             <TextBlock Padding="10 3" VerticalAlignment="Center" Margin="0,3.02,0,2.98"><Run Text="Ограничение на элементы:"/></TextBlock>
-            <TextBox Name="tbCountOfElements" VerticalAlignment="Center" TextWrapping="Wrap" Width="45"/>
+            <xctk:IntegerUpDown Name="tbCountOfElements"
+                                VerticalAlignment="Center"
+                                Minimum="1"
+                                Value="10" />
             <TextBlock Padding="10 3" VerticalAlignment="Center" Margin="0,3.04,0,2.96"><Run Text="Ограничение на связи:"/></TextBlock>
-            <TextBox x:Name="tbLimitsOfWires" VerticalAlignment="Center" TextWrapping="Wrap" Width="45"/>
+            <xctk:IntegerUpDown Name="tbLimitsOfWires"
+                                VerticalAlignment="Center"
+                                Minimum="1"
+                                Value="50" />
         </StackPanel>
 
         <StackPanel Name="StackPanel_Boards"

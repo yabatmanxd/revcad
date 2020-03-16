@@ -132,6 +132,34 @@ namespace RevolutionCAD.Tracing
                     currentDRP[startPos.Row, startPos.Column].Weight = 0;
                     currentDRP[endPos.Row, endPos.Column].State = CellState.PointB;
 
+
+                    // сообщаем о начале трассировки нового провода и печатаем сформированные приоритеты
+                    string stepMsg = $"Начинаем трассировку {boardDRPs.Count - 1}-го проводника в {boardNum + 1} узле\n";
+                    stepMsg += "Сформированы следующие приоритеты: ";
+                    int iterator = 1;
+                    foreach(var prioritet in prioritetsPos)
+                    {
+                        stepMsg += $"{iterator}: ";
+                        switch (getArrowByPrioritet(prioritet.Row,prioritet.Column))
+                        {
+                            case CellState.ArrowUp:
+                                stepMsg += "(\u2191) ";
+                                break;
+                            case CellState.ArrowDown:
+                                stepMsg += "(\u2193) ";
+                                break;
+                            case CellState.ArrowLeft:
+                                stepMsg += "(\u2190) ";
+                                break;
+                            case CellState.ArrowRight:
+                                stepMsg += "(\u2192) ";
+                                break;
+                        }
+                        iterator++;
+                        
+                    }
+                    log.Add(new StepTracingLog(boards, stepMsg));
+
                     // список позиций соседних ячеек
                     var neighbors = new List<Position>();
 
