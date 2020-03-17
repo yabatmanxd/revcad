@@ -1,6 +1,7 @@
 ﻿using RevolutionCAD.Tracing;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,6 +23,8 @@ namespace RevolutionCAD.Pages
     public partial class TracingControl : UserControl
     {
         List<StepTracingLog> StepsLog;
+
+        public MainWindow mw;
 
         public int CurrentStep { get; set; }
 
@@ -102,13 +105,18 @@ namespace RevolutionCAD.Pages
                     if (err_msg != "")
                     {
                         MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
-                        bi_Tracing.IsBusy = false;
                         return null;
                     }
+
+                    string msg;
+                    if (ApplicationData.IsFileExists(".lay", out msg))
+                    {
+                        File.Delete($"{ApplicationData.FileName}.lay");
+                    }
+                    mw.LayerControl.Update();
                 }
             } else 
                 MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
-            bi_Tracing.IsBusy = false;
             return steps;
         }
         
@@ -154,6 +162,7 @@ namespace RevolutionCAD.Pages
 
                 var tb_HeaderBoard = new TextBlock();
                 tb_HeaderBoard.Margin = new Thickness(5);
+                tb_HeaderBoard.FontSize = 16;
                 tb_HeaderBoard.Text = $"Узел №{numBoard + 1}:";
 
                 sp_BoardCard.Children.Add(tb_HeaderBoard);

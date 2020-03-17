@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace RevolutionCAD.Tracing
 {
+    [Serializable]
     public class Cell
     {
         /// <summary>

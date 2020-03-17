@@ -115,7 +115,13 @@ namespace RevolutionCAD.Pages
                         File.Delete($"{ApplicationData.FileName}.trs");
                     }
 
+                    if (ApplicationData.IsFileExists(".lay", out msg))
+                    {
+                        File.Delete($"{ApplicationData.FileName}.lay");
+                    }
+
                     mw.TraceControl.Update();
+                    mw.LayerControl.Update();
 
                 }
             } else

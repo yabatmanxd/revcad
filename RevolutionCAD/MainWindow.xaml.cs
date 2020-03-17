@@ -20,6 +20,8 @@ namespace RevolutionCAD
             InitializeComponent();
             CompControl.mw = this;
             PlaceControl.mw = this;
+            TraceControl.mw = this;
+            LayerControl.mw = this;
 
             
         }
@@ -137,6 +139,7 @@ namespace RevolutionCAD
             CompControl.Update();
             PlaceControl.Update();
             TraceControl.Update();
+            LayerControl.Update();
         }
 
         private void ShowWires(Scheme sch)

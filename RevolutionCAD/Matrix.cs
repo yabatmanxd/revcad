@@ -11,6 +11,7 @@ namespace RevolutionCAD
     /// Класс для представления матрицы любого типа (int, string и т.д.).
     /// Имеет свойства размерности ColsCount и RowsCount
     /// </summary>
+    [Serializable]
     public class Matrix<T>
     {
         [JsonProperty]

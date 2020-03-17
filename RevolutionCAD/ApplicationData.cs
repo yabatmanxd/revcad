@@ -5,6 +5,7 @@ using RevolutionCAD.Tracing;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -159,7 +160,12 @@ namespace RevolutionCAD
             {
                 File.Delete($"{FileName}.trs");
             }
-            
+
+            if (IsFileExists(".lay", out msg))
+            {
+                File.Delete($"{FileName}.lay");
+            }
+
         }
 
         public static void WriteScheme(Scheme sch, out string errWrite)
@@ -276,6 +282,55 @@ namespace RevolutionCAD
                     msg = $"При записи в файл трассировки произошла ошибка: {exc.Message}";
                 }
             }
+        }
+
+        /// <summary>
+        /// Метод для записи результатов расслоения в файл (сериализация)
+        /// </summary>
+        public static void WriteLayering(List<List<Matrix<Cell>>> trs, out string msg)
+        {
+            msg = "";
+            if (FileName != "")
+            {
+                try
+                {
+                    using (FileStream fs = new FileStream(FileName + ".lay", FileMode.OpenOrCreate))
+
+                    {
+                        BinaryFormatter serializer = new BinaryFormatter();
+                        serializer.Serialize(fs, trs);
+                    }
+                }
+                catch (Exception exc)
+                {
+                    msg = $"При записи в файл расслоения произошла ошибка: {exc.Message}";
+                }
+            }
+        }
+
+        /// <summary>
+        /// Метод для чтения результатов расслоения из файла (десериализация)
+        /// </summary>
+        public static List<List<Matrix<Cell>>> ReadLayering(out string msg)
+        {
+            msg = "";
+            List<List<Matrix<Cell>>> boardsLayers = null;
+            if (IsFileExists(".lay", out msg))
+            {
+                try
+                {
+                    using (FileStream fs = new FileStream(FileName + ".lay", FileMode.OpenOrCreate))
+                    {
+                        BinaryFormatter serializer = new BinaryFormatter();
+                        boardsLayers = (List<List<Matrix<Cell>>>)serializer.Deserialize(fs);
+                    }
+                }
+                catch (Exception exc)
+                {
+                    msg = $"Произошла ошибка при попытке чтения файла {FileName}.lay: {exc.Message}";
+                }
+            }
+            return boardsLayers;
         }
 
         /// <summary>

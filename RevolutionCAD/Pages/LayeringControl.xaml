@@ -4,9 +4,62 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RevolutionCAD.Pages"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="30">Раздел в разработке</TextBlock>
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <GridSplitter Height="5" Grid.Row="2" ShowsPreview="False" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+
+        <StackPanel Orientation="Horizontal"
+                    Margin="10">
+            <TextBlock Padding="10 3" VerticalAlignment="Center">Метод расслоения:</TextBlock>
+            <ComboBox Padding="10 3" Name="ComboBox_Method"  SelectedIndex="0" Margin="10 0" MinWidth="200">
+                <ComboBoxItem Content="Последовательное расслоение"></ComboBoxItem>
+            </ComboBox>
+        </StackPanel>
+
+        <xctk:Zoombox AnimationDuration="0" Grid.Row="1" DragModifiers="none" ZoomModifiers="none" MinScale="0.5" MaxScale="100" >
+            <StackPanel Orientation="Horizontal" Name="Grid_Parent" ToolTip="Колёсико мыши приблизить/отдалить. Перемещение ЛКМ.">
+            </StackPanel>
+        </xctk:Zoombox>
+
+
+        <TextBox Name="TextBox_Log"
+                 Grid.Row="3"
+                 AcceptsReturn="True" 
+                 VerticalScrollBarVisibility="Auto"
+                 HorizontalScrollBarVisibility="Auto"
+                 Margin="5"
+                 IsReadOnly="True"></TextBox>
+
+        <StackPanel Grid.Row="4"
+                    Margin="10"
+                    Orientation="Horizontal">
+            <Button Name="Button_FullLayering" 
+                    Padding="10 3"
+                    Margin="5" Click="Button_FullLayering_Click" >Расслоить</Button>
+            <Button Name="Button_StartStepLayering" 
+                    Margin="5" 
+                    Padding="10 3"
+                    Click="Button_StartStepLayering_Click">Начать пошаговое расслоение</Button>
+            <Button Name="Button_NextStep" 
+                    Margin="5" 
+                    Padding="10 3"
+                    IsEnabled="False"
+                    Click="Button_NextStep_Click">Следующий шаг</Button>
+            <Button Name="Button_DropStepMode" 
+                    Margin="5"  
+                    Padding="10 3"
+                    IsEnabled="False"
+                    Click="Button_DropStepMode_Click">Прервать расслоение</Button>
+        </StackPanel>
     </Grid>
 </UserControl>

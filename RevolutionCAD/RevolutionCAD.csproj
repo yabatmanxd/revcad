@@ -103,6 +103,8 @@
     </ApplicationDefinition>
     <Compile Include="Composition\CompositionResult.cs" />
     <Compile Include="Contact.cs" />
+    <Compile Include="Layering\PosledLayering.cs" />
+    <Compile Include="Layering\StepLayeringLog.cs" />
     <Compile Include="Matrix.cs" />
     <Compile Include="Pages\CompositionControl.xaml.cs">
       <DependentUpon>CompositionControl.xaml</DependentUpon>
@@ -230,9 +232,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Layering\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="icon.ico" />
   </ItemGroup>
