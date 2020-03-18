@@ -16,7 +16,7 @@ namespace RevolutionCAD.Tracing
         /// Метод для трассировки
         /// </summary>
         /// <returns>Список логов шагов</returns>
-        public static List<StepTracingLog> Trace(Scheme sch, PlacementResult plc, out string err)
+        public static List<StepTracingLog> Trace(Scheme sch, PlacementResult plc, bool isOptimized, out string err)
         {
             // обязательно создаём лог действий
             var log = new List<StepTracingLog>();
@@ -99,7 +99,9 @@ namespace RevolutionCAD.Tracing
                             currentDRP[neighbor.Row, neighbor.Column].Weight = currentWeight;
                             currentDRP[neighbor.Row, neighbor.Column].State = CellState.Wave;
                         }
-                        log.Add(new StepTracingLog(boards, $"Распроcтраняем волну с весом {currentWeight} для {boardDRPs.Count - 1}-го проводника в {boardNum + 1} узле"));
+
+                        if (!isOptimized)
+                            log.Add(new StepTracingLog(boards, $"Распроcтраняем волну с весом {currentWeight} для {boardDRPs.Count - 1}-го проводника в {boardNum + 1} узле"));
 
                         // увеличиваем вес
                         currentWeight = (currentWeight + 1) % 3;
@@ -127,6 +129,10 @@ namespace RevolutionCAD.Tracing
                     }
 
                     currentDRP[endPos.Row, endPos.Column].Weight = currentWeight;
+
+                    if (isOptimized)
+                        log.Add(new StepTracingLog(boards, $"Волна {boardDRPs.Count - 1}-го проводника достигла точки Б в {boardNum + 1} узле"));
+
 
                     // теперь начинаем обратный крестовый поход от точки Б
                     neighbors = new List<Position>();

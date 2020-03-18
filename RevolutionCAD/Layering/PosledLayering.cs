@@ -35,12 +35,12 @@ namespace RevolutionCAD.Layering
                     // и по 3 провода в каждом слое
                     for (int wireNum = 0; wireNum < 3; wireNum++)
                     {
-                        var drp = new Matrix<Cell>(3,3);
+                        var drp = new Matrix<Cell>(30,10);
                         wires.Add(drp);
 
-                        for(int i = 0; i<3; i++)
+                        for(int i = 0; i<30; i++)
                         {
-                            for (int j = 0; j < 3; j++)
+                            for (int j = 0; j < 10; j++)
                             {
                                 drp[i, j] = new Cell();
                             }

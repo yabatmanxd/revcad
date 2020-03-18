@@ -14,6 +14,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <GridSplitter Height="5" Grid.Row="2" ShowsPreview="False" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
@@ -35,6 +36,7 @@
                 <ComboBoxItem Content="Метод оптимизации длины и числа пересечений"></ComboBoxItem>
                 <ComboBoxItem Content="Метод Хейса"></ComboBoxItem>
             </ComboBox>
+            <CheckBox Name="cb_IsOptimized" IsChecked="True" IsThreeState="False" VerticalAlignment="Center">Не логировать каждый шаг распространения волны (оптимизация)</CheckBox>
         </StackPanel>
 
         <!--<ScrollViewer Grid.Row="1"
@@ -78,6 +80,8 @@
                     IsEnabled="False"
                     Click="Button_DropStepMode_Click">Прервать трассировку</Button>
         </StackPanel>
+
+        <TextBlock FontSize="14" Grid.Row="5" Margin="5" Foreground="OrangeRed">* Трассировка может занять продолжительное время (15 сек - 1 минута)</TextBlock>
     </Grid>
 
 </UserControl>

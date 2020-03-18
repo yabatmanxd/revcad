@@ -53,17 +53,19 @@ namespace RevolutionCAD.Pages
                 MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
                 return steps;
             }
+
+            bool isOptimized = cb_IsOptimized.IsChecked ?? true;
             
             switch (ComboBox_Method.SelectedIndex)
             {
                 case 0:
-                    steps = TracingLi.Trace(sch, plc, out err_msg);
+                    steps = TracingLi.Trace(sch, plc, isOptimized, out err_msg);
                     break;
                 case 1:
                     steps = TracingAkers.Trace(sch, plc, out err_msg);
                     break;
                 case 2:
-                    steps = TracingLiMod.Trace(sch, plc, out err_msg);
+                    steps = TracingLiMod.Trace(sch, plc, isOptimized, out err_msg);
                     break;
                 case 3:
                     steps = TracingOncomingWave.Trace(sch, plc, out err_msg);
@@ -72,13 +74,13 @@ namespace RevolutionCAD.Pages
                     steps = TracingConnectComplexes.Trace(sch, plc, out err_msg);
                     break;
                 case 5:
-                    steps = TracingTrackCoordinates.Trace(sch, plc, out err_msg);
+                    steps = TracingTrackCoordinates.Trace(sch, plc, isOptimized, out err_msg);
                     break;
                 case 6:
-                    steps = TracingMinCrossing.Trace(sch, plc, out err_msg);
+                    steps = TracingMinCrossing.Trace(sch, plc, isOptimized, out err_msg);
                     break;
                 case 7:
-                    steps = TracingUniformDistribution.Trace(sch, plc, out err_msg);
+                    steps = TracingUniformDistribution.Trace(sch, plc, isOptimized, out err_msg);
                     break;
                 case 8:
                     steps = TracingTwoBeam.Trace(sch, plc, out err_msg);

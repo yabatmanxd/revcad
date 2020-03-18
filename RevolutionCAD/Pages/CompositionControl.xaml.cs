@@ -51,7 +51,10 @@ namespace RevolutionCAD.Pages
                     steps = IterGypergraph.Compose(out err_msg);
                     break;
                 case 3:
-                    steps = IterMultigraph.Compose(out err_msg);
+                    steps = IterMultigraphNew.Compose(out err_msg);
+                    break;
+                case 4:
+                    steps = TestComposition.Compose(tbCountOfElements.Value ?? 10, tbLimitsOfWires.Value ?? 100, out err_msg);
                     break;
             }
             

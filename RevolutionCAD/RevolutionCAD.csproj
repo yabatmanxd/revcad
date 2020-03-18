@@ -102,6 +102,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Composition\CompositionResult.cs" />
+    <Compile Include="Composition\IterMultigraphNew.cs" />
+    <Compile Include="Composition\TestComposition.cs" />
     <Compile Include="Contact.cs" />
     <Compile Include="Layering\PosledLayering.cs" />
     <Compile Include="Layering\StepLayeringLog.cs" />

@@ -247,10 +247,10 @@ namespace RevolutionCAD
             {
                 try
                 {
-                    using (StreamReader file = File.OpenText(FileName + ".trs"))
+                    using (FileStream fs = new FileStream(FileName + ".trs", FileMode.OpenOrCreate))
                     {
-                        JsonSerializer serializer = new JsonSerializer();
-                        trs = (List<List<Matrix<Cell>>>)serializer.Deserialize(file, typeof(List<List<Matrix<Cell>>>));
+                        BinaryFormatter serializer = new BinaryFormatter();
+                        trs = (List<List<Matrix<Cell>>>)serializer.Deserialize(fs);
                     }
                 }
                 catch (Exception exp)
@@ -271,10 +271,10 @@ namespace RevolutionCAD
             {
                 try
                 {
-                    using (StreamWriter file = File.CreateText(FileName + ".trs"))
+                    using (FileStream fs = new FileStream(FileName + ".trs", FileMode.OpenOrCreate))
                     {
-                        JsonSerializer serializer = new JsonSerializer();
-                        serializer.Serialize(file, trs);
+                        BinaryFormatter serializer = new BinaryFormatter();
+                        serializer.Serialize(fs, trs);
                     }
                 }
                 catch (Exception exc)
@@ -295,7 +295,6 @@ namespace RevolutionCAD
                 try
                 {
                     using (FileStream fs = new FileStream(FileName + ".lay", FileMode.OpenOrCreate))
-
                     {
                         BinaryFormatter serializer = new BinaryFormatter();
                         serializer.Serialize(fs, trs);

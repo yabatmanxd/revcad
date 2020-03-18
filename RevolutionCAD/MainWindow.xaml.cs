@@ -41,7 +41,7 @@ namespace RevolutionCAD
                 TextBlock_NameOpenedFile.Text = $"Файл: {wnd.Text}";
                 TabControl_Main.Visibility = Visibility.Visible;
                 // при создании файла откроется пример заполнения
-                TextBox_Code.Text = "dip14\r\ndip14\r\ndip14\r\ndip18\r\n#\r\nX-D1.1\r\nD1.1-D2.1\r\nD1.2-D2.2\r\nD2.2-D3.2\r\nD3.2-X\r\nD4.1-D2.1\r\nD3.1-D1.1\r\n";
+                TextBox_Code.Text = "dip14\r\ndip14\r\ndip14\r\ndip14\r\ndip14\r\ndip14\r\ndip14\r\ndip14\r\ndip14\r\ndip14\r\ndip14\r\ndip14\r\ndip14\r\ndip14\r\ndip14\r\n#\r\nD1.1-D4.1\r\nD1.2-D6.1\r\nD1.3-D6.2\r\nD1.4-D6.3\r\nD1.5-D8.1\r\nD1.6-D13.1\r\nD1.7-D14.1\r\nD2.1-D3.1\r\nD2.2-D3.2\r\nD2.3-D7.1\r\nD2.4-D11.1\r\nD2.5-D13.2\r\nD3.3-D7.2\r\nD3.4-D12.1\r\nD3.5-D12.2\r\nD3.6-D13.3\r\nD4.2-D5.1\r\nD4.3-D5.2\r\nD4.4-D9.1\r\nD4.5-D10.1\r\nD4.6-D11.3\r\nD4.7-D11.4\r\nD5.3-D9.2\r\nD5.4-D9.3\r\nD5.5-D9.4\r\nD5.6-D10.1\r\nD6.4-D8.2\r\nD6.5-D8.3\r\nD6.6-D11.4\r\nD6.7-D11.5\r\nD6.8-D14.2\r\nD7.3-D12.3\r\nD7.4-D13.4\r\nD7.5-D14.3\r\nD8.4-D14.4\r\nD8.5-D14.5\r\nD9.5-D10.3\r\nD9.6-D11.6\r\nD10.4-D11.7\r\nD10.5-D11.8\r\nD10.6-D12.5\r\nD12.5-D13.5\r\nD12.6-D13.6";
                 TextBox_Code.SelectionStart = TextBox_Code.Text.Length;
             }
             

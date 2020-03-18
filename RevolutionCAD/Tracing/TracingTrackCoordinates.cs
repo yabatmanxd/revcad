@@ -16,7 +16,7 @@ namespace RevolutionCAD.Tracing
         /// Метод для трассировки
         /// </summary>
         /// <returns>Список логов шагов</returns>
-        public static List<StepTracingLog> Trace(Scheme sch, PlacementResult plc, out string err)
+        public static List<StepTracingLog> Trace(Scheme sch, PlacementResult plc, bool isOptimized, out string err)
         {
             // обязательно создаём лог действий
             var log = new List<StepTracingLog>();
@@ -191,7 +191,8 @@ namespace RevolutionCAD.Tracing
 
                             
                         }
-                        log.Add(new StepTracingLog(boards, $"Распроcтраняем волну для {boardDRPs.Count - 1}-го проводника в {boardNum + 1} узле"));
+                        if (!isOptimized)
+                            log.Add(new StepTracingLog(boards, $"Распроcтраняем волну для {boardDRPs.Count - 1}-го проводника в {boardNum + 1} узле"));
 
                         fullDrp = ApplicationData.MergeLayersDRPs(boardDRPs);
                         neighbors = getNeighbors(fullDrp, neighbors);
@@ -215,6 +216,10 @@ namespace RevolutionCAD.Tracing
                         log.Add(new StepTracingLog(boards, $"Невозможно выполнить трассировку {boardDRPs.Count - 1}-го проводника в {boardNum + 1} узле"));
                         continue;
                     }
+
+                    if (isOptimized)
+                        log.Add(new StepTracingLog(boards, $"Волна {boardDRPs.Count - 1}-го проводника достигла точки Б в {boardNum + 1} узле"));
+
 
                     // теперь начинаем с точки Б
                     // находим соседние ячейки точки Б в которых есть стрелочка и берём первую попавшуюся (это не важно)
