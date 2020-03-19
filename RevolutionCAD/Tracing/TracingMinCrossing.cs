@@ -170,13 +170,15 @@ namespace RevolutionCAD.Tracing
                     neighbors = getNeighbors(fullDrp, startPos);
 
                     // запускаем цикл, пока не закончатся свободные соседи или в списке соседей будет точка А
+                    bool isFounded = false;
                     do
                     {
+                        isFounded = false;
                         // проходим по всем соседним ячейкам чтобы поставить в них стрелочку в какую-то сторону
                         foreach (var neighbor in neighbors)
                         {
                             int minWeight = int.MaxValue;
-
+                            
                             // для этого проходим по всем приоритетам
                             foreach (var prioritet in prioritetsPos)
                             {
@@ -214,6 +216,7 @@ namespace RevolutionCAD.Tracing
                                             int currentWeight = currentDRP[neighbor.Row + prioritet.Row, neighbor.Column + prioritet.Column].Weight + (isThrough == true ? 1 : 0);
                                             if (currentWeight < minWeight)
                                             {
+                                                isFounded = true;
                                                 minWeight = currentWeight;
                                                 currentDRP[neighbor.Row, neighbor.Column].State = getArrowByPrioritet(prioritet.Row, prioritet.Column);
                                                 currentDRP[neighbor.Row, neighbor.Column].Weight = currentWeight;
@@ -231,14 +234,14 @@ namespace RevolutionCAD.Tracing
                         fullDrp = ApplicationData.MergeLayersDRPs(boardDRPs);
                         neighbors = getNeighbors(fullDrp, neighbors);
 
-                    } while (neighbors.Count > 0 && !neighbors.Any(x => x.Column == endPos.Column && x.Row == endPos.Row));
+                    } while (neighbors.Count > 0 && !neighbors.Any(x => x.Column == endPos.Column && x.Row == endPos.Row) && isFounded == true);
 
                     // теперь начинаем с точки Б
                     // находим соседние ячейки точки Б в которых есть стрелочка и берём первую попавшуюся (это не важно)
                     var currentPos = getNeighborWithMinWeight(currentDRP, endPos);
 
                     // если незанятых соседей не оказалось, значит трассировка невозможна
-                    if (neighbors.Count == 0 || currentPos.Column == -1 || currentPos.Row == -1)
+                    if (neighbors.Count == 0 || currentPos.Column == -1 || currentPos.Row == -1 || isFounded == false)
                     {
                         // очищаем текущее дрп
                         for (int i = 0; i < currentDRP.RowsCount; i++)

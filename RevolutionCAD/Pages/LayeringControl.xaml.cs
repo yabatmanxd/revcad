@@ -111,11 +111,12 @@ namespace RevolutionCAD.Pages
 
                 var sp_BoardCard = new StackPanel();
                 sp_BoardCard.Orientation = Orientation.Vertical;
-                sp_BoardCard.Margin = new Thickness(25);
+                sp_BoardCard.Margin = new Thickness(50);
 
                 var tb_HeaderBoard = new TextBlock();
                 tb_HeaderBoard.Margin = new Thickness(5);
-                tb_HeaderBoard.FontSize = 16;
+                tb_HeaderBoard.FontSize = 20;
+                tb_HeaderBoard.FontWeight = FontWeights.Bold;
                 tb_HeaderBoard.Text = $"Узел №{numBoard + 1}:";
 
                 sp_BoardCard.Children.Add(tb_HeaderBoard);
