@@ -130,10 +130,7 @@ namespace RevolutionCAD.Tracing
                         iterator++;
                     }
                     log.Add(new StepTracingLog(boards, stepMsg));
-
-                    // список позиций соседних ячеек
-                    var neighbors = new List<Position>();
-
+                    
                     // объединяем все слои с проводами платы, чтобы на основе этого ДРП получить список именно незанятых соседей
                     fullDrp = ApplicationData.MergeLayersDRPs(boardDRPs);
 
@@ -289,22 +286,15 @@ namespace RevolutionCAD.Tracing
                             log.Add(new StepTracingLog(boards, $"Лучи пересеклись при трассировке {boardDRPs.Count - 1}-го проводника в {boardNum + 1} узле"));
                     }
 
-                    // теперь начинаем с точки Б
-                    // находим соседние ячейки точки Б в которых есть стрелочка и берём первую попавшуюся (это не важно)
                     var currentPos = collisionPosBeamsA;
-
-                    // запускаем цикл, пока мы по этим стрелочкам не дойдём то точки А
+                    
                     do
                     {
-                        // запомним какая стрелочка была в текущей ячейке, т.к. сейчас перезапишем состояние ячейки
                         var bufCellState = currentDRP[currentPos.Row, currentPos.Column].State;
 
-                        // указываем что в этой позиции будет провод, а какой именно - вертикальный, горизонтальный это определим потом
                         currentDRP[currentPos.Row, currentPos.Column].State = CellState.Wire;
                         currentDRP[currentPos.Row, currentPos.Column].Weight = -1;
 
-                        // теперь на основе стрелочки определяем в какую ячейку мы смещаемся. если это стрелочка влево - то столбец будет меньше на 1
-                        // если вправо - то столбец на 1 больше, если стрелочка вверх, то на 1 строку выше
                         currentPos = getNextPosByCurrentArrow(currentPos, bufCellState);
 
                     } while (currentDRP[currentPos.Row, currentPos.Column].State != CellState.PointA);
@@ -312,18 +302,13 @@ namespace RevolutionCAD.Tracing
 
                     currentPos = collisionPosBeamsB;
 
-                    // запускаем цикл, пока мы по этим стрелочкам не дойдём то точки А
                     do
                     {
-                        // запомним какая стрелочка была в текущей ячейке, т.к. сейчас перезапишем состояние ячейки
                         var bufCellState = currentDRP[currentPos.Row, currentPos.Column].State;
 
-                        // указываем что в этой позиции будет провод, а какой именно - вертикальный, горизонтальный это определим потом
                         currentDRP[currentPos.Row, currentPos.Column].State = CellState.Wire;
                         currentDRP[currentPos.Row, currentPos.Column].Weight = -1;
 
-                        // теперь на основе стрелочки определяем в какую ячейку мы смещаемся. если это стрелочка влево - то столбец будет меньше на 1
-                        // если вправо - то столбец на 1 больше, если стрелочка вверх, то на 1 строку выше
                         currentPos = getNextPosByCurrentArrow(currentPos, bufCellState);
 
                     } while (currentDRP[currentPos.Row, currentPos.Column].State != CellState.PointB);
@@ -339,14 +324,11 @@ namespace RevolutionCAD.Tracing
                                 currentDRP[i, j].State = CellState.Empty;
                                 currentDRP[i, j].Weight = -1;
                             }
-
                         }
                     }
 
                     log.Add(new StepTracingLog(boards, $"Определяем точки, где будет проходить проводник №{boardDRPs.Count - 1} в {boardNum + 1} узле"));
 
-                    // начинаем долгую и мучительную спец операцию по определению какой формы проводник должен стоять в ячейке
-                    // запускаем цикл по всем ячейкам дрп
                     for (int i = 0; i < currentDRP.RowsCount; i++)
                     {
                         for (int j = 0; j < currentDRP.ColsCount; j++)
@@ -421,12 +403,9 @@ namespace RevolutionCAD.Tracing
                     currentDRP[endPos.Row, endPos.Column].State = CellState.Contact;
                     log.Add(new StepTracingLog(boards, $"Построили на базе точек проводник №{boardDRPs.Count - 1} в {boardNum + 1} узле"));
                 }
-
-
+                
             }
-
-
-
+            
             return log;
         }
 
@@ -453,41 +432,21 @@ namespace RevolutionCAD.Tracing
             switch (getArrowByPrioritet(prioritet.Row, prioritet.Column))
             {
                 case CellState.ArrowUp:
-                    res = "(\u2191) ";
+                    res = "\u2191";
                     break;
                 case CellState.ArrowDown:
-                    res = "(\u2193) ";
+                    res = "\u2193";
                     break;
                 case CellState.ArrowLeft:
-                    res = "(\u2190) ";
+                    res = "\u2190";
                     break;
                 case CellState.ArrowRight:
-                    res = "(\u2192) ";
+                    res = "\u2192";
                     break;
             }
             return res;
         }
-
-        /// <summary>
-        /// Формирует список позиций приоритетов на основе стартового угла и флага по часовой стрелке назначать следующие или против
-        /// </summary>
-        public static List<Position> getPrioritets(int startAngle, bool isClockwise)
-        {
-            int currentAngle = startAngle;
-
-            var priors = new List<Position>();
-            for (int i = 0; i < 4; i++)
-            {
-                double angle = Math.PI * currentAngle / 180.0;
-                int row = (int)Math.Sin(angle);
-                int col = (int)-Math.Cos(angle);
-                var pos = new Position(row, col);
-                priors.Add(pos);
-                currentAngle += isClockwise ? -90 : 90;
-            }
-            return priors;
-        }
-
+        
         /// <summary>
         /// Метод для определения по координатам в какую сторону должна смотреть стрелочка
         /// </summary>
@@ -525,105 +484,6 @@ namespace RevolutionCAD.Tracing
                     return new Position(-1, -1);
             }
         }
-
-        /// <summary>
-        /// Метод для получения позиция соседних незанятых ячеек списка ячеек. Принимает ДРП по которому определять незанятые и список ячеек для которых необходимо получить соседей
-        /// </summary>
-        public static List<Position> getNeighbors(Matrix<Cell> drp, List<Position> positions)
-        {
-            var allNeighbors = new List<Position>();
-
-            foreach (var pos in positions)
-            {
-                // используя перегруженный метод получаем список соседних ячеек для одной ячейки
-                var neighbors = getNeighbors(drp, pos);
-                foreach (var neighbor in neighbors)
-                {
-                    // если такого соседа ещё нет в списке соседей, то добавляем
-                    if (!allNeighbors.Any(x => x.Column == neighbor.Column && x.Row == neighbor.Row))
-                    {
-                        allNeighbors.Add(neighbor);
-                    }
-                }
-            }
-
-            return allNeighbors;
-        }
-
-        /// <summary>
-        /// Перегруженный метод для получения позиций соседних незанятых ячеек одной ячейки. Принимает ДРП по которому определять незанятые и ячейку для которой необходимо получить соседей
-        /// </summary>
-        public static List<Position> getNeighbors(Matrix<Cell> drp, Position pos)
-        {
-            // список позиций незанятых соседей
-            var neighbors = new List<Position>();
-            // список претендентов на незанятого соседа
-            var aplicants = new List<Position>();
-
-            for (int i = 0; i < 4; i++)
-            {
-                aplicants.Add(pos.Clone());
-            }
-
-            aplicants[0].Column += 1; // правый сосед
-            aplicants[1].Column -= 1; // левый сосед
-            aplicants[2].Row -= 1; // верхний сосед
-            aplicants[3].Row += 1; // нижний сосед
-
-            foreach (var aplicant in aplicants)
-            {
-                // проверка на то, находится ли сосед в пределах дрп
-                if (aplicant.Row >= 0 && aplicant.Row < drp.RowsCount)
-                {
-                    if (aplicant.Column >= 0 && aplicant.Column < drp.ColsCount)
-                    {
-                        // если находится и не занят, то этот предендент нам подходит
-                        if (drp[aplicant.Row, aplicant.Column].isBusy == false)
-                        {
-                            neighbors.Add(aplicant);
-                        }
-                    }
-                }
-            }
-
-            return neighbors;
-
-        }
-
-        /// <summary>
-        /// Метод для получения списка соседей, которые стрелочки
-        /// </summary>
-        public static List<Position> getNeighborsOnlyArrow(Matrix<Cell> drp, Position pos)
-        {
-            var neighbors = new List<Position>();
-            var aplicants = new List<Position>();
-
-            for (int i = 0; i < 4; i++)
-            {
-                aplicants.Add(pos.Clone());
-            }
-
-            aplicants[0].Column += 1;
-            aplicants[1].Column -= 1;
-            aplicants[2].Row -= 1;
-            aplicants[3].Row += 1;
-
-            foreach (var aplicant in aplicants)
-            {
-                if (aplicant.Row >= 0 && aplicant.Row < drp.RowsCount)
-                {
-                    if (aplicant.Column >= 0 && aplicant.Column < drp.ColsCount)
-                    {
-                        if (drp[aplicant.Row, aplicant.Column].isArrow)
-                        {
-                            neighbors.Add(aplicant);
-                        }
-                    }
-                }
-            }
-
-            return neighbors;
-
-        }
+        
     }
 }
