@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RevolutionCAD.Tracing;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,6 +29,13 @@ namespace RevolutionCAD
                 return true;
             else
                 return false;
+        }
+
+        public bool isInDRP(Matrix<Cell> drp)
+        {
+            if (Row < drp.RowsCount && Row >= 0 && Column < drp.ColsCount && Column >= 0)
+                return true;
+            else return false;
         }
     }
 }

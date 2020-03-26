@@ -51,6 +51,27 @@ namespace RevolutionCAD.Tracing
             }   
         }
 
+        public bool isBusyForBeam
+        {
+            get
+            {
+                if (State == CellState.WireTopRight ||
+                    State == CellState.WireTopLeft ||
+                    State == CellState.WireBottomRight ||
+                    State == CellState.WireBottomLeft ||
+                    State == CellState.WireHorizontal ||
+                    State == CellState.WireVertical ||
+                    State == CellState.ArrowDown ||
+                    State == CellState.ArrowUp ||
+                    State == CellState.ArrowLeft ||
+                    State == CellState.ArrowRight ||
+                    State == CellState.Contact)
+                    return true;
+                else
+                    return false;
+            }
+        }
+
         public bool isConnectible
         {
             get
@@ -88,6 +109,8 @@ namespace RevolutionCAD.Tracing
                     return false;
             }
         }
+
+
 
         public Cell()
         {

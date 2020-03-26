@@ -198,6 +198,8 @@ namespace RevolutionCAD.Tracing
                                                 minWeight = currentWeight;
                                                 currentDRP[neighbor.Row, neighbor.Column].State = getArrowByPrioritet(prioritet.Row, prioritet.Column);
                                                 currentDRP[neighbor.Row, neighbor.Column].Weight = currentWeight;
+                                                fullDrp[neighbor.Row, neighbor.Column].State = getArrowByPrioritet(prioritet.Row, prioritet.Column);
+                                                fullDrp[neighbor.Row, neighbor.Column].Weight = currentWeight;
                                             }
                                         }
                                     }
@@ -209,8 +211,7 @@ namespace RevolutionCAD.Tracing
 
                         if (!isOptimized)
                             log.Add(new StepTracingLog(boards, $"Распроcтраняем волну для {boardDRPs.Count - 1}-го проводника в {boardNum + 1} узле"));
-
-                        fullDrp = ApplicationData.MergeLayersDRPs(boardDRPs);
+                        
                         neighbors = getNeighbors(fullDrp, neighbors);
 
                     } while (neighbors.Count > 0 && !neighbors.Any(x => x.Column == endPos.Column && x.Row == endPos.Row));

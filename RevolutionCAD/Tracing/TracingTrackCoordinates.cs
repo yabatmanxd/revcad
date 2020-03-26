@@ -183,6 +183,7 @@ namespace RevolutionCAD.Tracing
                                         {
                                             // устанавливаем необходимую стрелочку по значениям смещения этой стрелочки
                                             currentDRP[neighbor.Row, neighbor.Column].State = getArrowByPrioritet(prioritet.Row, prioritet.Column);
+                                            fullDrp[neighbor.Row, neighbor.Column].State = getArrowByPrioritet(prioritet.Row, prioritet.Column);
                                             break; // выходим из цикла foreach по приоритетам, т.к. мы уже определили какую стрелочку поставить и поставили её в текущей ячейке
                                         }                                       
                                     }
@@ -193,8 +194,7 @@ namespace RevolutionCAD.Tracing
                         }
                         if (!isOptimized)
                             log.Add(new StepTracingLog(boards, $"Распроcтраняем волну для {boardDRPs.Count - 1}-го проводника в {boardNum + 1} узле"));
-
-                        fullDrp = ApplicationData.MergeLayersDRPs(boardDRPs);
+                        
                         neighbors = getNeighbors(fullDrp, neighbors);
 
                     } while (neighbors.Count > 0 && !neighbors.Any(x => x.Column == endPos.Column && x.Row == endPos.Row));

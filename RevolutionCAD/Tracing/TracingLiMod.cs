@@ -75,6 +75,8 @@ namespace RevolutionCAD.Tracing
                     currentDRP[startPos.Row, startPos.Column].State = CellState.PointA;
                     currentDRP[endPos.Row, endPos.Column].State = CellState.PointB;
 
+                    log.Add(new StepTracingLog(boards, $"Начинаем трассировку {boardDRPs.Count - 1}-го проводника в {boardNum + 1} узле"));
+
                     // у начальной позиции вес 0
                     currentDRP[startPos.Row, startPos.Column].Weight = 0;
 
@@ -90,7 +92,7 @@ namespace RevolutionCAD.Tracing
                     do
                     {
                         // объединяем все слои
-                        fullDrp = ApplicationData.MergeLayersDRPs(boardDRPs);
+                        //fullDrp = ApplicationData.MergeLayersDRPs(boardDRPs);
 
                         // запускаем цикл по всем незанятым соседним ячейкам
                         foreach (var neighbor in neighbors)
@@ -98,6 +100,8 @@ namespace RevolutionCAD.Tracing
                             // распространяем волну
                             currentDRP[neighbor.Row, neighbor.Column].Weight = currentWeight;
                             currentDRP[neighbor.Row, neighbor.Column].State = CellState.Wave;
+                            fullDrp[neighbor.Row, neighbor.Column].Weight = currentWeight;
+                            fullDrp[neighbor.Row, neighbor.Column].State = CellState.Wave;
                         }
 
                         if (!isOptimized)

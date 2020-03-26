@@ -34,7 +34,7 @@
             <xctk:IntegerUpDown Name="tbCountOfElements"
                                 VerticalAlignment="Center"
                                 Minimum="1"
-                                Value="10" />
+                                Value="5" />
             <TextBlock Padding="10 3" VerticalAlignment="Center" Margin="0,3.04,0,2.96"><Run Text="Ограничение на связи:"/></TextBlock>
             <xctk:IntegerUpDown Name="tbLimitsOfWires"
                                 VerticalAlignment="Center"
