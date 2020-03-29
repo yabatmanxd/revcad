@@ -198,6 +198,22 @@ namespace RevolutionCAD.Pages
                                     picElem.Source = new BitmapImage(
                                         new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireVertical.png"));
                                     break;
+                                case CellState.WireLeftRightBottom:
+                                    picElem.Source = new BitmapImage(
+                                        new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireLeftRightBottom.png"));
+                                    break;
+                                case CellState.WireLeftRightTop:
+                                    picElem.Source = new BitmapImage(
+                                        new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireLeftRightTop.png"));
+                                    break;
+                                case CellState.WireLeftTopBottom:
+                                    picElem.Source = new BitmapImage(
+                                        new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireLeftTopBottom.png"));
+                                    break;
+                                case CellState.WireRightTopBottom:
+                                    picElem.Source = new BitmapImage(
+                                        new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireRightTopBottom.png"));
+                                    break;
                                 default:
                                     picElem.Source = new BitmapImage(
                                         new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imEmpty.png"));

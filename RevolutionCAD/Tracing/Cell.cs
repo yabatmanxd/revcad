@@ -44,7 +44,11 @@ namespace RevolutionCAD.Tracing
                     State == CellState.ArrowLeftThroughVertical ||
                     State == CellState.ArrowRightThroughVertical ||
                     State == CellState.PointA ||
-                    State == CellState.Contact)
+                    State == CellState.Contact ||
+                    State == CellState.WireLeftRightBottom ||
+                    State == CellState.WireLeftRightTop ||
+                    State == CellState.WireLeftTopBottom ||
+                    State == CellState.WireRightTopBottom)
                     return true;
                 else
                     return false;
@@ -85,7 +89,11 @@ namespace RevolutionCAD.Tracing
                     State == CellState.WireBottomLeft ||
                     State == CellState.WireCross ||
                     State == CellState.WireHorizontal ||
-                    State == CellState.WireVertical)
+                    State == CellState.WireVertical ||
+                    State == CellState.WireLeftRightBottom ||
+                    State == CellState.WireLeftRightTop ||
+                    State == CellState.WireLeftTopBottom ||
+                    State == CellState.WireRightTopBottom)
                     return true;
                 else
                     return false;
@@ -153,7 +161,11 @@ namespace RevolutionCAD.Tracing
         PointA,
         PointB,
         Wire,
-        Wave
+        Wave,
+        WireLeftRightBottom,
+        WireLeftRightTop,
+        WireLeftTopBottom,
+        WireRightTopBottom
 
     }
 }

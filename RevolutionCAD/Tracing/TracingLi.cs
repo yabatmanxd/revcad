@@ -77,22 +77,22 @@ namespace RevolutionCAD.Tracing
 
                     log.Add(new StepTracingLog(boards, $"Начинаем трассировку {boardDRPs.Count - 1}-го проводника в {boardNum + 1} узле"));
 
+                    int currentWeight = 0;
+
                     // у начальной позиции вес 0
-                    currentDRP[startPos.Row, startPos.Column].Weight = 0;
-
-                    // для следующих ячеек вес уже будет 1
-                    int currentWeight = 1;
-
+                    currentDRP[startPos.Row, startPos.Column].Weight = currentWeight;
+                    
                     // объединяем все слои
                     fullDrp = ApplicationData.MergeLayersDRPs(boardDRPs);
+
                     // и получаем незанятых соседей для начальной точки
                     var neighbors = getNeighbors(fullDrp, startPos);
 
                     // запускаем цикл пока не будет найдено ни одного незанятого соседа или в списке соседей окажется точка Б 
                     do
                     {
-                        // объединяем все слои
-                        //fullDrp = ApplicationData.MergeLayersDRPs(boardDRPs);
+                        // увеличиваем вес
+                        currentWeight++;
                         
                         // запускаем цикл по всем незанятым соседним ячейкам
                         foreach (var neighbor in neighbors)
@@ -106,34 +106,33 @@ namespace RevolutionCAD.Tracing
 
                         if (!isOptimized)
                             log.Add(new StepTracingLog(boards, $"Распроcтраняем волну с весом {currentWeight} для {boardDRPs.Count - 1}-го проводника в {boardNum+1} узле"));
-
-                        // увеличиваем вес
-                        currentWeight++;
+                        
                         // и получаем список незанятых соседей для ячеек текущей волны
                         neighbors = getNeighbors(fullDrp, neighbors);
 
-                    } while (neighbors.Count > 0 && !neighbors.Any(x => x.Column == endPos.Column && x.Row == endPos.Row));
+                    } while (neighbors.Count > 0 && !neighbors.Any(x => x.Equals(endPos)));
 
                     // если незанятых соседей не оказалось, значит трассировка невозможна
                     if (neighbors.Count == 0)
                     {
+                        log.Add(new StepTracingLog(boards, $"Невозможно выполнить трассировку {boardDRPs.Count - 1}-го проводника в {boardNum + 1} узле"));
                         // очищаем текущее дрп
                         for (int i = 0; i < currentDRP.RowsCount; i++)
                         {
                             for (int j = 0; j < currentDRP.ColsCount; j++)
                             {
-                                currentDRP[i, j] = new Cell();
+                                if (currentDRP[i, j].State == CellState.Wave)
+                                {
+                                    currentDRP[i, j].State = CellState.Empty;
+                                }
+                                currentDRP[i, j].Weight = -1;
                             }
                         }
-                        // оставляем только 2 контакта, которые должны быть соеденены
                         currentDRP[startPos.Row, startPos.Column].State = CellState.Contact;
                         currentDRP[endPos.Row, endPos.Column].State = CellState.Contact;
-                        log.Add(new StepTracingLog(boards, $"Невозможно выполнить трассировку {boardDRPs.Count - 1}-го проводника в {boardNum + 1} узле"));
                         continue;
                     }
                     
-                    currentDRP[endPos.Row, endPos.Column].Weight = currentWeight;
-
                     if (isOptimized)
                         log.Add(new StepTracingLog(boards, $"Волна {boardDRPs.Count - 1}-го проводника достигла точки Б в {boardNum + 1} узле"));
 
@@ -143,9 +142,12 @@ namespace RevolutionCAD.Tracing
                     neighbors.Add(endPos);
 
                     Position currentPos = endPos.Clone();
+                    fullDrp = ApplicationData.MergeLayersDRPs(boardDRPs);
                     do
                     {
-                        fullDrp = ApplicationData.MergeLayersDRPs(boardDRPs);
+                        // получаем список волновых соседей
+                        neighbors = getNeighborsOnlyWave(fullDrp, currentPos);
+
                         foreach (var neighbor in neighbors)
                         {
                             // находим в списке соседей первую ячейку с волной необходимого веса
@@ -153,6 +155,7 @@ namespace RevolutionCAD.Tracing
                             {
                                 // помечаем что в этой ячейке будет находится проводник, но какой имеено определим ниже
                                 currentDRP[neighbor.Row, neighbor.Column].State = CellState.Wire;
+                                fullDrp[neighbor.Row, neighbor.Column].State = CellState.Wire;
                                 currentPos = neighbor.Clone();
                                 break;
                             }
@@ -160,8 +163,6 @@ namespace RevolutionCAD.Tracing
                         
                         // на каждом шаге уменьшаем вес
                         currentWeight--;
-                        // и получаем список волновых соседей
-                        neighbors = getNeighborsOnlyWave(fullDrp, currentPos);
 
                     } while (currentWeight>=0);
 
@@ -175,7 +176,6 @@ namespace RevolutionCAD.Tracing
                             {
                                 currentDRP[i, j].State = CellState.Empty;
                             }
-                                
                         }
                     }
 

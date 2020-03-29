@@ -234,7 +234,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Resource Include="icon.ico" />
   </ItemGroup>
@@ -311,6 +310,12 @@
     <Resource Include="Resources\imArrowUpThroughHorizontalWire.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\imWireLeftRightBottom.png" />
+    <Resource Include="Resources\imWireLeftRightTop.png" />
+    <Resource Include="Resources\imWireLeftTopBottom.png" />
+    <Resource Include="Resources\imWireRightTopBottom.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

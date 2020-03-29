@@ -71,7 +71,7 @@ namespace RevolutionCAD.Pages
                     steps = TracingOncomingWave.Trace(sch, plc, out err_msg);
                     break;
                 case 4:
-                    steps = TracingConnectComplexes.Trace(sch, plc, out err_msg);
+                    steps = TracingConnectComplexes.Trace(sch, plc, isOptimized, out err_msg);
                     break;
                 case 5:
                     steps = TracingTrackCoordinates.Trace(sch, plc, isOptimized, out err_msg);
@@ -293,6 +293,22 @@ namespace RevolutionCAD.Pages
                             case CellState.Wire:
                                 picElem.Source = new BitmapImage(
                                     new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWire.png"));
+                                break;
+                            case CellState.WireLeftRightBottom:
+                                picElem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireLeftRightBottom.png"));
+                                break;
+                            case CellState.WireLeftRightTop:
+                                picElem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireLeftRightTop.png"));
+                                break;
+                            case CellState.WireLeftTopBottom:
+                                picElem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireLeftTopBottom.png"));
+                                break;
+                            case CellState.WireRightTopBottom:
+                                picElem.Source = new BitmapImage(
+                                    new Uri("pack://application:,,,/RevolutionCAD;component/Resources/imWireRightTopBottom.png"));
                                 break;
                             default:
                                 picElem.Source = new BitmapImage(

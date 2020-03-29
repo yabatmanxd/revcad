@@ -26,7 +26,7 @@
             <ComboBox Name="ComboBox_Method" VerticalAlignment="Center" SelectedIndex="0">
                 <ComboBoxItem Content="Последовательная по гиперграфу"></ComboBoxItem>
                 <ComboBoxItem Content="Последовательная по мультиграфу"></ComboBoxItem>
-                <ComboBoxItem Content="Итерационная по гиперграфу"></ComboBoxItem>
+                <ComboBoxItem IsEnabled="False" Content="Итерационная по гиперграфу"></ComboBoxItem>
                 <ComboBoxItem Content="Итерационная по мультиграфу"></ComboBoxItem>
                 <ComboBoxItem Content="Тестовая компоновка"></ComboBoxItem>
             </ComboBox>
