@@ -52,9 +52,7 @@ namespace RevolutionCAD.Tracing
                 for (int wireNum = 0; wireNum < boardWiresPositions.Count; wireNum++)
                 {
                     var wire = boardWiresPositions[wireNum];
-
                     
-
                     bool isNeedToCreateWireDrp = true;
 
                     if (wireNum > 0)
@@ -64,18 +62,6 @@ namespace RevolutionCAD.Tracing
                         {
                             isNeedToCreateWireDrp = false;
                             currentDRP = boardDRPs.Last();
-                        } else
-                        {
-                            for (int i = 0; i < currentDRP.RowsCount; i++)
-                            {
-                                for (int j = 0; j < currentDRP.ColsCount; j++)
-                                {
-                                    if (currentDRP[i, j].State == CellState.PointA)
-                                    {
-                                        currentDRP[i, j].State = CellState.Contact;
-                                    }
-                                }
-                            }
                         }
                     }
 
@@ -223,7 +209,6 @@ namespace RevolutionCAD.Tracing
                             {
                                 currentDRP[i, j].State = CellState.Empty;
                             }
-
                         }
                     }
 
@@ -269,50 +254,50 @@ namespace RevolutionCAD.Tracing
                             // если текущая ячейка должна быть каким-то кабелем
                             // определяем значения ячеек вокруг и на основе этих данных узнаём какой имеено должен быть кабель
                             // идущим вертикально или слева вверх или горизонтальным и т.д.
-                            if (currentCell.isConnectible && currentCell.State != CellState.PointA && currentCell.State != CellState.PointB)
+                            if (currentCell.isConnectibleOrContact && currentCell.State != CellState.PointA && currentCell.State != CellState.PointB)
                             {
                                 // если есть кабель сверху и кабель в ячейке снизу, то в текущей ячейке должен стоять вертикальный проводник
-                                if (topCell.isConnectible && bottomCell.isConnectible && leftCell.isConnectible && rightCell.isConnectible)
+                                if (topCell.isConnectibleOrContact && bottomCell.isConnectibleOrContact && leftCell.isConnectibleOrContact && rightCell.isConnectibleOrContact)
                                 {
                                     currentDRP[i, j].State = CellState.WireCross;
                                 }
-                                else if (topCell.isConnectible && bottomCell.isConnectible && leftCell.isConnectible)
+                                else if (topCell.isConnectibleOrContact && bottomCell.isConnectibleOrContact && leftCell.isConnectibleOrContact)
                                 {
                                     currentDRP[i, j].State = CellState.WireLeftTopBottom;
                                 }
-                                else if (topCell.isConnectible && bottomCell.isConnectible && rightCell.isConnectible)
+                                else if (topCell.isConnectibleOrContact && bottomCell.isConnectibleOrContact && rightCell.isConnectibleOrContact)
                                 {
                                     currentDRP[i, j].State = CellState.WireRightTopBottom;
                                 }
-                                else if (leftCell.isConnectible && rightCell.isConnectible && topCell.isConnectible)
+                                else if (leftCell.isConnectibleOrContact && rightCell.isConnectibleOrContact && topCell.isConnectibleOrContact)
                                 {
                                     currentDRP[i, j].State = CellState.WireLeftRightTop;
                                 }
-                                else if (leftCell.isConnectible && rightCell.isConnectible && bottomCell.isConnectible)
+                                else if (leftCell.isConnectibleOrContact && rightCell.isConnectibleOrContact && bottomCell.isConnectibleOrContact)
                                 {
                                     currentDRP[i, j].State = CellState.WireLeftRightBottom;
                                 }
-                                else if (topCell.isConnectible && bottomCell.isConnectible)
+                                else if (topCell.isConnectibleOrContact && bottomCell.isConnectibleOrContact)
                                 {
                                     currentDRP[i, j].State = CellState.WireVertical;
                                 }
-                                else if (leftCell.isConnectible && rightCell.isConnectible)
+                                else if (leftCell.isConnectibleOrContact && rightCell.isConnectibleOrContact)
                                 {
                                     currentDRP[i, j].State = CellState.WireHorizontal;
                                 }
-                                else if (topCell.isConnectible && leftCell.isConnectible)
+                                else if (topCell.isConnectibleOrContact && leftCell.isConnectibleOrContact)
                                 {
                                     currentDRP[i, j].State = CellState.WireTopLeft;
                                 }
-                                else if (topCell.isConnectible && rightCell.isConnectible)
+                                else if (topCell.isConnectibleOrContact && rightCell.isConnectibleOrContact)
                                 {
                                     currentDRP[i, j].State = CellState.WireTopRight;
                                 }
-                                else if (bottomCell.isConnectible && leftCell.isConnectible)
+                                else if (bottomCell.isConnectibleOrContact && leftCell.isConnectibleOrContact)
                                 {
                                     currentDRP[i, j].State = CellState.WireBottomLeft;
                                 }
-                                else if (bottomCell.isConnectible && rightCell.isConnectible)
+                                else if (bottomCell.isConnectibleOrContact && rightCell.isConnectibleOrContact)
                                 {
                                     currentDRP[i, j].State = CellState.WireBottomRight;
                                 }
@@ -322,11 +307,12 @@ namespace RevolutionCAD.Tracing
                     }
 
                     // заменяем буквы просто контактами
-                    //currentDRP[startPos.Row, startPos.Column].State = CellState.Contact;
+                    currentDRP[startPos.Row, startPos.Column].State = CellState.Contact;
                     currentDRP[endPos.Row, endPos.Column].State = CellState.Contact;
                     log.Add(new StepTracingLog(boards, $"Построили на базе точек проводник №{wireNum + 1} в {boardNum + 1} узле"));
 
                 }
+                /*
                 for (int i = 0; i < currentDRP.RowsCount; i++)
                 {
                     for (int j = 0; j < currentDRP.ColsCount; j++)
@@ -340,6 +326,7 @@ namespace RevolutionCAD.Tracing
                 string bufMsg = log.Last().Message;
                 log.Remove(log.Last());
                 log.Add(new StepTracingLog(boards, bufMsg));
+                */
             }
             return log;
         }

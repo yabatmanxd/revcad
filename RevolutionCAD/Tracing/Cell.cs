@@ -100,6 +100,17 @@ namespace RevolutionCAD.Tracing
             }
         }
 
+        public bool isConnectibleOrContact
+        {
+            get
+            {
+                if (isConnectible || State == CellState.Contact)
+                    return true;
+                else
+                    return false;
+            }
+        }
+
         public bool isArrow
         {
             get
