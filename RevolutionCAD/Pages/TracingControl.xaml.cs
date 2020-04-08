@@ -83,7 +83,7 @@ namespace RevolutionCAD.Pages
                     steps = TracingUniformDistribution.Trace(sch, plc, isOptimized, out err_msg);
                     break;
                 case 8:
-                    steps = TracingTwoBeam.Trace(sch, plc, out err_msg);
+                    steps = TracingTwoBeam.Trace(sch, plc, isOptimized, out err_msg);
                     break;
                 case 9:
                     steps = TracingFourBeam.Trace(sch, plc, isOptimized, out err_msg);

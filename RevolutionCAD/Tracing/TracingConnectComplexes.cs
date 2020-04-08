@@ -312,21 +312,6 @@ namespace RevolutionCAD.Tracing
                     log.Add(new StepTracingLog(boards, $"Построили на базе точек проводник №{wireNum + 1} в {boardNum + 1} узле"));
 
                 }
-                /*
-                for (int i = 0; i < currentDRP.RowsCount; i++)
-                {
-                    for (int j = 0; j < currentDRP.ColsCount; j++)
-                    {
-                        if (currentDRP[i, j].State == CellState.PointA)
-                        {
-                            currentDRP[i, j].State = CellState.Contact;
-                        }
-                    }
-                }
-                string bufMsg = log.Last().Message;
-                log.Remove(log.Last());
-                log.Add(new StepTracingLog(boards, bufMsg));
-                */
             }
             return log;
         }
