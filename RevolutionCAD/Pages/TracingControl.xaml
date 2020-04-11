@@ -33,8 +33,7 @@
                 <ComboBoxItem Content="Метод равномерного распределения проводников"></ComboBoxItem>
                 <ComboBoxItem Content="Двухлучевой метод"></ComboBoxItem>
                 <ComboBoxItem Content="Четырёхлучевой метод"></ComboBoxItem>
-                <ComboBoxItem Content="Метод оптимизации длины и числа пересечений"></ComboBoxItem>
-                <ComboBoxItem Content="Метод Хейса"></ComboBoxItem>
+                <ComboBoxItem Content="Метод обхода препятствий"></ComboBoxItem>
             </ComboBox>
             <CheckBox Name="cb_IsOptimized" IsChecked="True" IsThreeState="False" VerticalAlignment="Center">Не логировать каждый шаг распространения волны (оптимизация)</CheckBox>
         </StackPanel>

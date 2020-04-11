@@ -7,10 +7,7 @@ using System.Threading.Tasks;
 
 namespace RevolutionCAD.Tracing
 {
-    /// <summary>
-    /// Трассировка по методу путевых координат
-    /// </summary>
-    public class TracingTrackCoordinates
+    public class TracingObhodPrepyatstviy
     {
         /// <summary>
         /// Метод для трассировки
@@ -29,13 +26,13 @@ namespace RevolutionCAD.Tracing
 
             // считываем список плат, в каждой плате хранится список проводников (Wire) соединяют всего 2 контакта
             List<List<Wire>> boardsWiresPositions = plc.BoardsWiresPositions;
-            
-            for(int boardNum = 0; boardNum < boardsWiresPositions.Count; boardNum++)
+
+            for (int boardNum = 0; boardNum < boardsWiresPositions.Count; boardNum++)
             {
                 // получаем список проводов, которые необходимо развести на этой плате
                 // элемент списка объект класса Wire, который хранит координаты точки А и Б на ДРП
                 var boardWiresPositions = boardsWiresPositions[boardNum];
-                
+
                 // список ДРП текущей платы, в который будет заносится ДРП для каждого провода 
                 var boardDRPs = new List<Matrix<Cell>>();
 
@@ -69,7 +66,7 @@ namespace RevolutionCAD.Tracing
                     // получаем из провода стартовую и конечную позицию
                     var startPos = wire.A.PositionContact;
                     var endPos = wire.B.PositionContact;
-                    
+
                     // список, в котором будут хранится приоритеты (смещение относительно текущей ячейки)
                     // если это стрелочка вверх, значит должна анализироваться верхняя ячейка
                     // смещение верхней ячейки относительно текущей: на строку выше, значит -1, а столбец тот же, значит 0
@@ -83,7 +80,7 @@ namespace RevolutionCAD.Tracing
                     // а это модули этих значений, тоже понадобятся
                     int rowsDiffModul = Math.Abs(rowsDiff);
                     int colsDiffModul = Math.Abs(colsDiff);
-                    
+
                     // далее идёт задание приоритетов на основе подсчитанных разниц позиций
                     // логическому объяснению не поддаётся, только по результату моделирования на бумаге
                     if (colsDiff > rowsDiff)
@@ -94,14 +91,16 @@ namespace RevolutionCAD.Tracing
                                 prioritetsPos = getPrioritets(0, false); // первый приоритет - стрелочка влево, остальные против часовой стрелки назначаем
                             else
                                 prioritetsPos = getPrioritets(0, true); // первый приоритет - стрелочка влево, остальные по часовой стрелке назначаем
-                        } else
+                        }
+                        else
                         {
                             if (colsDiff > 0)
                                 prioritetsPos = getPrioritets(90, true); // первый приоритет - стрелочка вниз, остальные по часовой стрелке назначаем
                             else
                                 prioritetsPos = getPrioritets(90, false); // первый приоритет - стрелочка вниз, остальные против часовой стрелки назначаем
                         }
-                    } else
+                    }
+                    else
                     {
                         if (colsDiffModul > rowsDiffModul)
                         {
@@ -120,11 +119,12 @@ namespace RevolutionCAD.Tracing
                     }
 
                     // помечаем буквами стартовую и конечную позицию на текущем слое провода
-                    currentDRP[startPos.Row, startPos.Column].State = CellState.PointA; 
+                    currentDRP[startPos.Row, startPos.Column].State = CellState.PointA;
                     currentDRP[endPos.Row, endPos.Column].State = CellState.PointB;
 
                     // сообщаем о начале трассировки нового провода и печатаем сформированные приоритеты
                     string stepMsg = $"Начинаем трассировку {boardDRPs.Count - 1}-го проводника в {boardNum + 1} узле\n";
+                    /*
                     stepMsg += "Сформированы следующие приоритеты: ";
                     int iterator = 1;
                     foreach (var prioritet in prioritetsPos)
@@ -148,6 +148,7 @@ namespace RevolutionCAD.Tracing
                         iterator++;
 
                     }
+                    */
                     log.Add(new StepTracingLog(boards, stepMsg));
 
                     // список позиций соседних ячеек
@@ -162,40 +163,48 @@ namespace RevolutionCAD.Tracing
                     // запускаем цикл, пока не закончатся свободные соседи или в списке соседей будет точка А
                     do
                     {
-                        // проходим по всем соседним ячейкам чтобы поставить в них стрелочку в какую-то сторону
+                        Position optimalPos = null;
+                        double minL = int.MaxValue;
+                        
                         foreach (var neighbor in neighbors)
                         {
-                            // для этого проходим по всем приоритетам
-                            foreach(var prioritet in prioritetsPos)
+                            double l = GetLengthFromPointToSegment(neighbor, startPos, endPos);
+                            if (l<minL)
                             {
-                                // определяем позицию, которую нужно проверить на основе текущего приоритета
-                                // если первый приоритет стрелочка вверх - значит мы сначала должна проверить верхнюю ячейку на наличие стрелочки
-                                // если она там обнаружится, то поставить в текущей ячейке стрелочку вверх, если нет, то перейти к следующему приоритету, проверить наличие стрелочки в ячейке по этому приоритету и т.д.
-                                Position checkingPos = new Position(neighbor.Row + prioritet.Row, neighbor.Column + prioritet.Column);
+                                minL = l;
+                                optimalPos = neighbor;
+                            }
+                        }
+                        
+                        // для этого проходим по всем приоритетам
+                        foreach (var prioritet in prioritetsPos)
+                        {
+                            // определяем позицию, которую нужно проверить на основе текущего приоритета
+                            // если первый приоритет стрелочка вверх - значит мы сначала должна проверить верхнюю ячейку на наличие стрелочки
+                            // если она там обнаружится, то поставить в текущей ячейке стрелочку вверх, если нет, то перейти к следующему приоритету, проверить наличие стрелочки в ячейке по этому приоритету и т.д.
+                            Position checkingPos = new Position(optimalPos.Row + prioritet.Row, optimalPos.Column + prioritet.Column);
 
-                                // определяем находится ли проверяемая позиция ваще в дрп, вдруг мы вылезли за какой-то край
-                                if (checkingPos.Row >= 0 && checkingPos.Row < currentDRP.RowsCount)
+                            // определяем находится ли проверяемая позиция ваще в дрп, вдруг мы вылезли за какой-то край
+                            if (checkingPos.Row >= 0 && checkingPos.Row < currentDRP.RowsCount)
+                            {
+                                if (checkingPos.Column >= 0 && checkingPos.Column < currentDRP.ColsCount)
                                 {
-                                    if (checkingPos.Column >= 0 && checkingPos.Column < currentDRP.ColsCount)
+                                    // если в проверяемой позиции есть стрелочка или точка А (к нему тоже нужно провести стрелочки на первом шаге)
+                                    if (fullDrp[checkingPos.Row, checkingPos.Column].isArrow || fullDrp[checkingPos.Row, checkingPos.Column].State == CellState.PointA)
                                     {
-                                        // если в проверяемой позиции есть стрелочка или точка А (к нему тоже нужно провести стрелочки на первом шаге)
-                                        if (fullDrp[checkingPos.Row,checkingPos.Column].isArrow || fullDrp[checkingPos.Row, checkingPos.Column].State == CellState.PointA)
-                                        {
-                                            // устанавливаем необходимую стрелочку по значениям смещения этой стрелочки
-                                            currentDRP[neighbor.Row, neighbor.Column].State = getArrowByPrioritet(prioritet.Row, prioritet.Column);
-                                            fullDrp[neighbor.Row, neighbor.Column].State = getArrowByPrioritet(prioritet.Row, prioritet.Column);
-                                            break; // выходим из цикла foreach по приоритетам, т.к. мы уже определили какую стрелочку поставить и поставили её в текущей ячейке
-                                        }                                       
+                                        // устанавливаем необходимую стрелочку по значениям смещения этой стрелочки
+                                        currentDRP[optimalPos.Row, optimalPos.Column].State = getArrowByPrioritet(prioritet.Row, prioritet.Column);
+                                        fullDrp[optimalPos.Row, optimalPos.Column].State = getArrowByPrioritet(prioritet.Row, prioritet.Column);
+                                        break; // выходим из цикла foreach по приоритетам, т.к. мы уже определили какую стрелочку поставить и поставили её в текущей ячейке
                                     }
                                 }
                             }
-
-                            
                         }
+                        
                         if (!isOptimized)
                             log.Add(new StepTracingLog(boards, $"Распроcтраняем волну для {boardDRPs.Count - 1}-го проводника в {boardNum + 1} узле"));
-                        
-                        neighbors = getNeighbors(fullDrp, neighbors);
+
+                        neighbors = getNeighbors(fullDrp, optimalPos);
 
                     } while (neighbors.Count > 0 && !neighbors.Any(x => x.Equals(endPos)));
 
@@ -223,8 +232,10 @@ namespace RevolutionCAD.Tracing
 
                     // теперь начинаем с точки Б
                     // находим соседние ячейки точки Б в которых есть стрелочка и берём первую попавшуюся (это не важно)
-                    var currentPos = getNeighborsOnlyArrow(currentDRP, endPos)[0];
-
+                    var neighbors_arrows = getNeighborsOnlyArrow(currentDRP, endPos);
+                    
+                    var currentPos = neighbors_arrows[0];
+                    
                     // запускаем цикл, пока мы по этим стрелочкам не дойдём то точки А
                     do
                     {
@@ -238,7 +249,7 @@ namespace RevolutionCAD.Tracing
                         // если вправо - то столбец на 1 больше, если стрелочка вверх, то на 1 строку выше
                         currentPos = getNextPosByCurrentArrow(currentPos, bufCellState);
 
-                    } while (currentDRP[currentPos.Row,currentPos.Column].State != CellState.PointA);
+                    } while (currentDRP[currentPos.Row, currentPos.Column].State != CellState.PointA);
 
                     // очищаем всё дрп от стрелочек
                     for (int i = 0; i < currentDRP.RowsCount; i++)
@@ -332,12 +343,36 @@ namespace RevolutionCAD.Tracing
                     log.Add(new StepTracingLog(boards, $"Построили на базе точек проводник №{boardDRPs.Count - 1} в {boardNum + 1} узле"));
                 }
 
-                
+
             }
 
 
 
             return log;
+        }
+
+        private static double GetLengthFromPointToSegment(Position Point, Position SegmentPointA, Position SegmentPointB)
+        {
+            double x0 = Point.Column;
+            double y0 = Point.Row;
+
+            double xa = SegmentPointA.Column;
+            double ya = SegmentPointA.Row;
+
+            double xb = SegmentPointB.Column;
+            double yb = SegmentPointB.Row;
+
+            double t = ((x0 - xa) * (xb - xa) + (y0 - ya) * (yb - ya)) / (Math.Pow(xb - xa, 2) + Math.Pow(yb - ya, 2));
+
+            if (t < 0)
+                t = 0;
+            if (t > 1)
+                t = 1;
+
+            double lengthQrt = Math.Pow(xa - x0 + (xb - xa) * t, 2) + Math.Pow(ya - y0 + (yb - ya) * t, 2);
+            double length = Math.Sqrt(lengthQrt);
+
+            return length;
         }
 
         /// <summary>
@@ -346,7 +381,7 @@ namespace RevolutionCAD.Tracing
         public static List<Position> getPrioritets(int startAngle, bool isClockwise)
         {
             int currentAngle = startAngle;
-            
+
             var priors = new List<Position>();
             for (int i = 0; i < 4; i++)
             {
@@ -383,7 +418,7 @@ namespace RevolutionCAD.Tracing
         /// </summary>
         public static Position getNextPosByCurrentArrow(Position currentPos, CellState currentArrow)
         {
-            switch(currentArrow)
+            switch (currentArrow)
             {
                 case CellState.ArrowDown:
                     return new Position(currentPos.Row + 1, currentPos.Column);
@@ -412,7 +447,8 @@ namespace RevolutionCAD.Tracing
                 foreach (var neighbor in neighbors)
                 {
                     // если такого соседа ещё нет в списке соседей, то добавляем
-                    if (!allNeighbors.Any(x=>x.Column == neighbor.Column && x.Row == neighbor.Row)) { 
+                    if (!allNeighbors.Any(x => x.Column == neighbor.Column && x.Row == neighbor.Row))
+                    {
                         allNeighbors.Add(neighbor);
                     }
                 }
@@ -431,7 +467,7 @@ namespace RevolutionCAD.Tracing
             // список претендентов на незанятого соседа
             var aplicants = new List<Position>();
 
-            for (int i = 0; i<4; i++)
+            for (int i = 0; i < 4; i++)
             {
                 aplicants.Add(pos.Clone());
             }

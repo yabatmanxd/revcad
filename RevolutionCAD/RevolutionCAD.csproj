@@ -137,12 +137,11 @@
     <Compile Include="Tracing\TracingAkers.cs" />
     <Compile Include="Tracing\TracingConnectComplexes.cs" />
     <Compile Include="Tracing\TracingFourBeam.cs" />
-    <Compile Include="Tracing\TracingHayes.cs" />
     <Compile Include="Tracing\TracingLi.cs" />
     <Compile Include="Tracing\TracingLiMod.cs" />
     <Compile Include="Tracing\TracingMinCrossing.cs" />
+    <Compile Include="Tracing\TracingObhodPrepyatstviy.cs" />
     <Compile Include="Tracing\TracingOncomingWave.cs" />
-    <Compile Include="Tracing\TracingOptimized.cs" />
     <Compile Include="Tracing\TracingTrackCoordinates.cs" />
     <Compile Include="Tracing\TracingTwoBeam.cs" />
     <Compile Include="Tracing\TracingUniformDistribution.cs" />

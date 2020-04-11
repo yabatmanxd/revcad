@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace RevolutionCAD.Tracing
 {
     /// <summary>
-    /// Трассировка по двухлучевому методу
+    /// Трассировка по четырехлучевому методу
     /// </summary>
     public class TracingTwoBeam
     {
@@ -490,4 +490,3 @@ namespace RevolutionCAD.Tracing
 
     }
 }
-

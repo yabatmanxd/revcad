@@ -89,10 +89,7 @@ namespace RevolutionCAD.Pages
                     steps = TracingFourBeam.Trace(sch, plc, isOptimized, out err_msg);
                     break;
                 case 10:
-                    steps = TracingOptimized.Trace(sch, plc, out err_msg);
-                    break;
-                case 11:
-                    steps = TracingHayes.Trace(sch, plc, out err_msg);
+                    steps = TracingObhodPrepyatstviy.Trace(sch, plc, isOptimized, out err_msg);
                     break;
             }
             
