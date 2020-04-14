@@ -40,13 +40,16 @@
                                 VerticalAlignment="Center"
                                 Minimum="1"
                                 Value="50" />
-        </StackPanel>
+        </StackPanel >
 
-        <StackPanel Name="StackPanel_Boards"
-                    Grid.Row="1"
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Name="StackPanel_Boards"
+                    
                     Orientation="Horizontal">
 
-        </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+        
 
         <TextBox Name="TextBox_Log"
                  Grid.Row="2"
