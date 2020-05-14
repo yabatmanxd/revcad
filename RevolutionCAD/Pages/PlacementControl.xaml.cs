@@ -38,24 +38,33 @@ namespace RevolutionCAD.Pages
             var steps = new List<StepPlacementLog>();
 
             string err_msg = "";
+
+            Composition.CompositionResult cmp = null;
+            Scheme sch = null;
+            Matrix<int> matrR = null;
             
-            var cmp = ApplicationData.ReadComposition(out err_msg);
-
-            if (err_msg != "")
+            if (ComboBox_Method.SelectedIndex!= 6)
             {
-                MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
-                return steps;
+                cmp = ApplicationData.ReadComposition(out err_msg);
+
+                if (err_msg != "")
+                {
+                    MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return steps;
+                }
+
+                sch = ApplicationData.ReadScheme(out err_msg);
+
+                if (err_msg != "")
+                {
+                    MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return steps;
+                }
+
+                matrR = cmp.MatrixR_AfterComposition;
             }
 
-            var sch = ApplicationData.ReadScheme(out err_msg);
-
-            if (err_msg != "")
-            {
-                MessageBox.Show(err_msg, "Revolution CAD", MessageBoxButton.OK, MessageBoxImage.Error);
-                return steps;
-            }
-
-            var matrR = cmp.MatrixR_AfterComposition;
+            
 
             switch (ComboBox_Method.SelectedIndex)
             {
@@ -78,12 +87,16 @@ namespace RevolutionCAD.Pages
                     steps = IterShaffer.Place(matrR, out err_msg);
                     break;
                 case 6:
+                    steps = BranchesAndBorders.Place();
+                    break;
+                case 7:
                     steps = TestPlacement.Place(cmp, matrR, out err_msg);
                     break;
             }
 
             // если не было ошибки - сериализуем результат
-            if (err_msg == "")
+            if (ComboBox_Method.SelectedIndex != 6)
+                if (err_msg == "")
             {
                 if (steps.Count != 0)
                 {

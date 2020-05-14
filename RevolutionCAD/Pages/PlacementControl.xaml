@@ -46,6 +46,7 @@
                 <ComboBoxItem Content="Итерационный общее"></ComboBoxItem>
                 <ComboBoxItem Content="Итерационный по парам"></ComboBoxItem>
                 <ComboBoxItem Content="Итерационный методом Шафера"></ComboBoxItem>
+                <ComboBoxItem Content="Метод ветвей и границ"></ComboBoxItem>
                 <ComboBoxItem Content="Тестовое размещение"></ComboBoxItem>
             </ComboBox>
         </StackPanel>

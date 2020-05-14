@@ -123,6 +123,7 @@
     <Compile Include="Pages\TracingControl.xaml.cs">
       <DependentUpon>TracingControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Placement\BranchesAndBorders.cs" />
     <Compile Include="Placement\PlacementResult.cs" />
     <Compile Include="Placement\TestPlacement.cs" />
     <Compile Include="Position.cs" />
